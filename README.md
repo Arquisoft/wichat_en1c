@@ -4,6 +4,13 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
 
+## Team members
+- **Héctor Triguero del Río**. UO288992@uniovi.es
+- **Fernando Cachon Alonso**. UO295255@uniovi.es
+- **Daniel Fernández Cabrero**. UO288499@uniovi.es
+- **Umut Dolangac**. UO311846@uniovi.es
+- **Diego Martínez Chamorro**. UO294054@uniovi.es
+
 <p float="left">
 <img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
 <img src="https://miro.medium.com/max/365/1*Jr3NFSKTfQWRUyjblBSKeg.png" height="100">
