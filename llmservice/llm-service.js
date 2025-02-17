@@ -79,7 +79,6 @@ app.post('/ask', async (req, res) => {
     //load the api key from an environment variable
     const apiKey = process.env.LLM_API_KEY;
     if (!apiKey) {
-      console.log("LLM API key missing")
       return res.status(400).json({ error: 'API key is missing.' });
     }
     const answer = await sendQuestionToLLM(question, apiKey, model);
