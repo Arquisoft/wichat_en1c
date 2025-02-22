@@ -17,6 +17,30 @@ These include
 ****
 endif::arc42help[]
 
+**Purpose**
+WiChat is an extension of a previous experimental web application that allowed users to answer quiz questions emulating the "Saber y Ganar" quiz show. This year, the system is being expanded by adding images accompanying all the questions and introducing a conversational hint system powered by an external Large Language Model, enhancing the user experience by providing dynamic and interactive assistance.
+
+The project is requested by RTVE and developed by ChattySw, building using as a basis the work previously done by HappySw company.
+
+**Scope of Work**
+WiChat will expand the existing quiz system by:
+
+- Retaining the core gameplay, where users answer image-based questions from various domains.
+- Introducing an AI-powered hint system for interactive assistance.
+- Automating question using Wikidata, minimizing manual effort.
+- Ensuring accessibility through a web-based platform.
+Additionally, the system should be designed with extensibility in mind, allowing for future improvements.
+
+**Driving Forces**
+The development of WiChat is guided by the following key goals:
+
+- **Enhancing User Engagement:** Implementing an interactive AI-based hint system.
+- **Automating Content Generation:** Using Wikidata to provide dynamically created questions.
+- **Ensuring Accessibility:** Delivering a web-based solution that is easy to access and use.
+- **Providing a Structured Experience:** Offering game statistics and historical data for users.
+
+This document will outline the foundational aspects of the system, including its requirements, quality goals, stakeholder expectations and all the strategies and decisions taken.
+
 === Requirements Overview
 
 ifdef::arc42help[]
