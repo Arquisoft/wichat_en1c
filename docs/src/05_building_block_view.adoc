@@ -289,6 +289,28 @@ Contained Building Blocks::
 | Server                  | Provides an internal secured RESTful API for the rest of microservices.
 |===
 
+==== White Box "Game Service"
+
+image::build_block_view/game_service.drawio.svg[]
+
+Purpose::
+
+Manage game states and track the user's progress.
+
+Motivation::
+
+Takes care of the game logic and user's progress. Also it tracks the user's progress to provide statistics.
+
+Contained Building Blocks::
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| Stats API               | Provides access to the stats microservice.
+| Questions API           | Provides access to the questions microservice.
+| Game Manager            | Keeps track of user games and fires stats events.
+| Server                  | Provides an internal secured RESTful API for the rest of microservices.
+|===
+
 
 
 === Level 3
