@@ -27,3 +27,37 @@ See https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 doc
 
 ****
 endif::arc42help[]
+
+=== Technical constraints
+
+[options="header"]
+|===
+| Constraint                              | Explanation
+| WikiData                                | The application requires data retrieval and processing to generate questions using images from WikiData.
+| Version control and monitoring (GitHub) | GitHub is a useful tool for version control and collaboration among the team members working on the project.
+| User Experience (UI and UX)             | The application's design must prioritize a user-friendly and intuitive experience.
+| Test coverage                           | The code must achieve high test quality and coverage to ensure reliable and expected outcomes.
+| Data Storage and Management             | User data must be stored securely and efficiently. In order to achive this goal, database selection is crucial.
+| LLM (Large Language Models)             | The application will leverage LLMs for specific functionalities (e.g., question generation, hint.)
+|===
+
+=== Organizational Constraints
+
+[options="header"]
+|===
+| Constraint                 | Explanation
+| Team Size and Structure    | The project will be developed by a team of 5 students.
+| Git-Based Development      | The project will follow a Git-based workflow. All tools and processes must integrate seamlessly with Git for version control, collaboration, and code management.
+| Meetings and Documentation | Team meetings will be held every Monday to discuss progress, challenges, and next steps. The development process must be documented in meeting minutes, including decisions made, action items assigned, and progress updates.
+| Delivery Deadlines         | The project has 3 deliverables, each with a 3-week interval.
+| Communication Channels     | The team will use whatsapp and github for daily updates, discussions, and issue tracking.
+|===
+
+=== Political constraints
+
+[options="header"]
+|===
+| Constraint    | Explanation
+| Documentation | Arc42 template is pre-selected for documantation.
+| Language      | Documentation and apllication will be written in english.
+|===
