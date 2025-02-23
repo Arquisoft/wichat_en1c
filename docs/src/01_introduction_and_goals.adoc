@@ -70,6 +70,7 @@ See https://docs.arc42.org/section-1/[Introduction and Goals] in the arc42 docum
 endif::arc42help[]
 
 The main requirements of the system that encapsulates the key features are:
+
 - The system shall allow unregistered users to sign up.
 - The system shall provide authentication for users to log in.
 - The system shall allow registered users to log out.
