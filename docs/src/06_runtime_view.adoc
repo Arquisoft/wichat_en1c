@@ -73,8 +73,8 @@ If the login is succesfully, the app shows the different options of the game. In
 ----
 actor User
 participant WebApp
-participant GatewayService 
-participant AuthService 
+participant GatewayService
+participant AuthService
 database DB as "MongoDB"
 WebApp -> WebApp: Display Login View
 User -> WebApp: Choose avatar
@@ -96,13 +96,13 @@ When playing, the user interface interacts with the distribution facade GatewayS
 ----
 actor User
 participant WebApp
-participant GatewayService 
-participant QuestionService 
-participant LLMService 
-participant LLM  
-participant WikiDataService 
+participant GatewayService
+participant QuestionService
+participant LLMService
+participant LLM
+participant WikiDataService
 participant WikiData
-participant GameService  
+participant GameService
 database DB as "MongoDB"
 User -> WebApp: Start Game
 WebApp -> GatewayService: Request question
@@ -138,8 +138,8 @@ When the user enters the history view, it is displayed the games played alongsid
 ----
 actor User
 participant WebApp
-participant GatewayService 
-participant GameService 
+participant GatewayService
+participant GameService
 database DB as "MongoDB"
 WebApp -> WebApp: Display history option
 User -> WebApp: Choose history
