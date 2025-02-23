@@ -315,6 +315,8 @@ Contained Building Blocks::
 
 === Level 3
 
+https://github.com/Arquisoft/wichat_en1c/issues/26
+
 ifdef::arc42help[]
 [role="arc42help"]
 ****
