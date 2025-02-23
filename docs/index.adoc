@@ -6,7 +6,7 @@
 // configure EN settings for asciidoc
 include::src/config.adoc[]
 
-= image:WIChatIconEn1c[WIChatLogo]
+= image:WIChatIconEn1c.png[WIChatLogo]
 :revnumber: 8.2 EN
 :revdate: January 2023
 :revremark: (based upon AsciiDoc version)

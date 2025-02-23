@@ -141,11 +141,11 @@ endif::arc42help[]
 [options="header",cols="1,2,2"]
 |===
 |Role/Name|Contact|Expectations
-| Development Team | Héctor Triguero del Río mailto:UO288992@uniovi.es, Fernando Cachon Alonso mailto:UO295255@uniovi.es, Daniel Fernández Cabrero mailto:UO288499@uniovi.es, Umut Dolangac mailto:UO311846@uniovi.es, Diego Martínez Chamorro mailto:UO294054@uniovi.es | They aim to develop a clear, scalable, and well-documented system while gaining hands-on experience in software development.
+| Development Team | Héctor Triguero del Río - UO288992@uniovi.es, Fernando Cachon Alonso - UO295255@uniovi.es, Daniel Fernández Cabrero - UO288499@uniovi.es, Umut Dolangac - UO311846@uniovi.es, Diego Martínez Chamorro - UO294054@uniovi.es | They aim to develop a clear, scalable, and well-documented system while gaining hands-on experience in software development.
 | Development Company | ChattySw | They expect the project to be well-structured, maintainable, and extensible, ensuring it meets the client’s needs.
 | Previous Developer | HappySw | They expect their previous work to be properly extended, ensuring compatibility and a smooth transition.
-| Client - RTVE | RTVE Representatives mailto:rtve.dircom@rtve.es | They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.
-| Client - Professor (Evaluator) | Pablo González González mailto:gonzalezgpablo@uniovi.es | He expects a well-structured architectural document, clear software design decisions, and a properly implemented system.
+| Client - RTVE | RTVE Representatives - rtve.dircom@rtve.es | They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.
+| Client - Professor (Evaluator) | Pablo González González - gonzalezgpablo@uniovi.es | He expects a well-structured architectural document, clear software design decisions, and a properly implemented system.
 | Users | End Users | They hope for a fun and competitive experience, with the ability to view statistics and receive personalized interactions.
 | Wikidata (Wikimedia Foundation) | Wikidata Community | They hope for correct and responsible usage of their data, including proper attribution and compliance with API policies.
 | LLM Provider | Gemini/Empathy.ai | They expect proper API usage, adherence to ethical AI practices, and avoidance of misuse that could generate misleading or inappropriate hints.
