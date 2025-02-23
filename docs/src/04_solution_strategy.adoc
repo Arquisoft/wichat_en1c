@@ -36,7 +36,7 @@ endif::arc42help[]
 === Technology decisions
 - **JavaScript:** It is the chosen programming language for this application. After comparing it with TypeScript, we concluded it is the best choice taking into account easiness in the use and team experience.
 - **React:** We have chosen this JavaScript library for the UI because it is the industry standard and other alternatives don't provide any benefits compared to it and it's easy use.
-- **Node.js:** We decided to use it so we use JavaScript both in the frontend and backend. Also, since Mongoose, which will be used to comunicate with the database, is a Node.js library.
+- **Node.js:** We decided to use it so we use JavaScript both in the frontend and backend. Also, since Mongoose, which will be used to comunicate with the database, is a Node.js library, Node.js is a good option for this application.
 - **Docker:** We chose it since several members of the team have experience with it and it's easy to learn for new users compared to other alternatives. Also, it's open-source and user friendly.
 - **MongoDB:** We decided to use this document database due to its flexibility and simple query language.
 - **Microsoft Azure:** We chose this platform since it provides the needed infrastructure and the team members have experience with it.
@@ -45,7 +45,7 @@ endif::arc42help[]
 - **Microservices pattern:** The Microservices architectural pattern is used, so the application is divided into different components with a responsibility each one. This makes the different components independent and low coupled, allowing mantainability.
 Also, it reduces possible conflicts between the development carried out by the team members and the code dependencies.  
 - **Gateway pattern:** This pattern is chosen because it allows to give the application a single request interface that redirects requests by the 
-user to the appropiate application component. It is the appropiate pattern to complement the Microservices patter due to these reasons.
+user to the appropiate application component. It is the appropiate pattern to complement the Microservices pattern due to these reasons.
 
 === Decisions to achieve key quality goals
 - **Mantainability:** The application will be well structured and documented to allow a proper mantainability.
@@ -58,4 +58,4 @@ user to the appropiate application component. It is the appropiate pattern to co
 - Communication between members and task assigning using Github Issues.
 - For a quick and agile communication, use of a WhatsApp group of the team.
 - Keep track of all the work done by the team using Github Projects, linking on it the different Issues. 
-- Record the weekly meeting details and project decisions by means of Github Wiki.
+- Record the weekly meeting minutes and details and project decisions by means of Github Wiki.
