@@ -69,6 +69,16 @@ See https://docs.arc42.org/section-1/[Introduction and Goals] in the arc42 docum
 ****
 endif::arc42help[]
 
+The main requirements of the system that encapsulates the key features are:
+- The system shall allow unregistered users to sign up.
+- The system shall provide authentication for users to log in.
+- The system shall allow registered users to log out.
+- The system shall allow registered users to play.
+- The system shall allow registered users to check their statistics.
+- The system shall allow users to request hints for a question.
+
+The complete list of requirements can be found in the xref:#section-annex[Annex] of the documentation.
+
 === Quality Goals
 
 ifdef::arc42help[]
@@ -96,11 +106,11 @@ endif::arc42help[]
 [options="header",cols="1,2"]
 |===
 | Quality Goal | Concrete Scenario
-| Reliability | The system should be reliable and diverse in generating questions form Wikidata, avoiding bad or unrelated distractors. AI hint system should be accurate and allucinations should be minimized. The system shall handle user registrations, logins, game data storage and gameplay with an error rate of less than 1%.
+| Reliability | The system should be reliable and diverse in generating questions from Wikidata, having no more than 5% of questions with wrong distractors. AI hint system should be accurate and allucinations should be minimized to no more than 2%. The system shall handle user registrations, logins, game data storage and gameplay with an error rate of less than 1%.
 | Performance Efficiency | The system should efficiently handle an increasing number of concurrent users up to 1000 while keeping response times below 1 second. AI hint generation should not cause performance bottlenecks.
-| Security | Users' personal data and authentication details should be securely stored and protected against unauthorized access. API requests should be encrypted.
+| Security | Users' personal data and authentication details should be securely stored. API requests should be protected from unauthorized access.
 | Usability | The UI should be intuitive for first-time users, and game interactions should be easy to understand. The system learning time for a new user should be less than 1 hour.
-| Maintainability | The architecture should allow developers to easily add new game modes, AI features, or question sources without major system refactoring.
+| Maintainability | The architecture should be microservices to allow developers to easily add new game modes, AI features, or question sources without major system refactoring.
 |===
 
 === Stakeholders
