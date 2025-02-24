@@ -60,41 +60,34 @@ For multiple environments or alternative deployments please copy and adapt this 
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
+image::deployment_view/Level1DeploymentDiagram.png[Deployment Diagram Level 1 Infrastructure]
 
 Motivation::
 
-_<explanation in text form>_
+The system uses Docker to keep services isolated and portable, ensuring smooth transitions between development, testing, and production. A microservices approach separates key functions like authentication, game logic, stats, and question handling, allowing independent scaling and preventing failures in one service from affecting the rest.
+
+A central API Gateway simplifies client interactions and enhances security by preventing direct access to internal services. External services like WikiData and an LLM API handle question generation and AI-driven hints, reducing infrastructure complexity and using external computing power.
 
 Quality and/or Performance Features::
 
-_<explanation in text form>_
+This system is built to handle growth. Each part can be scaled up as needed. In this diagram we use containers, so if we need more of something like the Question Service, we can easily add it. With Docker-compose we can automate this.
+
+Security is important. All communication is encrypted with HTTPS, so this keeps the internal parts of the system protected. The API Gateway also adds a layer of security by managing all incoming requests.
+
+If something goes wrong, the container system helps because if one part fails, it can be restarted without affecting the others.  We also have logging and monitoring to help us find and fix problems quickly.
+
+We've focused on performance too, MongoDB is used for flexible and efficient data storage for game info.
 
 Mapping of Building Blocks to Infrastructure::
-_<description of the mapping>_
-
-
-=== Infrastructure Level 2
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can include the internal structure of (some) infrastructure elements from level 1.
-
-Please copy the structure from level 1 for each selected element.
-****
-endif::arc42help[]
-
-==== _<Infrastructure Element 1>_
-
-_<diagram + explanation>_
-
-==== _<Infrastructure Element 2>_
-
-_<diagram + explanation>_
-
-...
-
-==== _<Infrastructure Element n>_
-
-_<diagram + explanation>_
+[options="header",cols="2,2"]
+|===
+| Artifact | Infrastructure
+| WebApp (React) | WebApp Container
+| Gateway API (Node.js) | Gateway Container
+| AuthService (Node.js) | AuthService Container
+| StatsService (Node.js) | StatsService Container
+| GameService (Node.js) | GameService Container
+| QuestionsService (Node.js) | QuestionsService Container
+| LLMService (Node.js) | LLMService Container
+| Database (MongoDB) | Database Container
+|===

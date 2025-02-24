@@ -67,18 +67,42 @@ In the best case you will get away with examples or simple signatures.
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
+image::build_block_view/overview.drawio.svg[]
 
 Motivation::
 
-_<text explanation>_
-
+We divided the system into microservices according to their responsibilities to ensure: 
+- *simplicity*:
+  Each component is minimal and is responsible for a single function, which makes it easier to understand and maintain.
+- *reusability*:
+  Microservices have interfaces which can be easily used by other new or old components if required.
+- *independence*:  
+  Components are made as independent as possible, also dependencies are always on stable abstractions protecting client services from the implementation.
+- *maintainability*:
+  Each component is simple and as independent as possible from the others allowing fast understanding and reducing the probability of making mistakes.
+- *extendability*:
+  New features can be added easily by adding new code to components or by adding new components, avoiding having to modify / rewrite code.
+- *switchability*:
+  External services can be easily replaced by other services by just writing an adapter.
 
 Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| LLM Service             | Serves as an adapter for the external LLM service.
+| Questions Service       | Generates questions and hints.
+| Game Service            | Manages game states and tracks the user's progress.
+| Stats Service           | Tracks and provides statistics for the users.
+| Auth Service            | Handles login, signup and session for the users.
+| Gateway                 | Proxies some services to the Internet and supports the WebApp.
+| WebApp                  | Provides the web UI.
+|===
 
-Important Interfaces::
-_<Description of important interfaces>_
+Interfacing::
+
+- The different *microservices communicate* with each other via *RESTful APIs* using an *intranet*. 
+- The *Gateway* and *WebApp* are the only services which allow external requests and communicate with eachother through *Internet*.
+- LLM Service and Question Service also communicate with the external LLM service and the external question service respectively using the Internet.
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -102,7 +126,7 @@ Its headline is the name of the black box.
 ****
 endif::arc42help[]
 
-==== <Name black box 1>
+==== LLM Service
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -120,35 +144,68 @@ according the the following black box template:
 ****
 endif::arc42help[]
 
-_<Purpose/Responsibility>_
+Purpose::
 
-_<Interface(s)>_
+Act as a bridge (adapter) between the external LLM service and the other internal services of the application.
 
-_<(Optional) Quality/Performance Characteristics>_
+Interface::
 
-_<(Optional) Directory/File Location>_
+Internal RESTful API for communication with the other internal microservices.
 
-_<(Optional) Fulfilled Requirements>_
+// _<(Optional) Quality/Performance Characteristics>_
 
-_<(optional) Open Issues/Problems/Risks>_
+// _<(Optional) Directory/File Location>_
 
+// _<(Optional) Fulfilled Requirements>_
 
+// _<(optional) Open Issues/Problems/Risks>_
 
+Structure::
 
-==== <Name black box 2>
+Just an Express.js app with an adapter pattern for the LLM API.
 
-_<black box template>_
+==== Stats Service
 
-==== <Name black box n>
+Purpose::
 
-_<black box template>_
+Tracks and provides statistics for the users. 
 
+Interface::
 
-==== <Name interface 1>
+Internal RESTful API for communication with the other internal microservices.
 
-...
+Structure::
 
-==== <Name interface m>
+It's a typical Express.js application with a model for the statistics and a database connector to allow storing the data.
+
+==== WebApp
+
+Purpose::
+
+Provides the web UI for the application.
+
+Interface::
+
+Web UI for the users.
+
+Structure::
+
+Follows the structure of a typical React application with several routes. 
+
+==== Gateway
+
+Purpose::
+
+Proxies some services to the Internet and supports the WebApp. 
+Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security headers, etc.
+
+Interface::
+
+RESTful API exposed to the Internet with a subset of the internal services.
+
+Structure::
+
+It's a typical Express.js application with middleware, proxy and endpoint documentation modules.
 
 
 
@@ -165,7 +222,7 @@ Leave out normal, simple, boring or standardized parts of your system
 ****
 endif::arc42help[]
 
-==== White Box _<building block 1>_
+==== White Box "Questions Service"
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -174,23 +231,91 @@ ifdef::arc42help[]
 ****
 endif::arc42help[]
 
-_<white box template>_
+image::build_block_view/questions_service.drawio.svg[]
 
-==== White Box _<building block 2>_
+Purpose::
 
+Generates questions and hints. 
+- Questions and answers are generated through WikiData data.
+- Hints are generated through the internal LLM Service.
 
-_<white box template>_
+Motivation::
 
-...
+Handles the responsibility of generating questions and hints.
 
-==== White Box _<building block m>_
+- *Why is WikiData part of the module and not standalone?*
 
+Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module's one.
 
-_<white box template>_
+- *Why are questions and hints generated separately?*
+
+Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefits that come from it.
+
+Contained Building Blocks::
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| WikiData Adapter        | Serves as an adapter for the external WikiData API.
+| LLM API                 | Provides an interface to use the LLM Service.
+| Questions               | Generates questions from the WikiData information.
+| Hints                   | Generates hints using the LLM Service.
+| Questions Cache?        | Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.
+| Connector               | Joins the Questions and Hints services. That way question's context can be used to generate hints.
+| Server                  | Provides an internal RESTful API for the rest of microservices.
+|===
+
+==== White Box "Auth Service"
+
+image::build_block_view/auth_service.drawio.svg[]
+
+Purpose::
+
+Allows users to login, signup and manage their session.
+
+Motivation::
+
+Keeps the user's sensitive data and session separate from the rest of the application to ensure the higher standards of security and privacy.
+
+Contained Building Blocks::
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| Model                   | Represents the user's data through interfaces.
+| DB Connector            | Provides persistence for the model entities.
+| Login                   | Allows login and obtaining a session.
+| Register                | Allows registering and obtaining a session for the just registered user.
+| Session Manager         | Manages volatile sessions for the users.
+| Crypt Utils             | Provides encryption, hashing algorithms commonly used for authentication and storing sensitive data.
+| Server                  | Provides an internal secured RESTful API for the rest of microservices.
+|===
+
+==== White Box "Game Service"
+
+image::build_block_view/game_service.drawio.svg[]
+
+Purpose::
+
+Manage game states and track the user's progress.
+
+Motivation::
+
+Takes care of the game logic and user's progress. Also it tracks the user's progress to provide statistics.
+
+Contained Building Blocks::
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| Stats API               | Provides access to the stats microservice.
+| Questions API           | Provides access to the questions microservice.
+| Game Manager            | Keeps track of user games and fires stats events.
+| Server                  | Provides an internal secured RESTful API for the rest of microservices.
+|===
 
 
 
 === Level 3
+
+https://github.com/Arquisoft/wichat_en1c/issues/26
 
 ifdef::arc42help[]
 [role="arc42help"]

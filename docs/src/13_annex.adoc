@@ -1,0 +1,93 @@
+ifndef::imagesdir[:imagesdir: ../images]
+
+[[section-annex]]
+== Annex
+=== Functional Requirements
+==== Registration
+* FR-REG-1: The system must allow unregistered users to create an account.
+** FR-REG-1.1: The system shall require the following information for registration:
+*** FR-REG-1.1.1: Username (mandatory and unique).
+*** FR-REG-1.1.2: Password (mandatory).
+**** FR-REG-1.1.2.1: The password must have at least one from each of the following:
+***** FR-REG-1.1.2.1.1: Uppercase letter.
+***** FR-REG-1.1.2.1.2: Lowercase letter.
+***** FR-REG-1.1.2.1.3: Number.
+* FR-REG-2: The system shall validate input data.
+** FR-REG-2.1: If any field is invalid, the system shall prevent registration.
+* FR-REG-3: The system shall check for duplicate accounts.
+** FR-REG-3.1: If an account with the same username already exists, the system shall prevent registration.
+
+==== Login and Logout
+* FR-LOG-1: The system must allow unidentified users to log in.
+** FR-LOG-1.1: The system shall require the following information for log in:
+*** FR-LOG-1.1.1: Username (mandatory).
+*** FR-LOG-1.1.2: Password (mandatory).
+* FR-LOG-2: The system shall validate login credentials.
+* FR-LOG-3: The system must allow logged-in users to log out at any time.
+
+==== User Profile and Data Management
+* FR-UPD-1: The system must allow users to access their historical data.
+** FR-UPD-1.1: The system shall display the following statistics for each user:
+*** FR-UPD-1.1.1: Number of games played.
+*** FR-UPD-1.1.2: Number of questions answered correctly.
+*** FR-UPD-1.1.3: Number of questions answered incorrectly.
+* FR-UPD-2: The system shall allow users to update their profile information:
+** FR-UPD-2.1: Profile photo (from a preselected set of images).
+** FR-UPD-2.2: Username.
+*** FR-UPD-2.2.1: The system shall check if the username already exists.
+**** FR-UPD-2.2.1.1: If it already exists, the system shall prevent the change.
+** FR-UPD-2.3: Password.
+*** FR-UPD-2.3.1: Password must be validated as in FR-REG-1.1.2.1.
+
+==== Game Session
+* FR-GAME-1: The system shall allow only authentified users to play.
+** FR-GAME-1.1: The game shall consist of 10 rounds.
+*** FR-GAME-1.1.1: Each round shall include:
+**** FR-GAME-1.1.1.1: A generated question from Wikidata using a template.
+**** FR-GAME-1.1.1.2: A set of possible answers (one correct, three distractors).
+**** FR-GAME-1.1.1.3: An image from Wikidata related to the question.
+**** FR-GAME-1.1.1.4: A time limit of 20 seconds to answer the question.
+** FR-GAME-1.2: The system shall move to the next round when:
+*** FR-GAME-1.2.1: An answer is submitted.
+*** FR-GAME-1.2.2: Time runs out.
+**** FR-GAME-1.2.2.1: When time runs out the question is considered incorrectly answered.
+** FR-GAME-1.3: The game shall end after all the rounds are completed.
+
+==== Hint System
+* FR-HINT-1: The system shall allow users to request hints for a question.
+** FR-HINT-1.1: The hints shall be generated using an LLM.
+*** FR-HINT-1.1.1: The system shall send to the LLM:
+**** FR-HINT-1.1.1.1: The message from the player.
+**** FR-HINT-1.1.1.2: An additonal message explaining that it is being used as a hint provider for a quiz game.
+**** FR-HINT-1.1.1.3: The question.
+**** FR-HINT-1.1.1.4: The correct answer.
+**** FR-HINT-1.1.1.5: The three distractors.
+**** FR-HINT-1.1.1.6: The image of the question.
+**** FR-HINT-1.1.1.7: The previous hints given by the LLM for that question if possible.
+** FR-HINT-1.2: The system shall allow up to 3 hints per question.
+** FR-HINT-1.3: After getting a hint, there will be a cooldown of 3 seconds for asking again.
+
+==== Custom Games
+* FR-CGAME-1: The system shall allow users to create custom game sessions.
+** FR-CGAME-1.1: The system shall allow users to customize:
+*** FR-CGAME-1.1.1: Number of rounds.
+**** FR-CGAME-1.1.2.1: The minimum number will be 1 round.
+**** FR-CGAME-1.1.2.2: The maximum number will be 50 rounds.
+**** FR-CGAME-1.1.2.3: There will be an option for infinite rounds.
+***** FR-CGAME-1.1.2.3.1: In this case, the game will end when a question is answered incorrectly.
+*** FR-CGAME-1.1.2: Time per question in seconds.
+**** FR-CGAME-1.1.2.1: The minimum time will be 10 seconds.
+**** FR-CGAME-1.1.2.2: The maximum time will be 60 seconds.
+*** FR-CGAME-1.1.3: Question categories.
+
+==== Question Management
+* FR-APIQ-1: The system shall provide an API to access generated questions.
+** FR-APIQ-1.1: The API shall include endpoints to retrieve questions and answers.
+** FR-APIQ-1.2: The API shall be documented for developers.
+
+==== User Data Access
+* FR-APIU-1: The system shall provide an API to access user data.
+** FR-APIU-1.1: The API shall include endpoints for retrieving user statistics.
+** FR-APIU-1.2: The API shall be documented for developers.
+
+
