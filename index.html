@@ -2175,24 +2175,20 @@ when your infrastructure is more complex.</p>
 <img src="./images/deployment_view/Level1DeploymentDiagram.png" alt="Deployment Diagram Level 1 Infrastructure">
 </div>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Motivation</dt>
-<dd>
+<div class="paragraph">
+<p><strong>Motivation:</strong></p>
+</div>
+<div class="paragraph">
 <p>The system uses Docker to keep services isolated and portable, ensuring smooth transitions between development, testing, and production. A microservices approach separates key functions like authentication, game logic, stats, and question handling, allowing independent scaling and preventing failures in one service from affecting the rest.</p>
-</dd>
-</dl>
 </div>
 <div class="paragraph">
 <p>A central API Gateway simplifies client interactions and enhances security by preventing direct access to internal services. External services like WikiData and an LLM API handle question generation and AI-driven hints, reducing infrastructure complexity and using external computing power.</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Quality and/or Performance Features</dt>
-<dd>
+<div class="paragraph">
+<p><strong>Quality and/or Performance Features:</strong></p>
+</div>
+<div class="paragraph">
 <p>This system is built to handle growth. Each part can be scaled up as needed. In this diagram we use containers, so if we need more of something like the Question Service, we can easily add it. With Docker-compose we can automate this.</p>
-</dd>
-</dl>
 </div>
 <div class="paragraph">
 <p>Security is important. All communication is encrypted with HTTPS, so this keeps the internal parts of the system protected. The API Gateway also adds a layer of security by managing all incoming requests.</p>
