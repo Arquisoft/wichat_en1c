@@ -62,13 +62,13 @@ endif::arc42help[]
 
 image::deployment_view/Level1DeploymentDiagram.png[Deployment Diagram Level 1 Infrastructure]
 
-Motivation::
+**Motivation:**
 
 The system uses Docker to keep services isolated and portable, ensuring smooth transitions between development, testing, and production. A microservices approach separates key functions like authentication, game logic, stats, and question handling, allowing independent scaling and preventing failures in one service from affecting the rest.
 
 A central API Gateway simplifies client interactions and enhances security by preventing direct access to internal services. External services like WikiData and an LLM API handle question generation and AI-driven hints, reducing infrastructure complexity and using external computing power.
 
-Quality and/or Performance Features::
+**Quality and/or Performance Features:**
 
 This system is built to handle growth. Each part can be scaled up as needed. In this diagram we use containers, so if we need more of something like the Question Service, we can easily add it. With Docker-compose we can automate this.
 
