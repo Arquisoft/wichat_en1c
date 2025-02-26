@@ -39,12 +39,12 @@ See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== Abstract general state diagram
+=== Abstract states of the application
 
 * General usage, the user arrives to the application, creates an account or logs in, goes through the menu settings and plays.
 The state diagram shows the relation of the different situations of the app.
 
-image::06_State_Diagram.png["State Diagram"]
+image::06_State_Diagram.png["State Diagram of the general game behaviour"]
 
 === Login of a user
 
@@ -53,22 +53,7 @@ image::06_State_Diagram.png["State Diagram"]
 When logging, the app does a login request to the authentication service through the GatewayService, which redirects the user to the identity provider, which handles the authentication by checking the registered users.
 If the login is succesfully, the app shows the different options of the game. In case the login isn’t succesfully, a warning message is shown.
 
-[plantuml,"Sequence diagram",png]
-----
-actor User
-participant WebApp
-participant GatewayService
-participant AuthService
-database DB as "MongoDB"
-WebApp -> WebApp: Display Login View
-User -> WebApp: Choose avatar
-WebApp -> GatewayService: Request login
-GatewayService -> AuthService: Redirect request
-AuthService -> DB: Fetch users
-DB -> AuthService: Registered users
-AuthService -> GatewayService: Authorise request
-GatewayService -> WebApp: Return session 
-----
+image::06_Login.png["Sequence Diagram of the login of a user"]
 
 === Game
 
@@ -76,38 +61,7 @@ GatewayService -> WebApp: Return session
 
 When playing, the user interface interacts with the distribution facade GatewayService, in charge of hiding the back-end services and business and persistance layers.
 
-[plantuml,"Sequence diagram",png]
-----
-actor User
-participant WebApp
-participant GatewayService
-participant QuestionService
-participant LLMService
-participant LLM
-participant WikiDataService
-participant WikiData
-participant GameService
-database DB as "MongoDB"
-User -> WebApp: Start Game
-WebApp -> GatewayService: Request question
-GatewayService -> GatewayService: Request login
-GatewayService -> QuestionService: Redirect request
-QuestionService -> LLMService: Redirect request
-LLMService -> LLM: Redirect request
-LLM -> LLMService: Return question
-LLMService -> QuestionService: Return question
-QuestionService -> GatewayService: Return question
-GatewayService -> WebApp: Return question
-WebApp -> User: Displays question and options
-User -> WebApp: Choose answer
-WebApp -> WebApp: Verifies answer
-WebApp -> User: Show result and score
-User -> WebApp: Finish game
-WebApp -> User: Show final score
-WebApp -> GatewayService: Saves game dataç
-GatewayService -> GameService: Redirects request
-GameService -> DB: Store result
-----
+image::06_Game.png["Sequence Diagram of the game runtime behaviour"]
 
 === History of a user
 
@@ -118,20 +72,4 @@ When the user enters the history view, it is displayed the games played alongsid
 - Time scores of the best games
 - Relation of correct / incorrect answers
 
-[plantuml,"Sequence diagram",png]
-----
-actor User
-participant WebApp
-participant GatewayService
-participant GameService
-database DB as "MongoDB"
-WebApp -> WebApp: Display history option
-User -> WebApp: Choose history
-WebApp -> GatewayService: Request request
-GatewayService -> GameService: Redirect request
-GameService -> DB: Fetch history
-DB -> GameService: Returns the history of the user
-GameService -> GatewayService: Returns the response
-GatewayService -> WebApp: Returns the response
-WebApp -> User: Displays the history accordingly
-----
+image::06_History.png["Sequence Diagram of displaying the history of a user"]
