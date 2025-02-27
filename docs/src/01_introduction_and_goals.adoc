@@ -18,20 +18,23 @@ These include
 endif::arc42help[]
 
 **Purpose**
+
 WiChat is an extension of a previous experimental web application that allowed users to answer quiz questions emulating the "Saber y Ganar" quiz show. This year, the system is being expanded by adding images accompanying all the questions and introducing a conversational hint system powered by an external Large Language Model, enhancing the user experience by providing dynamic and interactive assistance.
 
-The project is requested by RTVE and developed by ChattySw, building using as a basis the work previously done by HappySw company.
+The project is requested by RTVE and developed by ChattySw, which will build the application using some pieces of code or modules from the work previously done by HappySw company, but creating the application from scracth.
 
 **Scope of Work**
+
 WiChat will expand the existing quiz system by:
 
 - Retaining the core gameplay, where users answer image-based questions from various domains.
 - Introducing an AI-powered hint system for interactive assistance.
-- Automating question using Wikidata, minimizing manual effort.
+- Keeping automation of questions using Wikidata, minimizing manual effort.
 - Ensuring accessibility through a web-based platform.
 Additionally, the system should be designed with extensibility in mind, allowing for future improvements.
 
 **Driving Forces**
+
 The development of WiChat is guided by the following key goals:
 
 - **Enhancing User Engagement:** Implementing an interactive AI-based hint system.
@@ -108,7 +111,7 @@ endif::arc42help[]
 |===
 | Quality Goal | Concrete Scenario
 | Reliability | The system should be reliable and diverse in generating questions from Wikidata, having no more than 5% of questions with wrong distractors. AI hint system should be accurate and allucinations should be minimized to no more than 2%. The system shall handle user registrations, logins, game data storage and gameplay with an error rate of less than 1%.
-| Performance Efficiency | The system should efficiently handle an increasing number of concurrent users up to 1000 while keeping response times below 1 second. AI hint generation should not cause performance bottlenecks.
+| Performance Efficiency | The system should efficiently handle an increasing number of concurrent users up to 20 while keeping response times below 1 second. AI hint generation should not cause performance bottlenecks.
 | Security | Users' personal data and authentication details should be securely stored. API requests should be protected from unauthorized access.
 | Usability | The UI should be intuitive for first-time users, and game interactions should be easy to understand. The system learning time for a new user should be less than 1 hour.
 | Maintainability | The architecture should be microservices to allow developers to easily add new game modes, AI features, or question sources without major system refactoring.
@@ -143,9 +146,9 @@ endif::arc42help[]
 |Role/Name|Contact|Expectations
 | Development Team | Héctor Triguero del Río - UO288992@uniovi.es, Fernando Cachon Alonso - UO295255@uniovi.es, Daniel Fernández Cabrero - UO288499@uniovi.es, Umut Dolangac - UO311846@uniovi.es, Diego Martínez Chamorro - UO294054@uniovi.es | They aim to develop a clear, scalable, and well-documented system while gaining hands-on experience in software development.
 | Development Company | ChattySw | They expect the project to be well-structured, maintainable, and extensible, ensuring it meets the client’s needs.
-| Previous Developer | HappySw | They expect their previous work to be properly extended, ensuring compatibility and a smooth transition.
+| Previous Developer | HappySw | They expect their previous work to be properly used, ensuring compatibility and that they receive their credits when their work is used.
 | Client - RTVE | RTVE Representatives - rtve.dircom@rtve.es | They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.
-| Client - Professor (Evaluator) | Pablo González González - gonzalezgpablo@uniovi.es | He expects a well-structured architectural document, clear software design decisions, and a properly implemented system.
+| Client - Professors (Evaluator) | Pablo González González - gonzalezgpablo@uniovi.es, Jose Emilio Labra Bayo - labra@uniovi.es, Irene Cid Rico - cidirene@uniovi.es | They expect a well-structured architectural document, clear software design decisions, and a properly implemented system.
 | Users | End Users | They hope for a fun and competitive experience, with the ability to view statistics and receive personalized interactions.
 | Wikidata (Wikimedia Foundation) | Wikidata Community | They hope for correct and responsible usage of their data, including proper attribution and compliance with API policies.
 | LLM Provider | Gemini/Empathy.ai | They expect proper API usage, adherence to ethical AI practices, and avoidance of misuse that could generate misleading or inappropriate hints.
