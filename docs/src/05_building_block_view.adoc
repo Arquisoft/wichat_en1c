@@ -69,9 +69,10 @@ endif::arc42help[]
 
 image::build_block_view/overview.drawio.svg[]
 
-Motivation::
+Motivation:: 
 
 We divided the system into microservices according to their responsibilities to ensure: 
+
 - *simplicity*:
   Each component is minimal and is responsible for a single function, which makes it easier to understand and maintain.
 - *reusability*:
@@ -85,24 +86,26 @@ We divided the system into microservices according to their responsibilities to 
 - *switchability*:
   External services can be easily replaced by other services by just writing an adapter.
 
+NOTE: Check <<LLM Service>> for an example of reusable design.
+
 Contained Building Blocks::
 [cols="1,2", options="header"]
 |===
 | **Building Block**      | **Brief description**
 | LLM Service             | Serves as an adapter for the external LLM service.
-| Questions Service       | Generates questions and hints.
+| Questions Service       | Generates questions and hints and uses WikiData.
 | Game Service            | Manages game states and tracks the user's progress.
-| Stats Service           | Tracks and provides statistics for the users.
-| Auth Service            | Handles login, signup and session for the users.
+| Statistics Service      | Tracks and provides statistics for the users.
+| Authentication Service  | Handles login, signup and session for the users.
 | Gateway                 | Proxies some services to the Internet and supports the WebApp.
 | WebApp                  | Provides the web UI.
 |===
 
 Interfacing::
 
-- The different *microservices communicate* with each other via *RESTful APIs* using an *intranet*. 
-- The *Gateway* and *WebApp* are the only services which allow external requests and communicate with eachother through *Internet*.
-- LLM Service and Question Service also communicate with the external LLM service and the external question service respectively using the Internet.
+* The different *microservices communicate* with each other via *RESTful APIs* using an *intranet*. 
+** The *Gateway* and *WebApp* are the only services which allow external requests and communicate with eachother through *Internet*.
+** *LLM Service* and *Question Service* also communicate with the *external LLM* and *WikiData* respectively using the *Internet*.
 
 ifdef::arc42help[]
 [role="arc42help"]
@@ -144,6 +147,10 @@ according the the following black box template:
 ****
 endif::arc42help[]
 
+Motivation::
+
+This thin module could be integrated in Questions Service, but we decided to keep it separate to promote *reusability*, since one of the optional requirements is using AI for anything other than hints.
+
 Purpose::
 
 Act as a bridge (adapter) between the external LLM service and the other internal services of the application.
@@ -162,9 +169,9 @@ Internal RESTful API for communication with the other internal microservices.
 
 Structure::
 
-Just an Express.js app with an adapter pattern for the LLM API.
+Just an *Express.js app* with an *adapter* for the external LLM.
 
-==== Stats Service
+==== Statistics Service
 
 Purpose::
 
@@ -176,7 +183,7 @@ Internal RESTful API for communication with the other internal microservices.
 
 Structure::
 
-It's a typical Express.js application with a model for the statistics and a database connector to allow storing the data.
+It's a typical *Express.js application* with a *model* for the statistics and a database adapter to store the data.
 
 ==== WebApp
 
@@ -190,14 +197,13 @@ Web UI for the users.
 
 Structure::
 
-Follows the structure of a typical React application with several routes. 
+Follows the structure of a *typical React application* with several routes. 
 
 ==== Gateway
 
 Purpose::
 
-Proxies some services to the Internet and supports the WebApp. 
-Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security headers, etc.
+Proxies some services to the Internet (*public API*) and *supports the WebApp*. Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security headers, etc.
 
 Interface::
 
@@ -205,7 +211,7 @@ RESTful API exposed to the Internet with a subset of the internal services.
 
 Structure::
 
-It's a typical Express.js application with middleware, proxy and endpoint documentation modules.
+It's a typical *Express.js* application with *middleware*, *proxy* and endpoint *documentation* modules.
 
 
 
@@ -236,32 +242,27 @@ image::build_block_view/questions_service.drawio.svg[]
 Purpose::
 
 Generates questions and hints. 
-- Questions and answers are generated through WikiData data.
-- Hints are generated through the internal LLM Service.
+- *Questions* and *answers* are generated through *WikiData*.
+- *Hints* are generated through an *LLM*.
 
 Motivation::
 
 Handles the responsibility of generating questions and hints.
 
-- *Why is WikiData part of the module and not standalone?*
-
+Why is WikiData part of the module and not standalone?:::
 Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module's one.
-
-- *Why are questions and hints generated separately?*
-
-Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefits that come from it.
+Why are questions and hints generated separately?:::
+Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefitst hat come from it.
 
 Contained Building Blocks::
 [cols="1,2", options="header"]
 |===
 | **Building Block**      | **Brief description**
 | WikiData Adapter        | Serves as an adapter for the external WikiData API.
-| LLM API                 | Provides an interface to use the LLM Service.
-| Questions               | Generates questions from the WikiData information.
-| Hints                   | Generates hints using the LLM Service.
+| Questions Module        | Generates questions from the WikiData information.
+| Hints Module            | Generates hints using the LLM Service.
 | Questions Cache?        | Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.
-| Connector               | Joins the Questions and Hints services. That way question's context can be used to generate hints.
-| Server                  | Provides an internal RESTful API for the rest of microservices.
+| Express.js Server       | Provides an internal RESTful API for the rest of microservices.
 |===
 
 ==== White Box "Auth Service"
@@ -274,19 +275,19 @@ Allows users to login, signup and manage their session.
 
 Motivation::
 
-Keeps the user's sensitive data and session separate from the rest of the application to ensure the higher standards of security and privacy.
+Keeps the user's sensitive data and session separate from the rest of the application to ensure higher standards of security and privacy.
 
 Contained Building Blocks::
 [cols="1,2", options="header"]
 |===
 | **Building Block**      | **Brief description**
-| Model                   | Represents the user's data through interfaces.
-| DB Connector            | Provides persistence for the model entities.
-| Login                   | Allows login and obtaining a session.
-| Register                | Allows registering and obtaining a session for the just registered user.
-| Session Manager         | Manages volatile sessions for the users.
-| Crypt Utils             | Provides encryption, hashing algorithms commonly used for authentication and storing sensitive data.
-| Server                  | Provides an internal secured RESTful API for the rest of microservices.
+| Data Model              | Represents the user's data through interfaces.
+| DB Adapter              | Provides persistence for the model entities.
+| Login Handler           | Allows login and obtaining a session.
+| Register Handler        | Allows registering and obtaining a session for the just registered user.
+| Session Manager         | Manages sessions for the users.
+| Encryption Utilities    | Provides encryption, hashing algorithms commonly used for authentication and storing sensitive data.
+| Express.js Server       | Provides an internal secured RESTful API for the rest of microservices.
 |===
 
 ==== White Box "Game Service"
@@ -295,7 +296,7 @@ image::build_block_view/game_service.drawio.svg[]
 
 Purpose::
 
-Manage game states and track the user's progress.
+Responsible for connecting *Questions Service* with *Statistics Service*, that way we can keep track of the user's progress and provide statistics.
 
 Motivation::
 
@@ -305,13 +306,9 @@ Contained Building Blocks::
 [cols="1,2", options="header"]
 |===
 | **Building Block**      | **Brief description**
-| Stats API               | Provides access to the stats microservice.
-| Questions API           | Provides access to the questions microservice.
 | Game Manager            | Keeps track of user games and fires stats events.
-| Server                  | Provides an internal secured RESTful API for the rest of microservices.
+| Express.js Server       | Provides an internal secured RESTful API for the rest of microservices.
 |===
-
-
 
 === Level 3
 
