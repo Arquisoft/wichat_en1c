@@ -2,9 +2,9 @@
     "name": "authservice",
     "version": "1.0.0",
     "description": " Authentication service, in charge of authenticating users in the application",
-    "main": "auth-service.js",
+    "main": "src/index.js",
     "scripts": {
-        "start": "node auth-service.js",
+        "start": "node src/index.js",
         "test": "jest"
     },
     "repository": {
@@ -18,7 +18,7 @@
     },
     "homepage": "https://github.com/arquisoft/wichat_en1c#readme",
     "dependencies": {
-        "bcrypt": "^5.1.1",
+        "argon2": "^0.41.1",
         "express": "^4.21.2",
         "express-validator": "^7.2.1",
         "jsonwebtoken": "^9.0.2",
