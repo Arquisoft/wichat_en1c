@@ -40,6 +40,7 @@ endif::arc42help[]
 - **Docker:** We chose it since several members of the team have experience with it and it's easy to learn for new users compared to other alternatives. Also, it's open-source and user friendly.
 - **MongoDB:** We decided to use this document database due to its flexibility and simple query language.
 - **Microsoft Azure:** We chose this platform since it provides the needed infrastructure and the team members have experience with it.
+- **Express.js:** We have chosen this web application framework for Node.js due to its high flexibility, its easy use and learning and its powerful middleware.
 
 === Top-level decomposition decisions
 - **Microservices pattern:** The Microservices architectural pattern is used, so the application is divided into different components with a responsibility each one. This makes the different components independent and low coupled, allowing mantainability.
