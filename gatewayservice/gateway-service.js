@@ -10,9 +10,18 @@ const YAML = require('yaml')
 const app = express();
 const port = 8000;
 
-const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
-const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
-const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+//URLS OF THE SERVICES
+//Unused
+//const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003'; NOT EXISTS IN THIS PROJECT (Through questionsService)
+//const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001'; NOT EXISTS IN THIS PROJECT
+
+//Current used urls / ports
+const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8001';
+const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002'; 
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8003';
+const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8004';
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -26,7 +35,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.post('/login', async (req, res) => {
+//Sends all login requests to the authentication service TO-DO
+app.post('/login/**', async (req, res) => {
   try {
     // Forward the login request to the authentication service
     const authResponse = await axios.post(authServiceUrl+'/login', req.body);
@@ -36,7 +46,8 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/adduser', async (req, res) => {
+//Sends to auth service TO-DO (user/add, user/modify...)
+app.post('/user/**', async (req, res) => {
   try {
     // Forward the add user request to the user service
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
@@ -46,7 +57,8 @@ app.post('/adduser', async (req, res) => {
   }
 });
 
-app.post('/askllm', async (req, res) => {
+//Questions service TO-DO (questions/new, questions/hint...)
+app.post('/questions/**', async (req, res) => {
   try {
     // Forward the add user request to the user service
     const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
