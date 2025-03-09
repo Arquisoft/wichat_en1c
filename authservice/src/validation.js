@@ -4,7 +4,7 @@ const { body, validationResult } = require("express-validator");
 const config = require("./config");
 
 /**
- * @type {(status: number,...vals: import("express").RequestHandler[]) => import("express").RequestHandler[]}
+ * @type {(status: number, ...vals: import("express").RequestHandler[]) => import("express").RequestHandler[]}
  */
 const setup = (status, ...vals) => {
   vals.push((req, res, next) => {

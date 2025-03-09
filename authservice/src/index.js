@@ -2,7 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
-const public = require("./routes/public");
+const pub = require("./routes/pub");
 const verify = require("./routes/verify");
 const config = require("./config");
 
@@ -16,14 +16,12 @@ app.use(express.json());
 mongoose.connect(config.mongoUri);
 
 // Routes
-public(app);
+pub(app);
 verify(app);
 
 // Server start/stop
-app
+module.exports = app
   .listen(config.port, () => {
     console.log(`Auth Service listening at http://localhost:${config.port}`);
   })
-  .on("close", mongoose.connection.close);
-
-module.exports = app;
+  .on("close", async () => await mongoose.connection.close());

@@ -1,6 +1,6 @@
 // @ts-check
 
-const { checkExact } = require("express-validator");
+const { checkExact, body } = require("express-validator");
 const argon2 = require("argon2");
 
 const validation = require("../../validation");
@@ -23,7 +23,7 @@ module.exports = (app) => {
       const { username, password } = req.body;
 
       const user = await User.findOne({ username });
-      if (user != null) res.status(400);
+      if (user != null) res.sendStatus(400);
       else
         new User({
           username,

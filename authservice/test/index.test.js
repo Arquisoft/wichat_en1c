@@ -1,24 +1,36 @@
-// TODO: Implement test cases for the auth service
-// 1. Test the login operation
-// 2. Test the register operation
-// 3. Test the verify operation
-
 const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const argon2 = require("argon2");
 const { User } = require("../src/model");
+const config = require("../src/config");
+const jwt = require("jsonwebtoken");
+const e = require("express");
 
+/**
+ * @type {import("mongodb-memory-server").MongoMemoryServer}
+ */
 let mongoServer;
+/**
+ * @type {import("http").Server}
+ */
 let app;
 
-//test user
+// test user
 const user = {
   username: "testuser",
-  password: "testpassword",
+  /**
+   * Requirements:
+   *  minLength: 8|
+   *  minLowercase: 1|
+   *  minUppercase: 1|
+   *  minNumbers: 1|
+   *  minSymbols: 1|
+   */
+  password: "Testuser1!",
 };
 
 async function addUser(user) {
-  const hashedPassword = await argon2.hash(user.password);
+  const hashedPassword = await argon2.hash(user.password, config.crypt);
   const newUser = new User({
     username: user.username,
     password: hashedPassword,
@@ -28,11 +40,14 @@ async function addUser(user) {
 }
 
 beforeAll(async () => {
+  // Create testing MongoDB server
   mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
-  process.env.MONGODB_URI = mongoUri;
+  config.mongoUri = mongoServer.getUri();
+
+  // Run app
   app = require("../src");
-  //Load database with initial conditions
+
+  // Load database with initial conditions
   await addUser(user);
 });
 
@@ -41,10 +56,175 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
-describe("Auth Service", () => {
-  it("Should perform a login operation /login", async () => {
-    const response = await request(app).post("/login").send(user);
+describe("Login route", () => {
+  it("Should perform a successful login", async () => {
+    const response = await request(app).post("/public/login").send(user);
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("username", "testuser");
+    expect(response.text).toBeDefined();
+
+    // Verify token
+    const verification = jwt.verify(
+      response.text,
+      config.jwt.secret,
+      config.jwt.opts
+    );
+    expect(verification.username).toBe(user.username);
+  });
+
+  it("Should reject invalid credentials", async () => {
+    const responses = await Promise.all([
+      request(app).post("/public/login").send({
+        username: user.username,
+        password: "invalidpassword",
+      }),
+      request(app).post("/public/login").send({
+        username: "invaliduser",
+        password: user.password,
+      }),
+      request(app).post("/public/login").send({
+        username: "invaliduser",
+        password: "invalidpassword",
+      }),
+      request(app).post("/public/login").send({
+        username: "",
+        password: "",
+      }),
+    ]);
+
+    for (const response of responses) {
+      expect(response.status).toBe(401);
+      expect(response.text).toBe("Unauthorized");
+    }
+  });
+
+  it("Should reject malformed login requests", async () => {
+    const responses = await Promise.all([
+      request(app).post("/public/login").send({
+        username: user.username,
+      }),
+      request(app).post("/public/login").send({
+        password: user.password,
+      }),
+      request(app).post("/public/login").send(),
+      request(app).post("/public/login").send({
+        username: true,
+        password: true,
+      }),
+    ]);
+
+    for (const response of responses) {
+      expect(response.status).toBe(400);
+      expect(response.text).toBe("Bad Request");
+    }
+  });
+});
+
+describe("Signup route", () => {
+  it("Should perform a successful signup", async () => {
+    const newUser = {
+      username: "newuser",
+      password: "Newuser1!",
+    };
+
+    const response = await request(app).post("/public/signup").send(newUser);
+    expect(response.status).toBe(201);
+    expect(response.text).toBe("Created");
+
+    // Verify user was created
+    const dbUser = await User.findOne({ username: newUser.username });
+    expect(dbUser).toBeDefined();
+    expect(
+      await argon2.verify(dbUser.password, newUser.password, config.crypt)
+    ).toBe(true);
+  });
+
+  it("Should reject already registered users", async () => {
+    const response = await request(app).post("/public/signup").send({
+      username: user.username,
+      password: "Newuser1!",
+    });
+    expect(response.status).toBe(400);
+    expect(response.text).toBe("Bad Request");
+  });
+
+  it("Should reject invalid credentials", async () => {
+    const responses = await Promise.all([
+      request(app).post("/public/signup").send({
+        username: "/ilegalUsername",
+        password: "Testuser1!",
+      }),
+      request(app).post("/public/signup").send({
+        username: "newuser",
+        password: "invalidpassword",
+      }),
+      request(app).post("/public/signup").send({
+        username: "",
+        password: "",
+      }),
+    ]);
+
+    for (const response of responses) {
+      expect(response.status).toBe(400);
+      expect(response.text).toBe("Bad Request");
+    }
+  });
+
+  it("Should reject malformed requests", async () => {
+    const responses = await Promise.all([
+      request(app).post("/public/signup").send({
+        username: "newuser",
+      }),
+      request(app).post("/public/signup").send({
+        password: "Newuser1!",
+      }),
+      request(app).post("/public/signup").send(),
+      request(app).post("/public/signup").send({
+        username: true,
+        password: true,
+      }),
+    ]);
+
+    for (const response of responses) {
+      expect(response.status).toBe(400);
+      expect(response.text).toBe("Bad Request");
+    }
+  });
+});
+
+describe("Verify route", () => {
+  it("Should verify a valid token", async () => {
+    const token = await request(app)
+      .post("/public/login")
+      .send(user)
+      .then((res) => res.text);
+
+    const response = await request(app).post("/verify").send({ token });
+    expect(response.status).toBe(200);
+    expect(response.text).toBe(user.username);
+  });
+
+  it("Should reject invalid tokens", async () => {
+    const invalidToken = jwt.sign(
+      { username: user.username },
+      "invalid-secret"
+    );
+    const response = await request(app)
+      .post("/verify")
+      .send({ token: invalidToken });
+    expect(response.status).toBe(401);
+    expect(response.text).toBe("Unauthorized");
+  });
+
+  it("Should reject malformed requests", async () => {
+    const responses = await Promise.all([
+      request(app).post("/verify").send({ token: "invalidtoken" }),
+      request(app).post("/verify").send({}),
+      request(app).post("/verify").send(),
+    ]);
+
+    for (const response of responses) {
+      expect(response.status).toBe(400);
+      expect(response.text).toBe("Bad Request");
+    }
   });
 });

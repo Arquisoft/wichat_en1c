@@ -19,7 +19,7 @@ module.exports = (app) => {
       try {
         res.send(
           // @ts-expect-error
-          jwt.verify(token, config.jwt.secret, { ...config.jwt.opts }).username
+          jwt.verify(token, config.jwt.secret, config.jwt.opts).username
         );
       } catch (err) {
         res.sendStatus(401);
