@@ -25,13 +25,14 @@ async function queryWikidata(sparqlQuery) {
   }
 }
 
-// Example SPARQL query to get musicians from the UK
+// Combined SPARQL query to get musicians from the UK with their birth dates and images
 const sparqlQuery = `
-  SELECT ?musicianLabel ?birthDate
+  SELECT ?musicianLabel ?birthDate ?image
   WHERE {
     ?musician wdt:P106 wd:Q639669;   # Occupation (P106): "musician" (Q639669)
               wdt:P27 wd:Q145;       # Filter by country of citizenship (P27): United Kingdom (Q145)
-              wdt:P569 ?birthDate.   # Obtain date of birth (P569)
+              wdt:P569 ?birthDate;   # Obtain date of birth (P569)
+              wdt:P18 ?image.        # Obtain image (P18)
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
   }
   LIMIT 100
@@ -41,7 +42,7 @@ const sparqlQuery = `
 queryWikidata(sparqlQuery).then(results => {
   if (results) {
     results.forEach(result => {
-      console.log(`Musician: ${result.musicianLabel.value}, Birth Date: ${result.birthDate.value}`);
+      console.log(`Musician: ${result.musicianLabel.value}, Birth Date: ${result.birthDate.value}, Image: ${result.image.value}`);
     });
   } else {
     console.log('No results found or an error occurred.');
