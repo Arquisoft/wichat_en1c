@@ -11,10 +11,13 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the app source code to the working directory
-COPY . .
+COPY ./src ./src
 
 # Expose the port the app runs on
 EXPOSE 8002
+
+# Run the app as a non-root user
+USER node
 
 # Define the command to run your app
 CMD ["npm", "start"]

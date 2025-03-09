@@ -22,20 +22,24 @@ services:
     networks:
       - mynetwork
     environment:
+      NODE_ENV: production
+      CRYPT_SECRET: ${CRYPT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 8002
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
   llmservice:
     container_name: llmservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/llmservice:latest
     profiles: ["dev", "prod"]
-    env_file:
-      - .env
     build:
       context: ./llmservice
     ports:
       - "8003:8003"
     networks:
       - mynetwork
+    environment:
+      LLM_API_KEY: ${LLM_API_KEY}
 
   gatewayservice:
     container_name: gatewayservice-wichat_en1c
