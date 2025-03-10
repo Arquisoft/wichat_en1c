@@ -1,0 +1,30 @@
+{
+  "name": "wichat_en1c",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "npm run test --workspaces",
+    "test:cov": "npm run test --workspaces -- --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arquisoft/wichat_en1c.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arquisoft/wichat_en1c/issues"
+  },
+  "homepage": "https://github.com/Arquisoft/wichat_en1c#readme",
+  "workspaces": [
+    "users/authservice",
+    "users/userservice",
+    "gatewayservice",
+    "llmservice",
+    "webapp"
+  ]
+}
