@@ -4,7 +4,6 @@ const argon2 = require("argon2");
 const { User } = require("../src/model");
 const config = require("../src/config");
 const jwt = require("jsonwebtoken");
-const e = require("express");
 
 /**
  * @type {import("mongodb-memory-server").MongoMemoryServer}
@@ -60,11 +59,12 @@ describe("Login route", () => {
   it("Should perform a successful login", async () => {
     const response = await request(app).post("/public/login").send(user);
     expect(response.status).toBe(200);
-    expect(response.text).toBeDefined();
+    expect(response.body.success).toBe(true);
 
     // Verify token
+    expect(response.body).toHaveProperty("token");
     const verification = jwt.verify(
-      response.text,
+      response.body.token,
       config.jwt.secret,
       config.jwt.opts
     );
@@ -93,7 +93,9 @@ describe("Login route", () => {
 
     for (const response of responses) {
       expect(response.status).toBe(401);
-      expect(response.text).toBe("Unauthorized");
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Unauthorized");
+      expect(response.body.token).toBeUndefined();
     }
   });
 
@@ -114,7 +116,10 @@ describe("Login route", () => {
 
     for (const response of responses) {
       expect(response.status).toBe(400);
-      expect(response.text).toBe("Bad Request");
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Bad Request");
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.token).toBeUndefined();
     }
   });
 });
@@ -128,7 +133,7 @@ describe("Signup route", () => {
 
     const response = await request(app).post("/public/signup").send(newUser);
     expect(response.status).toBe(201);
-    expect(response.text).toBe("Created");
+    expect(response.body.success).toBe(true);
 
     // Verify user was created
     const dbUser = await User.findOne({ username: newUser.username });
@@ -143,8 +148,9 @@ describe("Signup route", () => {
       username: user.username,
       password: "Newuser1!",
     });
-    expect(response.status).toBe(400);
-    expect(response.text).toBe("Bad Request");
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Unauthorized");
   });
 
   it("Should reject invalid credentials", async () => {
@@ -165,7 +171,8 @@ describe("Signup route", () => {
 
     for (const response of responses) {
       expect(response.status).toBe(400);
-      expect(response.text).toBe("Bad Request");
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Bad Request");
     }
   });
 
@@ -185,8 +192,8 @@ describe("Signup route", () => {
     ]);
 
     for (const response of responses) {
-      expect(response.status).toBe(400);
-      expect(response.text).toBe("Bad Request");
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Bad Request");
     }
   });
 });
@@ -196,11 +203,13 @@ describe("Verify route", () => {
     const token = await request(app)
       .post("/public/login")
       .send(user)
-      .then((res) => res.text);
+      .then((res) => res.body.token);
 
     const response = await request(app).post("/verify").send({ token });
+
     expect(response.status).toBe(200);
-    expect(response.text).toBe(user.username);
+    expect(response.body.success).toBe(true);
+    expect(response.body.username).toBe(user.username);
   });
 
   it("Should reject invalid tokens", async () => {
@@ -208,11 +217,15 @@ describe("Verify route", () => {
       { username: user.username },
       "invalid-secret"
     );
+
     const response = await request(app)
       .post("/verify")
       .send({ token: invalidToken });
+
     expect(response.status).toBe(401);
-    expect(response.text).toBe("Unauthorized");
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Unauthorized");
+    expect(response.body.username).toBeUndefined();
   });
 
   it("Should reject malformed requests", async () => {
@@ -224,7 +237,10 @@ describe("Verify route", () => {
 
     for (const response of responses) {
       expect(response.status).toBe(400);
-      expect(response.text).toBe("Bad Request");
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Bad Request");
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.username).toBeUndefined();
     }
   });
 });

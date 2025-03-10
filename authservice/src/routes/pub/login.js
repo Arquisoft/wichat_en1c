@@ -3,6 +3,7 @@
 const { checkExact, body } = require("express-validator");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
+const { STATUS_CODES } = require("http");
 
 const validation = require("../../validation");
 const { User } = require("../../model");
@@ -26,17 +27,20 @@ module.exports = (app) => {
       validation.fields.username,
       validation.fields.password
     ),
-    async (req, res) => {
+    async (req, res, next) => {
       const { username, password } = req.body;
 
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username }).catch(next);
 
       if (
         user != null &&
         (await argon2.verify(user.password, password, config.crypt))
       )
-        res.send(jwt.sign({ username }, config.jwt.secret, config.jwt.opts));
-      else res.sendStatus(401);
+        res.json({
+          success: true,
+          token: jwt.sign({ username }, config.jwt.secret, config.jwt.opts),
+        });
+      else res.status(401).json({ success: false, message: STATUS_CODES[401] });
     }
   );
 };

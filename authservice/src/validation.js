@@ -1,6 +1,7 @@
 // @ts-check
 
 const { body, validationResult } = require("express-validator");
+const { STATUS_CODES } = require("http");
 const config = require("./config");
 
 /**
@@ -10,7 +11,12 @@ const setup = (status, ...vals) => {
   vals.push((req, res, next) => {
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) res.sendStatus(status);
+    if (!errors.isEmpty())
+      res.status(status).json({
+        success: false,
+        message: STATUS_CODES[status],
+        errors: errors.mapped(),
+      });
     else next();
   });
   return vals;

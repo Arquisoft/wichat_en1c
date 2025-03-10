@@ -1,6 +1,7 @@
 // @ts-check
 
 const { checkExact } = require("express-validator");
+const { STATUS_CODES } = require("http");
 const jwt = require("jsonwebtoken");
 
 const validation = require("../validation");
@@ -17,12 +18,14 @@ module.exports = (app) => {
       const { token } = req.body;
 
       try {
-        res.send(
-          // @ts-expect-error
-          jwt.verify(token, config.jwt.secret, config.jwt.opts).username
-        );
+        res.json({
+          success: true,
+          username:
+            // @ts-expect-error
+            jwt.verify(token, config.jwt.secret, config.jwt.opts).username,
+        });
       } catch (err) {
-        res.sendStatus(401);
+        res.status(401).json({ success: false, message: STATUS_CODES[401] });
       }
     }
   );
