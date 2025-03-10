@@ -28,7 +28,8 @@ module.exports = (app) => {
       validation.fields.password
     ),
     async (req, res, next) => {
-      const { username, password } = req.body;
+      const username = req.body.username.toString();
+      const password = req.body.password.toString();
 
       const user = await User.findOne({ username }).catch(next);
 
