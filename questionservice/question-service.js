@@ -1,9 +1,13 @@
+const express = require('express');
 const axios = require('axios');
+//endpoint ??
+const app = express();
+const port = 3002; // I do not know which port should I use, so I randomly picked 3002. If you have port in mind, let me know
 
-// Wikidata SPARQL endpoint URL
+
+
 const WIKIDATA_SPARQL_URL = 'https://query.wikidata.org/sparql';
 
-// Function to execute a SPARQL query and return the results
 async function queryWikidata(sparqlQuery) {
   try {
     const response = await axios.get(WIKIDATA_SPARQL_URL, {
@@ -16,7 +20,6 @@ async function queryWikidata(sparqlQuery) {
       }
     });
 
-    // Extract and return the results
     return response.data.results.bindings;
 
   } catch (error) {
@@ -24,7 +27,6 @@ async function queryWikidata(sparqlQuery) {
     return null;
   }
 }
-
 // Combined SPARQL query to get musicians from the UK with their birth dates and images
 const sparqlQuery = `
   SELECT ?musicianLabel ?birthDate ?image
@@ -35,16 +37,33 @@ const sparqlQuery = `
               wdt:P18 ?image.        # Obtain image (P18)
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
   }
-  LIMIT 100
+  LIMIT 5
 `;
 
-// Execute the query and log the results
-queryWikidata(sparqlQuery).then(results => {
+app.get('/musicians', async (req, res) => {
+  const results = await queryWikidata(sparqlQuery);
   if (results) {
-    results.forEach(result => {
-      console.log(`Musician: ${result.musicianLabel.value}, Birth Date: ${result.birthDate.value}, Image: ${result.image.value}`);
-    });
+    // Randomly select one musician as the correct answer
+    const correctMusician = results[Math.floor(Math.random() * results.length)];
+    const otherMusicians = results.filter(m => m !== correctMusician);
+
+    // Prepare the question and options
+    const question = {
+      question: `Who is the musician born on ${correctMusician.birthDate.value} in the image?`,
+      image: correctMusician.image.value,
+      options: [
+        correctMusician.musicianLabel.value,
+        ...otherMusicians.slice(0, 3).map(m => m.musicianLabel.value)
+      ].sort(() => Math.random() - 0.5), // Shuffle the options
+      musicianName: correctMusician.musicianLabel.value
+    };
+
+    res.json(question);
   } else {
-    console.log('No results found or an error occurred.');
+    res.status(500).json({ error: 'An error occurred while querying Wikidata.' });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
