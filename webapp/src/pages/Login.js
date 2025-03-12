@@ -1,5 +1,5 @@
 // src/components/Login.js
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect  } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Typewriter } from "react-simple-typewriter";
@@ -20,6 +20,7 @@ const Login = () => {
   
   const { createSession } = useContext(SessionContext); // Get createSession from context
   const navigate = useNavigate();
+  const fieldRef = useRef(null); // Create a reference to the form
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -51,13 +52,20 @@ const Login = () => {
     navigate('/');
   };
 
+  useEffect(() => {
+    if (fieldRef.current) {
+      fieldRef.current.focus(); // Focus on the input when the component mounts
+    }
+  }, []);
+
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: 4 }}>
+    <Container component="main" maxWidth="xs" sx={{ marginTop: 20 }}>
       <Typography component="h1" variant="h5">
         Login
       </Typography>
         <form onSubmit={loginUser}>
           <TextField
+            inputRef={fieldRef}
             margin="normal"
             fullWidth
             label="Username"

@@ -1,5 +1,5 @@
 // src/components/AddUser.js
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ const Register = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const navigate = useNavigate();
+  const fieldRef = useRef(null); // Create a reference to the form
 
   const addUser = async (e) => {
     e.preventDefault();
@@ -29,13 +30,20 @@ const Register = () => {
     navigate('/login');
   };
 
+  useEffect(() => {
+    if (fieldRef.current) {
+      fieldRef.current.focus(); // Focus on the input when the component mounts
+    }
+  }, []);
+
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: 4 }}>
+    <Container component="main" maxWidth="xs" sx={{ marginTop: 20 }}>
       <Typography component="h1" variant="h5">
         Register
       </Typography>
       <form onSubmit={addUser}>
         <TextField
+          inputRef={fieldRef}
           name="username"
           margin="normal"
           fullWidth

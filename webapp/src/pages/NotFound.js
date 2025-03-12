@@ -21,7 +21,7 @@ const NotFound = () => {
   return (
     <Container component="main" maxWidth="xs"
       sx={{
-        marginTop: 4,
+        marginTop: 20,
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center'
@@ -36,6 +36,8 @@ const NotFound = () => {
       <Typography variant="body1" paragraph>
         The page you're looking for doesn't exist or has been moved.
       </Typography>
+
+      {/* Home Button */}
       <form onSubmit={handleGoHome}>
         <Button ref={buttonRef} type="submit" variant="contained" color="primary">
           Go Home
