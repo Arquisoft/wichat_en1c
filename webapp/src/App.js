@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom'; // Inspired from project WIQ_ES04A
-import AddUser from './pages/AddUser'; // AddUser.js
+import Register from './pages/Register'; // Register.js
 import Login from './pages/Login'; // Login.js
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
@@ -12,6 +12,8 @@ import BackgroundVideo from './components/BackgroundVideo'; // BackgroundVideo.j
 import Home from './pages/Home'; // Home.js
 import Game from './pages/Game'; // Game.js
 import PrivateRoute from './components/PrivateRoute'; // PrivateRoute.js
+import NotFound from './pages/NotFound'; // NotFound.js
+
 function App() {
   /** 
   const [showLogin, setShowLogin] = useState(true);
@@ -45,11 +47,11 @@ function App() {
           {/* Login Page */}
           <Route path="/login" element={<Login />} />
           {/* Register Page */}
-          <Route path="/register" element={<AddUser />} />
+          <Route path="/register" element={<Register />} />
           {/* Game Page (protected) */}
           <Route path="/game" element={<PrivateRoute element={Game} />} />
           {/* Not Existing Path */}
-          <Route path="*" element={<Home />} /> 
+          <Route path="*" element={<NotFound />} /> 
         </Routes>
         {/** 
         <Typography component="h1" variant="h5" align="center" sx={{ marginTop: 2 }}>

@@ -49,6 +49,15 @@ const SessionProvider = ({ children }) => {
         setIsLoggedIn(false);
     };
 
+    // Destroys session when the app is closed
+    useEffect(() => {
+        const handleUnload = () => destroySession();
+        window.addEventListener('beforeunload', handleUnload);
+
+        // Clean the listener
+        return () => window.removeEventListener('beforeunload', handleUnload);
+    }, []);
+
     return (
         // Provide session data and functions to all child components
         <SessionContext.Provider value={{ sessionId, username, isLoggedIn, createSession, destroySession }}>

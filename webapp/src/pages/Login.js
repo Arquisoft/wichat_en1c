@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Typewriter } from "react-simple-typewriter";
 import { SessionContext } from '../SessionContext'; // Import the context
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -17,8 +19,10 @@ const Login = () => {
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   
   const { createSession } = useContext(SessionContext); // Get createSession from context
+  const navigate = useNavigate();
 
-  const loginUser = async () => {
+  const loginUser = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
 
@@ -44,13 +48,15 @@ const Login = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
+    navigate('/');
   };
 
   return (
     <Container component="main" maxWidth="xs" sx={{ marginTop: 4 }}>
       <Typography component="h1" variant="h5">
-            Login
-          </Typography>
+        Login
+      </Typography>
+        <form onSubmit={loginUser}>
           <TextField
             margin="normal"
             fullWidth
@@ -66,10 +72,11 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={loginUser}>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
             Login
           </Button>
-          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
+        </form>
+          <Snackbar open={openSnackbar} autoHideDuration={700} onClose={handleCloseSnackbar} message="Login successful" />
           {error && (
             <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
           )}
