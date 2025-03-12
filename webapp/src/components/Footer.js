@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 
 const docsLink = process.env.REACT_APP_DOCS_ENDPOINT ||'https://arquisoft.github.io/wichat_en1c/';  // Direct link to the documentation
-
+const repoLink = process.env.REACT_APP_REPO_ENDPOINT || 'https://github.com/Arquisoft/wichat_en1c'; // Direct link to the repository
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -26,10 +26,16 @@ const Footer = () => {
         ChattySW © {currentYear}
       </Typography>
 
-      {/* Center text: Project name */}
-      <Typography variant="body2" sx={{ flex: 2, textAlign: 'center' }}>
+      {/* Center text: Repository link */}
+      <Link 
+        href={repoLink} 
+        target="_blank" // Open in a new tab
+        rel="noopener noreferrer" // Prevents the new tab from being able to access the window.opener object
+        variant="body2" 
+        sx={{ flex: 1, textAlign: 'center' }}
+      >
         WIChat_en1c
-      </Typography>
+      </Link>
 
       {/* Right text: Documentation link */}
       <Link 
