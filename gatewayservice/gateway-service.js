@@ -11,6 +11,7 @@ const app = express();
 const port = 8000;
 
 //URLS OF THE SERVICES
+
 //Unused
 //const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003'; NOT EXISTS IN THIS PROJECT (Through questionsService)
 //const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001'; NOT EXISTS IN THIS PROJECT
@@ -18,8 +19,9 @@ const port = 8000;
 //Current used urls / ports
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8001';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002'; 
-const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8003';
-const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8004';
+const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8003';
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
+
 
 
 
@@ -32,62 +34,46 @@ app.use(metricsMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK' });
+  res.json({ status: 'OK' });  
 });
 
-//Sends all login requests to the authentication service TO-DO
-app.post('/login/**', async (req, res) => {
-  try {
-    // Forward the login request to the authentication service
-    const authResponse = await axios.post(authServiceUrl+'/login', req.body);
-    res.json(authResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+
+//[AUTH SERVICE] //
+
+// Proxy Middleware Setup
+const createServiceProxy = (target) => createProxyMiddleware({
+  target,
+  changeOrigin: true,
+  pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)/, ''),
+  onError: (err, req, res) => {
+    console.error(`Proxy error: ${err.message}`);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-//Sends to auth service TO-DO (user/add, user/modify...)
-app.post('/user/**', async (req, res) => {
-  try {
-    // Forward the add user request to the user service
-    const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
-    res.json(userResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
-});
+// Attach Proxy Routes
+app.use('/auth', createServiceProxy(authServiceUrl));
+app.use('/questions', createServiceProxy(questionsServiceUrl));  
+app.use('/game', createServiceProxy(gameServiceUrl));
+app.use('/stats', createServiceProxy(statsServiceUrl));
 
-//Questions service TO-DO (questions/new, questions/hint...)
-app.post('/questions/**', async (req, res) => {
-  try {
-    // Forward the add user request to the user service
-    const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
-    res.json(llmResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
-});
-
-// Read the OpenAPI YAML file synchronously
-openapiPath='./openapi.yaml'
+// Swagger API Documentation
+const openapiPath = './openapi.yaml';
 if (fs.existsSync(openapiPath)) {
-  const file = fs.readFileSync(openapiPath, 'utf8');
-
-  // Parse the YAML content into a JavaScript object representing the Swagger document
-  const swaggerDocument = YAML.parse(file);
-
-  // Serve the Swagger UI documentation at the '/api-doc' endpoint
-  // This middleware serves the Swagger UI files and sets up the Swagger UI page
-  // It takes the parsed Swagger document as input
-  app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  try {
+    const file = fs.readFileSync(openapiPath, 'utf8');
+    const swaggerDocument = YAML.parse(file);
+    app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  } catch (err) {
+    console.error("Error parsing OpenAPI file:", err.message);
+  }
 } else {
-  console.log("Not configuring OpenAPI. Configuration file not present.")
+  console.log("Not configuring OpenAPI. Configuration file not present.");
 }
 
-
-// Start the gateway service
+// Start Server
 const server = app.listen(port, () => {
   console.log(`Gateway Service listening at http://localhost:${port}`);
 });
 
-module.exports = server
+module.exports = server;
