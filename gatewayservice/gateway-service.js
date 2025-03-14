@@ -11,18 +11,10 @@ const app = express();
 const port = 8000;
 
 //URLS OF THE SERVICES
-
-//Unused
-//const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003'; NOT EXISTS IN THIS PROJECT (Through questionsService)
-//const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001'; NOT EXISTS IN THIS PROJECT
-
-//Current used urls / ports
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8001';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002'; 
 const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8003';
 const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
-
-
 
 
 app.use(cors());
@@ -36,9 +28,6 @@ app.use(metricsMiddleware);
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });  
 });
-
-
-//[AUTH SERVICE] //
 
 // Proxy Middleware Setup
 const createServiceProxy = (target) => createProxyMiddleware({
