@@ -30,7 +30,10 @@ app.get('/health', (req, res) => {
 });
 
 // Proxy Middleware Setup
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 const createServiceProxy = (target) => createProxyMiddleware({
+
   target,
   changeOrigin: true,
   pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)/, ''),
