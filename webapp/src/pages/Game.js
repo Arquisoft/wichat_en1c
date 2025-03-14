@@ -217,6 +217,18 @@ const Game = () => {
                 borderRadius: 2, // Rounded corners for the button
                 position: "relative", // Relative positioning for the button
                 transition: "0.3s ease", // Smooth transition on hover
+                "&::before": {
+                  content: `"${String.fromCharCode(65 + index)}"`, // Display option label (A, B, C, etc.)
+                  position: "absolute", // Position label absolute
+                  top: 5, // Space from the top of the button
+                  left: 5, // Space from the left of the button
+                  fontWeight: "bold", // Bold font for the label
+                  color: "#fff", // White text color
+                  background: "#333", // Dark background for the label
+                  padding: "2px 6px", // Padding for the label
+                  borderRadius: "5px", // Rounded corners for the label
+                  fontSize: "0.8rem", // Font size for the label
+                },
                 "&:hover": {
                   transform: "scale(1.05)", // Slightly scale the button on hover
                   opacity: 0.9, // Reduce opacity on hover
