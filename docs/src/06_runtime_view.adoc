@@ -39,29 +39,37 @@ See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== <Runtime Scenario 1>
+=== Abstract states of the application
 
+* General usage, the user arrives to the application, creates an account or logs in, goes through the menu settings and plays.
+The state diagram shows the relation of the different situations of the app.
 
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
+image::06_State_Diagram.png["State Diagram of the general game behaviour"]
 
-It is possible to use a sequence diagram:
+=== Login of a user
 
-[plantuml,"Sequence diagram",png]
-----
-actor Alice
-actor Bob
-database Pod as "Bob's Pod"
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-Alice  --> Pod: Store route
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
-----
+* Login, the app shows the login interface, where the user is asked for the username and password, and the possibility to create an account.
 
-=== <Runtime Scenario 2>
+When logging, the app does a login request to the authentication service through the GatewayService, which redirects the user to the identity provider, which handles the authentication by checking the registered users.
+If the login is succesfully, the app shows the different options of the game. In case the login isn’t succesfully, a warning message is shown.
 
-=== ...
+image::06_Login.png["Sequence Diagram of the login of a user"]
 
-=== <Runtime Scenario n>
+=== Game
+
+* Game transitions and process behind the user interface. Introducing the GameService, QuestionService, LLMService, WikiDataService.
+
+When playing, the user interface interacts with the distribution facade GatewayService, in charge of hiding the back-end services and business and persistance layers.
+
+image::06_Game.png["Sequence Diagram of the game runtime behaviour"]
+
+=== History of a user
+
+* History of a user including stats of the games played.
+
+When the user enters the history view, it is displayed the games played alongside contextual information, featuring:
+- Number of games played
+- Time scores of the best games
+- Relation of correct / incorrect answers
+
+image::06_History.png["Sequence Diagram of displaying the history of a user"]
