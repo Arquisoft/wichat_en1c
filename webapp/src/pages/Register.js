@@ -1,4 +1,4 @@
-// src/components/AddUser.js
+// src/components/Register.js
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';

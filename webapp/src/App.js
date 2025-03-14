@@ -39,7 +39,7 @@ function App() {
     <>
       <BackgroundVideo videoSrc={videoSrc} />
       <NavBar />
-      <Container component="main" maxWidth="s" sx={{ marginTop: 10 }}>
+      <Container component="main" maxWidth="s" sx={{ marginTop: 3 }}>
         <CssBaseline />
         <Routes>
           {/* Home Page */}

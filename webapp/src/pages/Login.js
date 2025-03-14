@@ -49,7 +49,7 @@ const Login = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
-    navigate('/');
+    navigate('/'); 
   };
 
   useEffect(() => {
