@@ -1,11 +1,38 @@
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
 
 const app = express();
 const port = 8001;
 
-app.use(cors());
+app.use(express.json());
 
-const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8003';
-const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8004';
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
+
+let correctAnswer = null;
+
+// Functions
+async function getQuestion(){
+    try{
+        const serviceResponse = await axios.get(`${questionsServiceUrl}/musicians`);
+        const {musicianName, ...questionData} = serviceResponse.data;
+        correctAnswer=musicianName;
+        return questionData;
+    }catch(error){
+        console.error('Error when obtaining the question: ', error);
+        return null;
+    }
+}
+
+// Endpoints
+app.get('/game/question', async(req, res) => {
+    try{
+        const question = await getQuestion();
+        res.json(question);
+    }catch(error){
+        res.status(500).json({error: 'There was an error when obtaining the question'});
+    }
+});
+
+app.listen(port, () => {
+   console.log(`Server running on http://localhost:${port}`); 
+});
