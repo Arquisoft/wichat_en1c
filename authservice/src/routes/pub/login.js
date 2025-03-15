@@ -40,6 +40,7 @@ module.exports = (app) => {
         res.json({
           success: true,
           token: jwt.sign({ username }, config.jwt.secret, config.jwt.opts),
+          username,
         });
       else res.status(401).json({ success: false, message: STATUS_CODES[401] });
     }

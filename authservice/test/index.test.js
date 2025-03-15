@@ -63,6 +63,7 @@ describe("Login route", () => {
 
     // Verify token
     expect(response.body).toHaveProperty("token");
+    expect(response.body.username).toBe(user.username);
     const verification = jwt.verify(
       response.body.token,
       config.jwt.secret,
@@ -96,6 +97,7 @@ describe("Login route", () => {
       expect(response.body.success).toBe(false);
       expect(response.body.message).toBe("Unauthorized");
       expect(response.body.token).toBeUndefined();
+      expect(response.body.username).toBeUndefined();
     }
   });
 
