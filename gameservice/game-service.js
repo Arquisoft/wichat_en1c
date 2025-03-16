@@ -36,6 +36,10 @@ app.get('/game/config', async(req, res) => {
 app.get('/game/question', async(req, res) => {
     try{
         const question = await getQuestion();
+
+        if(!question)
+            return res.status(500).json({error: 'Could not obtain question from service'});
+
         res.json(question);
     }catch(error){
         res.status(500).json({error: 'There was an error when obtaining the question'});
@@ -43,16 +47,26 @@ app.get('/game/question', async(req, res) => {
 });
 
 app.post('/game/answer', async(req, res) => {
-    const {selectedAnswer} = req.body;
+    try{
+        if(!correctAnswer)
+            return res.status(500).json({error: 'There was an error obtaining the correct answer'});
 
-    const isCorrect = selectedAnswer === correctAnswer;
+        const {selectedAnswer} = req.body;
 
-    const result = {
-        correctAnswer: correctAnswer,
-        isCorrect: isCorrect
+        if(!selectedAnswer)
+            return res.status(400).json({error: 'Selected answer must be sent'});
+
+        const isCorrect = selectedAnswer === correctAnswer;
+
+        const result = {
+            correctAnswer: correctAnswer,
+            isCorrect: isCorrect
+        }
+
+        res.json(result);
+    }catch(error){
+        res.status(500).json({error: 'There was an error when checking the answer'});
     }
-
-    res.json(result);
 });
 
 app.listen(port, () => {
