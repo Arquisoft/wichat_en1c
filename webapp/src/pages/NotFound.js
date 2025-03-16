@@ -1,7 +1,7 @@
 // src/pages/NotFound.js
 import React, { useRef, useEffect } from 'react';
 import { Container, Typography, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const NotFound = () => {
   const navigate = useNavigate();

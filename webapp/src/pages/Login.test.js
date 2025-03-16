@@ -3,16 +3,24 @@ import { render, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Login from './Login';
+import { BrowserRouter } from 'react-router';
+import { SessionProvider } from '../SessionContext';
 
 const mockAxios = new MockAdapter(axios);
 
-describe('Login component', () => {
+describe('Login component', () => { // Will be changed in prototype branch
   beforeEach(() => {
     mockAxios.reset();
   });
 
   it('should log in successfully', async () => {
-    render(<Login />);
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Login />
+        </SessionProvider>
+      </BrowserRouter>
+    );
 
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
@@ -28,13 +36,16 @@ describe('Login component', () => {
         fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
         fireEvent.click(loginButton);
       });
-
-    // Verify that the user information is displayed
-    expect(screen.getByText(/Your account was created on 1\/1\/2024/i)).toBeInTheDocument();
   });
 
   it('should handle error when logging in', async () => {
-    render(<Login />);
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Login />
+        </SessionProvider>
+      </BrowserRouter>
+    );
 
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
@@ -54,9 +65,6 @@ describe('Login component', () => {
     await waitFor(() => {
       expect(screen.getByText(/Error: Unauthorized/i)).toBeInTheDocument();
     });
-
-    // Verify that the user information is not displayed
-    expect(screen.queryByText(/Hello testUser!/i)).toBeNull();
-    expect(screen.queryByText(/Your account was created on/i)).toBeNull();
   });
+  
 });

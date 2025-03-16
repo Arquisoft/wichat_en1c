@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -18,7 +18,7 @@ const Register = () => {
   const addUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${apiEndpoint}/adduser`, { username, password });
+      await axios.post(`${apiEndpoint}/adduser`, { username, password }); // Will be changed in prototype branch
       setOpenSnackbar(true);
     } catch (error) {
       setError(error.response.data.error);

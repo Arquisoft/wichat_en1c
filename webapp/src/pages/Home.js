@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Container, Typography, Button } from '@mui/material';
 import { PlayArrow } from '@mui/icons-material'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <Container component="main" maxWidth="md" sx={{ marginTop: 6, textAlign: 'center', alignItems:'center' }}>
-      <img
+      <img data-testid="wichat-title"
         src="/WIChatTitle.svg"
         alt="WIChatTitle"
         style={{

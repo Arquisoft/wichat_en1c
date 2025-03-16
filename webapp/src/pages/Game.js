@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Button, Box, LinearProgress, TextField, IconButton, Tooltip } from "@mui/material";
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Typewriter } from "react-simple-typewriter";
 
 // Mock game data (to simulate a backend response)
@@ -102,6 +102,7 @@ const Game = () => {
   const handleHintRequest = () => {
     if (hintsUsed < mockGameData.gameSettings.maxHints && !hintCooldown) {
       setReceivedHint("");  
+      setHintMessage(""); 
       setHintCooldown(true);
       const randomHint = mockGameData.hints[Math.floor(Math.random() * mockGameData.hints.length)];
       setReceivedHint(randomHint); // Store the received hint

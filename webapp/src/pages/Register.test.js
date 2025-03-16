@@ -3,20 +3,29 @@ import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Register from './Register';
+import { BrowserRouter } from 'react-router';
+import { SessionProvider } from '../SessionContext';
 
 const mockAxios = new MockAdapter(axios);
 
-describe('Register component', () => {
+describe('Register component', () => { // Will be changed in prototype branch
   beforeEach(() => {
     mockAxios.reset();
   });
 
   it('should add user successfully', async () => {
-    render(<Register />);
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Register />
+        </SessionProvider>
+      </BrowserRouter>
+    );
+
 
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
-    const addUserButton = screen.getByRole('button', { name: /Add User/i });
+    const addUserButton = screen.getByRole('button', { name: /Register/i });
 
     // Mock the axios.post request to simulate a successful response
     mockAxios.onPost('http://localhost:8000/adduser').reply(200);
@@ -35,11 +44,18 @@ describe('Register component', () => {
   });
 
   it('should handle error when adding user', async () => {
-    render(<Register />);
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Register />
+        </SessionProvider>
+      </BrowserRouter>
+    );
+
 
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
-    const addUserButton = screen.getByRole('button', { name: /Add User/i });
+    const addUserButton = screen.getByRole('button', { name: /Register/i });
 
     // Mock the axios.post request to simulate an error response
     mockAxios.onPost('http://localhost:8000/adduser').reply(500, { error: 'Internal Server Error' });

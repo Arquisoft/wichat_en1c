@@ -2,7 +2,7 @@
 import React, { useContext }  from 'react';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
 import Logo from '../logo.svg'; // Import the logo
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { SessionContext } from '../SessionContext'; // Import the context
 
 const NavBar = () => {

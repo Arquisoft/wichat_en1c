@@ -5,7 +5,7 @@ const BackgroundVideo = ({ videoSrc }) => {
   return (
     // Container for the video, ensures it takes up the entire screen height (100vh) and is at the botton of the screen
     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', overflow: 'hidden', zIndex: -1 }}>
-      <video
+      <video data-testid="video-element"
         src={videoSrc}  // Video source passed as a prop
         type="video/mp4"  // Video type 
         autoPlay           // Makes the video autoplay when loaded
