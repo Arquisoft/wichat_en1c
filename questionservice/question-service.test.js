@@ -1,16 +1,12 @@
-// test.js
-const axios = require('axios');
+const request = require("supertest");
+const app = require("./question-service");
 
-const PORT = 8004;
-const BASE_URL = `http://localhost:${PORT}`;
+test("Test musicians endpoint", async () => {
+  const response = await request(app).get("/musicians");
 
-async function testMusiciansEndpoint() {
-  try {
-    const response = await axios.get(`${BASE_URL}/musicians`);
-    console.log('Test Passed\nResponse from /musicians endpoint:', response.data);
-  } catch (error) {
-    console.error('Error testing /musicians endpoint:', error.message || error);
-  }
-}
-
-testMusiciansEndpoint();
+  expect(response.status).toBe(200);
+  expect(response.body).toHaveProperty("question");
+  expect(response.body).toHaveProperty("image");
+  expect(response.body).toHaveProperty("options");
+  expect(response.body).toHaveProperty("musicianName");
+});

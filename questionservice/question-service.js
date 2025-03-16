@@ -1,29 +1,26 @@
-const express = require('express');
-const axios = require('axios');
+const express = require("express");
+const axios = require("axios");
 //endpoint ??
 const app = express();
 const port = 8004;
 
-
-
-const WIKIDATA_SPARQL_URL = 'https://query.wikidata.org/sparql';
+const WIKIDATA_SPARQL_URL = "https://query.wikidata.org/sparql";
 
 async function queryWikidata(sparqlQuery) {
   try {
     const response = await axios.get(WIKIDATA_SPARQL_URL, {
       params: {
         query: sparqlQuery,
-        format: 'json'
+        format: "json",
       },
       headers: {
-        'Accept': 'application/sparql-results+json'
-      }
+        Accept: "application/sparql-results+json",
+      },
     });
 
     return response.data.results.bindings;
-
   } catch (error) {
-    console.error('Error querying Wikidata:', error.message || error);
+    console.error("Error querying Wikidata:", error.message || error);
     return null;
   }
 }
@@ -40,12 +37,12 @@ const sparqlQuery = `
   LIMIT 5
 `;
 
-app.get('/musicians', async (req, res) => {
+app.get("/musicians", async (req, res) => {
   const results = await queryWikidata(sparqlQuery);
   if (results) {
     // Randomly select one musician as the correct answer
     const correctMusician = results[Math.floor(Math.random() * results.length)];
-    const otherMusicians = results.filter(m => m !== correctMusician);
+    const otherMusicians = results.filter((m) => m !== correctMusician);
 
     // Prepare the question and options
     const question = {
@@ -53,17 +50,21 @@ app.get('/musicians', async (req, res) => {
       image: correctMusician.image.value,
       options: [
         correctMusician.musicianLabel.value,
-        ...otherMusicians.slice(0, 3).map(m => m.musicianLabel.value)
+        ...otherMusicians.slice(0, 3).map((m) => m.musicianLabel.value),
       ].sort(() => Math.random() - 0.5), // Shuffle the options
-      musicianName: correctMusician.musicianLabel.value
+      musicianName: correctMusician.musicianLabel.value,
     };
 
     res.json(question);
   } else {
-    res.status(500).json({ error: 'An error occurred while querying Wikidata.' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while querying Wikidata." });
   }
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = server;

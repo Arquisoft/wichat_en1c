@@ -6,7 +6,7 @@ const port = 8001;
 
 app.use(express.json());
 
-const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://questionservice:8004';
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
 
 let correctAnswer = null;
 
