@@ -1,5 +1,6 @@
 // src/components/BackgroundVideo.js
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const BackgroundVideo = ({ videoSrc }) => {
   return (
@@ -23,6 +24,11 @@ const BackgroundVideo = ({ videoSrc }) => {
       />
     </div>
   );
+};
+
+// PropTypes validation
+BackgroundVideo.propTypes = {
+  videoSrc: PropTypes.string.isRequired,
 };
 
 export default BackgroundVideo;
