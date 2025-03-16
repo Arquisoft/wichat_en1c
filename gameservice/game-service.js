@@ -25,6 +25,14 @@ async function getQuestion(){
 }
 
 // Endpoints
+app.get('/game/config', async(req, res) => {
+    const gameConfig = {
+        time: 1,
+        rounds: 3
+    }
+    res.json(gameConfig);
+});
+
 app.get('/game/question', async(req, res) => {
     try{
         const question = await getQuestion();
