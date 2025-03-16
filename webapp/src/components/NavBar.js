@@ -19,9 +19,12 @@ const NavBar = () => {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Logo and Home button on the left */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={Logo} alt="WIChatLogo" style={{ height: 40, cursor: 'pointer' }} 
-            onClick={() => navigate('/')} // Navigate to home on click
-          />
+          <Button
+            onClick={() => navigate('/')}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+          >
+            <img src={Logo} alt="WIChatLogo" style={{ height: 40 }} />
+          </Button>
           <Button color="inherit" sx={{ marginLeft: 2 }} onClick={() => navigate('/')}>
             Home
           </Button>
