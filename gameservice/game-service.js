@@ -6,7 +6,7 @@ const port = 8001;
 
 app.use(express.json());
 
-const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://questionservice:8004';
 
 let correctAnswer = null;
 
@@ -25,15 +25,16 @@ async function getQuestion(){
 }
 
 
-app.get('/game/config', async(req, res) => {
+app.get('/config', async(req, res) => {
     const gameConfig = {
-        time: 1,
-        rounds: 3
+        time: 20,
+        rounds: 3,
+        hints: 3
     }
     res.json(gameConfig);
 });
 
-app.get('/game/question', async(req, res) => {
+app.get('/question', async(req, res) => {
     try{
         const question = await getQuestion();
 
@@ -46,7 +47,7 @@ app.get('/game/question', async(req, res) => {
     }
 });
 
-app.post('/game/answer', async(req, res) => {
+app.post('/answer', async(req, res) => {
     try{
         if(!correctAnswer)
             return res.status(500).json({error: 'There was an error obtaining the correct answer'});

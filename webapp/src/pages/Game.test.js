@@ -12,13 +12,28 @@ describe('Game Page Tests', () => { // Will be changed in prototype
     );
 
     // Test if the question is rendered
-    expect(screen.getByText(/Who is the musician born/i)).toBeInTheDocument();
+    expect(screen.getByTestId('question')).toBeInTheDocument();
 
     // Test if the image is rendered
-    expect(screen.getByAltText('Question Image')).toBeInTheDocument();
+    expect(screen.getByTestId('question-image')).toBeInTheDocument();
 
     // Test if the hint section is present
-    expect(screen.getByText(/Hints used:/i)).toBeInTheDocument();
+    expect(screen.getByTestId('hints-used')).toBeInTheDocument();
+
+    // Test if the time progress bar is rendered
+    expect(screen.getByTestId('time-progress-bar')).toBeInTheDocument();
+
+    // Test if the round info is rendered
+    expect(screen.getByTestId('round-info')).toBeInTheDocument();
+
+    // Test if the hint input is rendered
+    expect(screen.getByTestId('hint-input')).toBeInTheDocument();
+
+    // Test if the hint button is rendered
+    expect(screen.getByTestId('hint-button')).toBeInTheDocument();
+
+    // Test if the options are rendered
+    expect(screen.getAllByTestId(/option-/).length).toBe(4);
   });
 /*
   it('should increase hints used when the hint button is clicked', async () => {

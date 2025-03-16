@@ -1,7 +1,7 @@
 // test.js
 const axios = require('axios');
 
-const PORT = 3002;
+const PORT = 8004;
 const BASE_URL = `http://localhost:${PORT}`;
 
 async function testMusiciansEndpoint() {

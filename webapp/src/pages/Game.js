@@ -4,6 +4,9 @@ import { Container, Typography, Button, Box, LinearProgress, TextField, IconButt
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { Typewriter } from "react-simple-typewriter";
+import axios from 'axios';
+
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
 // Mock game data (to simulate a backend response)
 const mockGameData = {
@@ -35,10 +38,44 @@ const Game = () => {
   const [receivedHint, setReceivedHint] = useState(""); // The hint message that is returned
   const [hintCooldown, setHintCooldown] = useState(false);
 
+  const [gameSettings, setGameSettings] = useState({ rounds: 3, timePerQuestion: 20, maxHints: 3 }); // Default, will be fetched
+  const [questionData, setQuestionData] = useState(null); // Store question data
+
   const correctAudio = new Audio("/correct.mp3");
   const wrongAudio = new Audio("/wrong.mp3");
   const navigate = useNavigate();
   
+  // Fetch game configuration on component mount
+  useEffect(() => {
+    const fetchGameConfig = async () => {
+      try {
+        const response = await axios.get(`${apiEndpoint}/game/config`);
+        setGameSettings({
+          rounds: response.data.rounds,
+          timePerQuestion: response.data.time,
+          maxHints: response.data.hints
+        });
+        setTimeLeft(response.data.time); // Set initial time from config
+      } catch (error) {
+        console.error("Error fetching game configuration:", error);
+      }
+    };
+    fetchGameConfig();
+  }, []);
+
+  // Fetch question data at the start of each round
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        const response = await axios.get(`${apiEndpoint}/game/question`);
+        setQuestionData(response.data);
+      } catch (error) {
+        console.error("Error fetching question:", error);
+      }
+    };
+    fetchQuestion();
+  }, [currentRound]);
+
   // Countdown timer logic
   useEffect(() => {
     if (timeLeft > 0 && !isPaused) {
@@ -67,23 +104,29 @@ const Game = () => {
     return question;
   };
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = async (option) => {
     if (isPaused) return;
     setSelectedOption(option);
     setIsPaused(true);
-    const isCorrect = option === mockGameData.answer;
-    isCorrect ? correctAudio.play() : wrongAudio.play();
-    handleRoundEnd(isCorrect);
+    try {
+      const response = await axios.post(`${apiEndpoint}/game/answer`, { selectedAnswer: option });
+      const isCorrect = response.data.isCorrect;
+      isCorrect ? correctAudio.play() : wrongAudio.play();
+      handleRoundEnd(isCorrect);
+    } catch (error) {
+      console.error("Error checking answer:", error);
+      setIsPaused(false);
+    }
   };
 
   const handleRoundEnd = (isCorrect) => {
     setTimeout(() => {
-      if (currentRound >= mockGameData.gameSettings.rounds) {
+      if (currentRound >= gameSettings.rounds) {
         setGameEnded(true);
       } else {
         setCurrentRound((prev) => prev + 1);
         setSelectedOption(null);
-        setTimeLeft(mockGameData.gameSettings.timePerQuestion);
+        setTimeLeft(gameSettings.timePerQuestion);
         setHintCooldown(0);
         setHintsUsed(0);
         setHintMessage(""); // Reset input field
@@ -100,7 +143,7 @@ const Game = () => {
 
   // Hint request logic
   const handleHintRequest = () => {
-    if (hintsUsed < mockGameData.gameSettings.maxHints && !hintCooldown) {
+    if (hintsUsed < gameSettings.maxHints && !hintCooldown) {
       setReceivedHint("");  
       setHintMessage(""); 
       setHintCooldown(true);
@@ -155,8 +198,9 @@ const Game = () => {
           <Box display="flex" alignItems="center" gap={1} sx={{ flexGrow: 1 }}>
             <AccessTime color="action" />
             <LinearProgress
+              data-testid="time-progress-bar"
               variant="determinate"
-              value={(timeLeft / mockGameData.gameSettings.timePerQuestion) * 100}
+              value={(timeLeft / gameSettings.timePerQuestion) * 100}
               sx={{
                 flexGrow: 1, // Allow the progress bar to grow
                 height: 10, // Set the height of the progress bar
@@ -169,20 +213,21 @@ const Game = () => {
             />
           </Box>
   
-          <Typography variant="h6" sx={{ marginLeft: 2 }}>
-            Round: {currentRound} / {mockGameData.gameSettings.rounds}
+          <Typography variant="h6" sx={{ marginLeft: 2 }} data-testid="round-info">
+            Round: {currentRound} / {gameSettings.rounds}
           </Typography>
         </Box>
   
         {/* Display the question */}
-        <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }}>
-          {formatQuestionWithDate(mockGameData.question)}
+        <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }} data-testid="question">
+          {formatQuestionWithDate(questionData?.question)}
         </Typography>
   
         {/* Display the image */}
         <Box sx={{ mb: 2, display: "flex", justifyContent: "center" }}>
           <img
-            src={mockGameData.image}
+            data-testid="question-image"
+            src={questionData?.image}
             alt="Question Image"
             style={{
                 maxWidth: "300px", // Set max width of the image
@@ -197,8 +242,9 @@ const Game = () => {
   
         {/* Render answer options */}
         <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2} width="100%">
-          {mockGameData.options.map((option, index) => (
+          {questionData?.options?.map((option, index) => (
             <Button
+              data-testid={`option-${index}`}
               key={option}
               variant="contained"
               color={
@@ -260,7 +306,7 @@ const Game = () => {
         <Tooltip title="Hints remaining">
           <Box display="flex" alignItems="start" gap={1}>
             <HelpOutline color="primary" />
-            <Typography variant="body1">
+            <Typography variant="body1" data-testid="hints-used">
               Hints used: {hintsUsed}/{mockGameData.gameSettings.maxHints}
             </Typography>
           </Box>
@@ -275,6 +321,7 @@ const Game = () => {
           style={{ width: "100%", display: "flex", gap: 1 }}
         >
           <TextField
+            data-testid="hint-input"
             variant="outlined"
             size="small"
             placeholder="Ask for a hint..."
@@ -284,6 +331,7 @@ const Game = () => {
             sx={{ flexGrow: 1, marginRight: 2 }}
           />
           <IconButton
+            data-testid="hint-button"
             type="submit"
             disabled={hintCooldown || hintsUsed >= mockGameData.gameSettings.maxHints || isPaused}
             sx={{
