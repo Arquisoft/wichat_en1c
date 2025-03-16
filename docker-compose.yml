@@ -35,7 +35,7 @@ services:
     build:
       context: ./llmservice
     ports:
-      - "8003:8003"
+      - "8005:8005"
     networks:
       - mynetwork
     environment:
@@ -50,6 +50,8 @@ services:
       - mongodb
       - authservice
       - llmservice
+      - gameservice
+      - questionservice
     ports:
       - "8000:8000"
     networks:
@@ -64,6 +66,30 @@ services:
       - gatewayservice
     ports:
       - "3000:3000"
+
+  gameservice:
+    container_name: gameservice-wichat_en1c
+    build: ./gameservice
+    profiles: ["dev", "prod"]
+    ports:
+      - "8001:8001"
+    networks:
+      - mynetwork
+    depends_on:
+      - questionservice
+    environment:
+      QUESTIONS_SERVICE_URL: http://questionservice:8004
+
+  questionservice:
+    container_name: questionservice-wichat_en1c
+    build: ./questionservice
+    profiles: ["dev", "prod"]
+    ports:
+      - "8004:8004" 
+    networks:
+      - mynetwork
+    depends_on:
+      - llmservice
 
   prometheus:
     image: prom/prometheus

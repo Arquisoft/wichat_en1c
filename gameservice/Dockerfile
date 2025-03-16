@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8001
 
 # Define the command to run your app
-CMD ["npm", "game-service.js"]
+CMD ["npm", "start"]
