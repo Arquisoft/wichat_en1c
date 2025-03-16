@@ -67,9 +67,9 @@ const createServiceProxy = (target, protectedRoute = false) => {
 
 // Attach Proxy Routes
 app.use('/public', createServiceProxy(authServiceUrl));
-app.use('/questions', createServiceProxy(questionsServiceUrl), true);  
-app.use('/game', createServiceProxy(gameServiceUrl), true);
-app.use('/stats', createServiceProxy(statsServiceUrl), true);
+app.use('/questions', createServiceProxy(questionsServiceUrl));  
+app.use('/game', createServiceProxy(gameServiceUrl));
+app.use('/stats', createServiceProxy(statsServiceUrl));
 
 
 // Swagger API Documentation
