@@ -7,8 +7,11 @@ process.env.GAME_SERVICE_URL = 'http://localhost:8001';
 process.env.AUTH_SERVICE_URL = 'http://localhost:8002';
 process.env.STATS_SERVICE_URL = 'http://localhost:8003';
 process.env.QUESTIONS_SERVICE_URL = 'http://localhost:8004';
+process.env.TEST_USERNAME="user";
+process.env.TEST_PASSWORD="pass";
 
-// Mock de fs antes de importar gateway-service
+
+// Mock services for the unitary tests
 jest.mock('fs');
 const fs = require('fs');
 fs.existsSync.mockReturnValue(true);
@@ -19,7 +22,7 @@ fs.readFileSync.mockReturnValue(`
     version: "1.0.0"
 `);
 
-const gateway = require('./gateway-service'); // Importar después de mockear fs
+const gateway = require('./gateway-service'); // Import after mock services
 
 let mockStatsServer, mockAuthServer, mockQuestionsServer, mockGameServer;
 
@@ -78,9 +81,14 @@ test('should return 504 if auth service is unavailable', async () => {
   await mockAuthServer.close();
   const response = await request(gateway)
     .post('/auth/login')
-    .send({ username: 'user', password: 'pass' });
+    .send({ 
+      username: process.env.TEST_USERNAME || 'user', 
+      password: process.env.TEST_PASSWORD || 'pass' 
+    });
+
   expect(response.statusCode).toBe(504);
 }, 5000);
+
 
 test('should return 504 if questions service is unavailable', async () => {
   await mockQuestionsServer.close();
@@ -109,10 +117,8 @@ test('should handle proxy error and return 504 for unavailable service', async (
 }, 5000);
 
 
-// 🔧 Aumentamos el tiempo de espera a 10s por si el test de OpenAPI tarda más
-
-test('should load the OpenAPI file if it exists', async () => {
-  fs.existsSync.mockReturnValue(true); // Simula que el archivo existe
+test('should raise 404 if no OpenAPI file reachable', async () => {
+  fs.existsSync.mockReturnValue(true); 
   fs.readFileSync.mockReturnValue(`
     openapi: "3.0.0"
     info:
@@ -122,9 +128,7 @@ test('should load the OpenAPI file if it exists', async () => {
 
   const response = await request(gateway).get('/api-doc');
 
-  console.log('OpenAPI response:', response.statusCode, response.text); // Debugging
-
   expect(response.statusCode).toBe(404);
-}, 10000);
+}, 5000);
 
 
