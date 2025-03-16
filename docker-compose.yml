@@ -54,9 +54,6 @@ services:
       - "8000:8000"
     networks:
       - mynetwork
-    environment:
-      AUTH_SERVICE_URL: http://authservice:8002
-      LLM_SERVICE_URL: http://llmservice:8003
 
   webapp:
     container_name: webapp-wichat_en1c
