@@ -21,20 +21,12 @@ const Login = () => {
   const loginUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiEndpoint}/login`, { username, password }); // Will be changed in prototype branch
-
-      /** 
-      const question = "Please, generate a greeting message for a student called " + username + " that is a student of the Software Architecture course in the University of Oviedo. Be nice and polite. Two to three sentences max.";
-      const model = "empathy"
-      const message = await axios.post(`${apiEndpoint}/askllm`, { question, model })
-      setMessage(message.data.answer);
-      // Extract data from the response
-      const { createdAt: userCreatedAt } = response.data;
-
-      setCreatedAt(userCreatedAt);
-      setLoginSuccess(true);
-      **/
-
+      const response = await axios.post(`${apiEndpoint}/auth/public/login`, { username, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
       // If login is successful, store session and show success message
       createSession(username); 
       setOpenSnackbar(true);

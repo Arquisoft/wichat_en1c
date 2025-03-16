@@ -18,7 +18,11 @@ const Register = () => {
   const addUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${apiEndpoint}/adduser`, { username, password }); // Will be changed in prototype branch
+      await axios.post(`${apiEndpoint}/auth/public/signup`, { username, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }); 
       setOpenSnackbar(true);
     } catch (error) {
       setError(error.response.data.error);

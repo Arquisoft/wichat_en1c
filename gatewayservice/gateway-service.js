@@ -36,7 +36,7 @@ const createServiceProxy = (target) => createProxyMiddleware({
 
   target,
   changeOrigin: true,
-  pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)/, ''),
+  pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)\/?/, '/'),
   onError: (err, req, res) => {
     console.error(`Proxy error: ${err.message}`);
     res.status(500).json({ error: "Internal Server Error" });
