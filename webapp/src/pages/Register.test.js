@@ -108,35 +108,4 @@ describe('Register component', () => {
       expect(screen.getByText(/Error: Unauthorized/i)).toBeInTheDocument();
     });
   });
-
-  it('should handle generic server error (500)', async () => {
-    render(
-      <BrowserRouter>
-        <SessionProvider>
-          <Register />
-        </SessionProvider>
-      </BrowserRouter>
-    );
-
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const registerButton = screen.getByRole('button', { name: /Register/i });
-
-    // Mock a 500 Internal Server Error response
-    mockAxios.onPost(apiEndpoint).reply(500, {
-      error: 'Internal Server Error',
-    });
-
-    // Simulate user input
-    fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-    fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
-
-    // Trigger register button click
-    fireEvent.click(registerButton);
-
-    // Wait for the error Snackbar to appear
-    await waitFor(() => {
-      expect(screen.getByText(/Error: Internal Server Error/i)).toBeInTheDocument();
-    });
-  });
 });

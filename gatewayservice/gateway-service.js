@@ -9,10 +9,10 @@ const YAML = require('yaml');
 const app = express();
 const port = 8000;
 
-const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8001';
+const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8001'; //In progress
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://authservice:8002';
-const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8003';
-const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
+const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8003'; //In progress
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004'; //In progress
 
 app.use(cors());
 app.use(express.json());

@@ -31,7 +31,8 @@ const Login = () => {
       createSession(username); 
       setOpenSnackbar(true);
     } catch (error) {
-      setError(error.response.data.error);
+      console.log(`Error ${error.response.data.message}`);
+      setError(error.response.data.message);
     }
   };
 

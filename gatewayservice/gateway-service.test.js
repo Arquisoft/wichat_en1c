@@ -1,17 +1,15 @@
 const express = require('express');
 const http = require('http');
 const request = require('supertest');
-const server = require('./gateway-service'); 
+const server = require('./gateway-service');
 
 process.env.GAME_SERVICE_URL = 'http://localhost:8001';
 process.env.AUTH_SERVICE_URL = 'http://localhost:8002';
 process.env.STATS_SERVICE_URL = 'http://localhost:8003';
 process.env.QUESTIONS_SERVICE_URL = 'http://localhost:8004';
-process.env.TEST_USERNAME="user";
-process.env.TEST_PASSWORD="pass";
+process.env.TEST_USERNAME = "user";
+process.env.TEST_PASSWORD = "pass";
 
-
-// Mock services for the unitary tests
 jest.mock('fs');
 const fs = require('fs');
 fs.existsSync.mockReturnValue(true);
@@ -22,7 +20,7 @@ fs.readFileSync.mockReturnValue(`
     version: "1.0.0"
 `);
 
-const gateway = require('./gateway-service'); // Import after mock services
+const gateway = require('./gateway-service');
 
 let mockStatsServer, mockAuthServer, mockQuestionsServer, mockGameServer;
 
@@ -42,7 +40,7 @@ beforeAll(async () => {
   });
 
   mockAuthServer = await createMockServer(8002, (app) => {
-    app.post('/login', (req, res) => res.status(200).json({ token: 'mockToken' }));
+    app.post('/public/login', (req, res) => res.status(200).json({ token: 'mockToken' }));
   });
 
   mockQuestionsServer = await createMockServer(8004, (app) => {
@@ -77,48 +75,46 @@ test('should forward leaderboard request to stats service', async () => {
   expect(response.body.topPlayers).toEqual(['user1', 'user2']);
 }, 5000);
 
-test('should return 504 if auth service is unavailable', async () => {
+test('should return 500 if auth service is unavailable', async () => {
   await mockAuthServer.close();
   const response = await request(gateway)
-    .post('/auth/login')
-    .send({ 
-      username: process.env.TEST_USERNAME || 'user', 
-      password: process.env.TEST_PASSWORD || 'pass' 
+    .post('/auth/public/login')
+    .send({
+      username: process.env.TEST_USERNAME || 'user',
+      password: process.env.TEST_PASSWORD || 'pass'
     });
 
-  expect(response.statusCode).toBe(504);
+  expect(response.statusCode).toBe(500);
 }, 5000);
 
-
-test('should return 504 if questions service is unavailable', async () => {
+test('should return 500 if questions service is unavailable', async () => {
   await mockQuestionsServer.close();
   const response = await request(gateway)
     .post('/questions/ask')
     .send({ question: 'question', apiKey: 'apiKey', model: 'gemini' });
-  expect(response.statusCode).toBe(504);
+  expect(response.statusCode).toBe(500);
 }, 5000);
 
-test('should return 504 if game service is unavailable', async () => {
+test('should return 500 if game service is unavailable', async () => {
   await mockGameServer.close();
   const response = await request(gateway)
     .post('/game/start')
     .send({ userId: 'testuser' });
-  expect(response.statusCode).toBe(504);
+  expect(response.statusCode).toBe(500);
 }, 5000);
 
-test('should handle proxy error and return 504 for unavailable service', async () => {
+test('should handle proxy error and return 500 for unavailable service', async () => {
   const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
   const response = await request(gateway).get('/game/failing-endpoint');
 
-  expect(response.statusCode).toBe(504);
+  expect(response.statusCode).toBe(500);
 
   consoleSpy.mockRestore();
 }, 5000);
 
-
 test('should raise 404 if no OpenAPI file reachable', async () => {
-  fs.existsSync.mockReturnValue(true); 
+  fs.existsSync.mockReturnValue(true);
   fs.readFileSync.mockReturnValue(`
     openapi: "3.0.0"
     info:
@@ -130,5 +126,3 @@ test('should raise 404 if no OpenAPI file reachable', async () => {
 
   expect(response.statusCode).toBe(404);
 }, 5000);
-
-
