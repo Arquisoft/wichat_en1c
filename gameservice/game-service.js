@@ -10,7 +10,7 @@ const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localho
 
 let correctAnswer = null;
 
-// Functions
+
 async function getQuestion(){
     try{
         const serviceResponse = await axios.get(`${questionsServiceUrl}/musicians`);
@@ -24,7 +24,7 @@ async function getQuestion(){
     }
 }
 
-// Endpoints
+
 app.get('/game/config', async(req, res) => {
     const gameConfig = {
         time: 1,
@@ -69,6 +69,8 @@ app.post('/game/answer', async(req, res) => {
     }
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
    console.log(`Server running on http://localhost:${port}`); 
 });
+
+module.exports = server;

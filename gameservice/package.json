@@ -1,5 +1,5 @@
 {
-    "name": "authservice",
+    "name": "gameservice",
     "version": "1.0.0",
     "description": " Game service, in charge of managing game states and tracking the user's progress",
     "main": "game-service.js",
