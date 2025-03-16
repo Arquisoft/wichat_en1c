@@ -80,7 +80,7 @@ test('should forward leaderboard request to stats service', async () => {
 test('should return 504 if auth service is unavailable', async () => {
   await mockAuthServer.close();
   const response = await request(gateway)
-    .post('/auth/login')
+    .post('/public/login')
     .send({ 
       username: process.env.TEST_USERNAME || 'user', 
       password: process.env.TEST_PASSWORD || 'pass' 

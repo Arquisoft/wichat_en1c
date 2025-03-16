@@ -29,25 +29,48 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });  
 });
 
+// Token verification middleware
+const verifyToken = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+
+  try {
+    const response = await axios.post(`${authServiceUrl}/verify`, { token });
+    if (response.data.success) {
+      next();
+    } else {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+};
+
+
 // Proxy Middleware Setup
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const createServiceProxy = (target) => createProxyMiddleware({
-
-  target,
-  changeOrigin: true,
-  pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)/, ''),
-  onError: (err, req, res) => {
-    console.error(`Proxy error: ${err.message}`);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+const createServiceProxy = (target, protectedRoute = false) => {
+  const middleWare = createProxyMiddleware({
+    target,
+    changeOrigin: true,
+    pathRewrite: (path, req) => path.replace(/^\/(public|questions|game|stats)/, ''),
+    onError: (err, req, res) => {
+      console.error(`Proxy error: ${err.message}`);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
 });
+  return protectedRoute ? [verifyToken, middleWare] : middleWare;
+};
 
 // Attach Proxy Routes
-app.use('/auth', createServiceProxy(authServiceUrl));
-app.use('/questions', createServiceProxy(questionsServiceUrl));  
-app.use('/game', createServiceProxy(gameServiceUrl));
-app.use('/stats', createServiceProxy(statsServiceUrl));
+app.use('/public', createServiceProxy(authServiceUrl));
+app.use('/questions', createServiceProxy(questionsServiceUrl), true);  
+app.use('/game', createServiceProxy(gameServiceUrl), true);
+app.use('/stats', createServiceProxy(statsServiceUrl), true);
+
 
 // Swagger API Documentation
 const openapiPath = './openapi.yaml';
