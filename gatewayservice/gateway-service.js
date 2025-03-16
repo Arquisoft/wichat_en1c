@@ -36,7 +36,7 @@ const createServiceProxy = (target) => createProxyMiddleware({
 
   target,
   changeOrigin: true,
-  pathRewrite: (path, req) => path.replace(/^\/(auth|questions|game|stats)\/?/, '/'),
+  pathRewrite: (path, req) => path.replace(/^\/(public|questions|game|stats)\/?/, '/'),
   onError: (err, req, res) => {
     console.error(`Proxy error: ${err.message}`);
     res.status(500).json({ error: "Internal Server Error" });
@@ -44,7 +44,7 @@ const createServiceProxy = (target) => createProxyMiddleware({
 });
 
 // Attach Proxy Routes
-app.use('/auth', createServiceProxy(authServiceUrl));
+app.use('/public', createServiceProxy(authServiceUrl));
 app.use('/questions', createServiceProxy(questionsServiceUrl));  
 app.use('/game', createServiceProxy(gameServiceUrl));
 app.use('/stats', createServiceProxy(statsServiceUrl));
