@@ -15,6 +15,7 @@ async function getQuestion(){
     try{
         const serviceResponse = await axios.get(`${questionsServiceUrl}/musicians`);
         const {musicianName, ...questionData} = serviceResponse.data;
+
         correctAnswer=musicianName;
         return questionData;
     }catch(error){
@@ -31,6 +32,19 @@ app.get('/game/question', async(req, res) => {
     }catch(error){
         res.status(500).json({error: 'There was an error when obtaining the question'});
     }
+});
+
+app.post('/game/answer', async(req, res) => {
+    const {selectedAnswer} = req.body;
+
+    const isCorrect = selectedAnswer === correctAnswer;
+
+    const result = {
+        correctAnswer: correctAnswer,
+        isCorrect: isCorrect
+    }
+
+    res.json(result);
 });
 
 app.listen(port, () => {
