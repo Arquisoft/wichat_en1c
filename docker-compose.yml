@@ -69,6 +69,7 @@ services:
 
   gameservice:
     container_name: gameservice-wichat_en1c
+    image: ghcr.io/arquisoft/wichat_en1c/gameservice:latest
     build: ./gameservice
     profiles: ["dev", "prod"]
     ports:
@@ -82,6 +83,7 @@ services:
 
   questionservice:
     container_name: questionservice-wichat_en1c
+    image: ghcr.io/arquisoft/wichat_en1c/questionservice:latest
     build: ./questionservice
     profiles: ["dev", "prod"]
     ports:
