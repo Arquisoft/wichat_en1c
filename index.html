@@ -454,9 +454,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-architecture-constraints">2. Architecture Constraints</a>
 <ul class="sectlevel2">
-<li><a href="#_technical_constraints">2.1. Technical constraints</a></li>
+<li><a href="#_technical_constraints">2.1. Technical Constraints</a></li>
 <li><a href="#_organizational_constraints">2.2. Organizational Constraints</a></li>
-<li><a href="#_political_constraints">2.3. Political constraints</a></li>
+<li><a href="#_political_constraints">2.3. Political Constraints</a></li>
 </ul>
 </li>
 <li><a href="#section-context-and-scope">3. Context and Scope</a>
@@ -483,7 +483,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-runtime-view">6. Runtime View</a>
 <ul class="sectlevel2">
-<li><a href="#_abstract_general_state_diagram">6.1. Abstract general state diagram</a></li>
+<li><a href="#_abstract_states_of_the_application">6.1. Abstract states of the application</a></li>
 <li><a href="#_login_of_a_user">6.2. Login of a user</a></li>
 <li><a href="#_game">6.3. Game</a></li>
 <li><a href="#_history_of_a_user">6.4. History of a user</a></li>
@@ -598,15 +598,19 @@ These include</p>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>
-WiChat is an extension of a previous experimental web application that allowed users to answer quiz questions emulating the "Saber y Ganar" quiz show. This year, the system is being expanded by adding images accompanying all the questions and introducing a conversational hint system powered by an external Large Language Model, enhancing the user experience by providing dynamic and interactive assistance.</p>
+<p><strong>Purpose</strong></p>
 </div>
 <div class="paragraph">
-<p>The project is requested by RTVE and developed by ChattySw, building using as a basis the work previously done by HappySw company.</p>
+<p>WiChat is an extension of a previous experimental web application that allowed users to answer quiz questions emulating the "Saber y Ganar" quiz show. This year, the system is being expanded by adding images accompanying all the questions and introducing a conversational hint system powered by an external Large Language Model, enhancing the user experience by providing dynamic and interactive assistance.</p>
 </div>
 <div class="paragraph">
-<p><strong>Scope of Work</strong>
-WiChat will expand the existing quiz system by:</p>
+<p>The project is requested by RTVE and developed by ChattySw, which will build the application using some pieces of code or modules from the work previously done by HappySw company, but creating the application from scracth.</p>
+</div>
+<div class="paragraph">
+<p><strong>Scope of Work</strong></p>
+</div>
+<div class="paragraph">
+<p>WiChat will expand the existing quiz system by:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -617,7 +621,7 @@ WiChat will expand the existing quiz system by:</p>
 <p>Introducing an AI-powered hint system for interactive assistance.</p>
 </li>
 <li>
-<p>Automating question using Wikidata, minimizing manual effort.</p>
+<p>Keeping automation of questions using Wikidata, minimizing manual effort.</p>
 </li>
 <li>
 <p>Ensuring accessibility through a web-based platform.
@@ -626,8 +630,10 @@ Additionally, the system should be designed with extensibility in mind, allowing
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>Driving Forces</strong>
-The development of WiChat is guided by the following key goals:</p>
+<p><strong>Driving Forces</strong></p>
+</div>
+<div class="paragraph">
+<p>The development of WiChat is guided by the following key goals:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -754,7 +760,7 @@ If you as an architect do not know how the quality of your work will be judged&#
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Performance Efficiency</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system should efficiently handle an increasing number of concurrent users up to 1000 while keeping response times below 1 second. AI hint generation should not cause performance bottlenecks.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system should efficiently handle an increasing number of concurrent users up to 20 while keeping response times below 1 second. AI hint generation should not cause performance bottlenecks.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Security</p></td>
@@ -837,7 +843,7 @@ These stakeholders determine the extent and the level of detail of your work and
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Previous Developer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HappySw</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">They expect their previous work to be properly extended, ensuring compatibility and a smooth transition.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">They expect their previous work to be properly used, ensuring compatibility and that they receive their credits when their work is used.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client - RTVE</p></td>
@@ -845,9 +851,9 @@ These stakeholders determine the extent and the level of detail of your work and
 <td class="tableblock halign-left valign-top"><p class="tableblock">They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client - Professor (Evaluator)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pablo González González - <a href="mailto:gonzalezgpablo@uniovi.es">gonzalezgpablo@uniovi.es</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">He expects a well-structured architectural document, clear software design decisions, and a properly implemented system.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client - Professors (Evaluator)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pablo González González - <a href="mailto:gonzalezgpablo@uniovi.es">gonzalezgpablo@uniovi.es</a>, Jose Emilio Labra Gayo - <a href="mailto:labra@uniovi.es">labra@uniovi.es</a>, Irene Cid Rico - <a href="mailto:cidirene@uniovi.es">cidirene@uniovi.es</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">They expect a well-structured architectural document, clear software design decisions, and a properly implemented system.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Users</p></td>
@@ -908,7 +914,7 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_technical_constraints">2.1. Technical constraints</h3>
+<h3 id="_technical_constraints">2.1. Technical Constraints</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -939,11 +945,15 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Data Storage and Management</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User data must be stored securely and efficiently. In order to achive this goal, database selection is crucial.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User data must be stored securely and efficiently. In order to achieve this goal, database selection is crucial.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LLM (Large Language Models)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The application will leverage LLMs for specific functionalities (e.g., question generation, hint.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Web Accessible Front-End</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The application will be accessed through a web browser</p></td>
 </tr>
 </tbody>
 </table>
@@ -980,13 +990,13 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Communication Channels</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The team will use whatsapp and github for daily updates, discussions, and issue tracking.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The team will use WhatsApp and GitHub for daily updates, discussions, and issue tracking.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_political_constraints">2.3. Political constraints</h3>
+<h3 id="_political_constraints">2.3. Political Constraints</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1001,11 +1011,11 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Documentation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Arc42 template is pre-selected for documantation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arc42 template is pre-selected for documentation.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation and apllication will be written in english.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation and application will be written in english.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1262,6 +1272,9 @@ Refer to details in the following sections.</p>
 <li>
 <p><strong>Microsoft Azure:</strong> We chose this platform since it provides the needed infrastructure and the team members have experience with it.</p>
 </li>
+<li>
+<p><strong>Express.js:</strong> We have chosen this web application framework for Node.js due to its high flexibility, its easy use and learning and its powerful middleware.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -1451,6 +1464,22 @@ External services can be easily replaced by other services by just writing an ad
 </ul>
 </div>
 </dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Check <a href="#_llm_service">LLM Service</a> for an example of reusable design.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
 <dt class="hdlist1">Contained Building Blocks</dt>
 </dl>
 </div>
@@ -1472,18 +1501,18 @@ External services can be easily replaced by other services by just writing an ad
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Questions Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions and hints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions and hints and uses WikiData.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Game Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Manages game states and tracks the user&#8217;s progress.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Stats Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Statistics Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Tracks and provides statistics for the users.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auth Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Handles login, signup and session for the users.</p></td>
 </tr>
 <tr>
@@ -1504,12 +1533,16 @@ External services can be easily replaced by other services by just writing an ad
 <ul>
 <li>
 <p>The different <strong>microservices communicate</strong> with each other via <strong>RESTful APIs</strong> using an <strong>intranet</strong>.</p>
-</li>
+<div class="ulist">
+<ul>
 <li>
 <p>The <strong>Gateway</strong> and <strong>WebApp</strong> are the only services which allow external requests and communicate with eachother through <strong>Internet</strong>.</p>
 </li>
 <li>
-<p>LLM Service and Question Service also communicate with the external LLM service and the external question service respectively using the Internet.</p>
+<p><strong>LLM Service</strong> and <strong>Question Service</strong> also communicate with the <strong>external LLM</strong> and <strong>WikiData</strong> respectively using the <strong>Internet</strong>.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -1587,6 +1620,10 @@ according the the following black box template:</p>
 </div>
 <div class="dlist">
 <dl>
+<dt class="hdlist1">Motivation</dt>
+<dd>
+<p>This thin module could be integrated in Questions Service, but we decided to keep it separate to promote <strong>reusability</strong>, since one of the optional requirements is using AI for anything other than hints.</p>
+</dd>
 <dt class="hdlist1">Purpose</dt>
 <dd>
 <p>Act as a bridge (adapter) between the external LLM service and the other internal services of the application.</p>
@@ -1601,13 +1638,13 @@ according the the following black box template:</p>
 <dl>
 <dt class="hdlist1">Structure</dt>
 <dd>
-<p>Just an Express.js app with an adapter pattern for the LLM API.</p>
+<p>Just an <strong>Express.js app</strong> with an <strong>adapter</strong> for the external LLM.</p>
 </dd>
 </dl>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_stats_service">5.1.2. Stats Service</h4>
+<h4 id="_statistics_service">5.1.2. Statistics Service</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Purpose</dt>
@@ -1620,7 +1657,7 @@ according the the following black box template:</p>
 </dd>
 <dt class="hdlist1">Structure</dt>
 <dd>
-<p>It&#8217;s a typical Express.js application with a model for the statistics and a database connector to allow storing the data.</p>
+<p>It&#8217;s a typical <strong>Express.js application</strong> with a <strong>model</strong> for the statistics and a database adapter to store the data.</p>
 </dd>
 </dl>
 </div>
@@ -1639,7 +1676,7 @@ according the the following black box template:</p>
 </dd>
 <dt class="hdlist1">Structure</dt>
 <dd>
-<p>Follows the structure of a typical React application with several routes.</p>
+<p>Follows the structure of a <strong>typical React application</strong> with several routes.</p>
 </dd>
 </dl>
 </div>
@@ -1650,8 +1687,7 @@ according the the following black box template:</p>
 <dl>
 <dt class="hdlist1">Purpose</dt>
 <dd>
-<p>Proxies some services to the Internet and supports the WebApp.
-Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security headers, etc.</p>
+<p>Proxies some services to the Internet (<strong>public API</strong>) and <strong>supports the WebApp</strong>. Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security headers, etc.</p>
 </dd>
 <dt class="hdlist1">Interface</dt>
 <dd>
@@ -1659,7 +1695,7 @@ Adds "firewall" mechanisms typical of APIs: ratelimiting, HTTPs, security header
 </dd>
 <dt class="hdlist1">Structure</dt>
 <dd>
-<p>It&#8217;s a typical Express.js application with middleware, proxy and endpoint documentation modules.</p>
+<p>It&#8217;s a typical <strong>Express.js</strong> application with <strong>middleware</strong>, <strong>proxy</strong> and endpoint <strong>documentation</strong> modules.</p>
 </dd>
 </dl>
 </div>
@@ -1701,10 +1737,10 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Questions and answers are generated through WikiData data.</p>
+<p><strong>Questions</strong> and <strong>answers</strong> are generated through <strong>WikiData</strong>.</p>
 </li>
 <li>
-<p>Hints are generated through the internal LLM Service.</p>
+<p><strong>Hints</strong> are generated through an <strong>LLM</strong>.</p>
 </li>
 </ul>
 </div>
@@ -1712,31 +1748,19 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <dt class="hdlist1">Motivation</dt>
 <dd>
 <p>Handles the responsibility of generating questions and hints.</p>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Why is WikiData part of the module and not standalone?</strong></p>
-</li>
-</ul>
-</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Why is WikiData part of the module and not standalone?</dt>
+<dd>
+<p>Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module&#8217;s one.</p>
+</dd>
+<dt class="hdlist1">Why are questions and hints generated separately?</dt>
+<dd>
+<p>Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefitst hat come from it.</p>
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p>Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module&#8217;s one.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Why are questions and hints generated separately?</strong></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefits that come from it.</p>
-</div>
-<div class="dlist">
-<dl>
+</dd>
 <dt class="hdlist1">Contained Building Blocks</dt>
 </dl>
 </div>
@@ -1757,15 +1781,11 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Serves as an adapter for the external WikiData API.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM API</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provides an interface to use the LLM Service.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Questions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Questions Module</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions from the WikiData information.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hints</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hints Module</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Generates hints using the LLM Service.</p></td>
 </tr>
 <tr>
@@ -1773,11 +1793,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Connector</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Joins the Questions and Hints services. That way question&#8217;s context can be used to generate hints.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Express.js Server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides an internal RESTful API for the rest of microservices.</p></td>
 </tr>
 </tbody>
@@ -1794,11 +1810,11 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <dl>
 <dt class="hdlist1">Purpose</dt>
 <dd>
-<p>Allows users to login, signup and manage their session.</p>
+<p>Allows users to login, signup and verify their local session.</p>
 </dd>
 <dt class="hdlist1">Motivation</dt>
 <dd>
-<p>Keeps the user&#8217;s sensitive data and session separate from the rest of the application to ensure the higher standards of security and privacy.</p>
+<p>Keeps the user&#8217;s sensitive data and session separate from the rest of the application to ensure higher standards of security and privacy.</p>
 </dd>
 <dt class="hdlist1">Contained Building Blocks</dt>
 </dl>
@@ -1816,31 +1832,39 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the user&#8217;s data through interfaces.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the user&#8217;s data.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DB Connector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DB Adapter (Mongoose)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides persistence for the model entities.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login Handler</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allows login and obtaining a session.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Register</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allows registering and obtaining a session for the just registered user.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register Handler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows registering a user.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Session Manager</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages volatile sessions for the users.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify Handler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows verifying an user session. Internal service</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Crypt Utils</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provides encryption, hashing algorithms commonly used for authentication and storing sensitive data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption Utilities (Argon2/JWT)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides encryption utilities to secure sessions and stored passwords.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides configuration for the service.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validators</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides validation inputs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server (Express.js)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides an internal secured RESTful API for the rest of microservices.</p></td>
 </tr>
 </tbody>
@@ -1857,7 +1881,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <dl>
 <dt class="hdlist1">Purpose</dt>
 <dd>
-<p>Manage game states and track the user&#8217;s progress.</p>
+<p>Responsible for connecting <strong>Questions Service</strong> with <strong>Statistics Service</strong>, that way we can keep track of the user&#8217;s progress and provide statistics.</p>
 </dd>
 <dt class="hdlist1">Motivation</dt>
 <dd>
@@ -1879,19 +1903,11 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Stats API</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provides access to the stats microservice.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Questions API</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provides access to the questions microservice.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Game Manager</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Keeps track of user games and fires stats events.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Express.js Server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides an internal secured RESTful API for the rest of microservices.</p></td>
 </tr>
 </tbody>
@@ -2009,7 +2025,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 </div>
 <div class="sect2">
-<h3 id="_abstract_general_state_diagram">6.1. Abstract general state diagram</h3>
+<h3 id="_abstract_states_of_the_application">6.1. Abstract states of the application</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -2020,7 +2036,7 @@ The state diagram shows the relation of the different situations of the app.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/06_State_Diagram.png" alt="State Diagram">
+<img src="./images/06_State_Diagram.png" alt="State Diagram of the general game behaviour">
 </div>
 </div>
 </div>
@@ -2039,7 +2055,7 @@ If the login is succesfully, the app shows the different options of the game. In
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Sequence%20diagram.png" alt="Sequence diagram" width="537" height="439">
+<img src="./images/06_Login.png" alt="Sequence Diagram of the login of a user">
 </div>
 </div>
 </div>
@@ -2057,7 +2073,7 @@ If the login is succesfully, the app shows the different options of the game. In
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Sequence%20diagram.png" alt="Sequence diagram" width="1130" height="786">
+<img src="./images/06_Game.png" alt="Sequence Diagram of the game runtime behaviour">
 </div>
 </div>
 </div>
@@ -2078,7 +2094,7 @@ If the login is succesfully, the app shows the different options of the game. In
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Sequence%20diagram.png" alt="Sequence diagram" width="757" height="469">
+<img src="./images/06_History.png" alt="Sequence Diagram of displaying the history of a user">
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -3021,7 +3037,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-02-24 01:10:04 +0100
+Last updated 2025-03-02 14:39:31 +0100
 </div>
 </div>
 </body>
