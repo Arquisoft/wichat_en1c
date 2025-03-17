@@ -1,5 +1,16 @@
 const request = require("supertest");
-const app = require("./question-service");
+
+let app;
+const dependencies = [];
+
+beforeAll(async () => {
+  // Run app
+  app = require("./question-service");
+});
+
+afterAll(async () => {
+  app.close();
+});
 
 test("Test musicians endpoint", async () => {
   const response = await request(app).get("/musicians");
@@ -9,4 +20,4 @@ test("Test musicians endpoint", async () => {
   expect(response.body).toHaveProperty("image");
   expect(response.body).toHaveProperty("options");
   expect(response.body).toHaveProperty("musicianName");
-});
+}, 10_000);

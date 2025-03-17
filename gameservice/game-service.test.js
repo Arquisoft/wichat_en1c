@@ -1,9 +1,23 @@
 const request = require("supertest");
 
-const gameService = require("./game-service");
+let app;
+const dependencies = [];
+
+beforeAll(async () => {
+  // Run dependents
+  dependencies.push(require("../questionservice/question-service"));
+
+  // Run app
+  app = require("./game-service");
+});
+
+afterAll(async () => {
+  dependencies.forEach((dependent) => dependent.close());
+  app.close();
+});
 
 test("should return game configuration values", async () => {
-  const response = await request(gameService).get("/config");
+  const response = await request(app).get("/config");
 
   expect(response.status).toBe(200);
   expect(response.body.time).toBe(20);
@@ -12,7 +26,7 @@ test("should return game configuration values", async () => {
 });
 
 test("should return a valid question", async () => {
-  const response = await request(gameService).get("/question");
+  const response = await request(app).get("/question");
 
   expect(response.status).toBe(200);
   expect(response.body).toHaveProperty("question");
@@ -20,13 +34,13 @@ test("should return a valid question", async () => {
 });
 
 test("should return 400 if an answer is not sent", async () => {
-  const response = await request(gameService).post("/answer").send({});
+  const response = await request(app).post("/answer").send({});
 
   expect(response.status).toBe(400);
 });
 
 test("should return valid answer data if an answer is sent", async () => {
-  const response = await request(gameService)
+  const response = await request(app)
     .post("/answer")
     .send({ selectedAnswer: "answer" });
 
