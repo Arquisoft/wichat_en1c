@@ -1,6 +1,6 @@
 // src/pages/Game.js
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Button, Box, LinearProgress, TextField, IconButton, Tooltip } from "@mui/material";
+import { Container, Typography, Button, Box, LinearProgress, TextField, IconButton, Tooltip, CircularProgress } from "@mui/material";
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { Typewriter } from "react-simple-typewriter";
@@ -39,7 +39,15 @@ const Game = () => {
   const [hintCooldown, setHintCooldown] = useState(false);
 
   const [gameSettings, setGameSettings] = useState({ rounds: 3, timePerQuestion: 20, maxHints: 3 }); // Default, will be fetched
-  const [questionData, setQuestionData] = useState(null); // Store question data
+  const [questionData, setQuestionData] = useState({ 
+    question: "",
+    image: "",
+    options: ["", "", "", ""] 
+  }); // Store question data
+
+  const [answer, setAnswer] = useState("");
+
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const correctAudio = new Audio("/correct.mp3");
   const wrongAudio = new Audio("/wrong.mp3");
@@ -66,11 +74,14 @@ const Game = () => {
   // Fetch question data at the start of each round
   useEffect(() => {
     const fetchQuestion = async () => {
+      setIsLoading(true); // Start loading
       try {
         const response = await axios.get(`${apiEndpoint}/game/question`);
         setQuestionData(response.data);
       } catch (error) {
         console.error("Error fetching question:", error);
+      } finally {
+        setIsLoading(false); // End loading
       }
     };
     fetchQuestion();
@@ -78,16 +89,15 @@ const Game = () => {
 
   // Countdown timer logic
   useEffect(() => {
-    if (timeLeft > 0 && !isPaused) {
+    if (timeLeft > 0 && !isPaused && !isLoading) { 
       const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-      // Cleanup to avoid memory leaks
       return () => clearInterval(timer);
-    } else if (timeLeft === 0 && !isPaused) {
+    } else if (timeLeft === 0 && !isPaused && !isLoading) {
       wrongAudio.play();
       setIsPaused(true);
       handleRoundEnd(false);
     }
-  }, [timeLeft, isPaused]);
+  }, [timeLeft, isPaused, isLoading]);
 
   // Format date inside the question string (e.g., converts "1979-01-01T00:00:00Z" to "January 1, 1979")
   const formatQuestionWithDate = (question) => {
@@ -105,12 +115,13 @@ const Game = () => {
   };
 
   const handleOptionClick = async (option) => {
-    if (isPaused) return;
+    if (isPaused || isLoading) return; 
     setSelectedOption(option);
     setIsPaused(true);
     try {
       const response = await axios.post(`${apiEndpoint}/game/answer`, { selectedAnswer: option });
       const isCorrect = response.data.isCorrect;
+      setAnswer(response.data.correctAnswer);
       isCorrect ? correctAudio.play() : wrongAudio.play();
       handleRoundEnd(isCorrect);
     } catch (error) {
@@ -172,6 +183,17 @@ const Game = () => {
     );
   }
 
+  if (isLoading) {
+    return (
+      <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
+        <CircularProgress />
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Loading...
+        </Typography>
+      </Container>
+    );
+  }
+
   return (
     <Container
       component="main"
@@ -220,14 +242,14 @@ const Game = () => {
   
         {/* Display the question */}
         <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }} data-testid="question">
-          {formatQuestionWithDate(questionData?.question)}
+          {formatQuestionWithDate(questionData.question)}
         </Typography>
   
         {/* Display the image */}
         <Box sx={{ mb: 2, display: "flex", justifyContent: "center" }}>
           <img
             data-testid="question-image"
-            src={questionData?.image}
+            src={questionData.image}
             alt="Question Image"
             style={{
                 maxWidth: "300px", // Set max width of the image
@@ -242,14 +264,14 @@ const Game = () => {
   
         {/* Render answer options */}
         <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2} width="100%">
-          {questionData?.options?.map((option, index) => (
+          {questionData.options.map((option, index) => (
             <Button
               data-testid={`option-${index}`}
               key={option}
               variant="contained"
               color={
                 selectedOption === option
-                  ? option === mockGameData.answer
+                  ? option === answer
                     ? "success"
                     : "error"
                   : selectedOption && selectedOption !== option
