@@ -14,7 +14,7 @@ services:
     container_name: authservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/authservice:latest
     profiles: ["dev", "prod"]
-    build: ./users/authservice
+    build: ./authservice
     depends_on:
       - mongodb
     ports:
@@ -22,34 +22,24 @@ services:
     networks:
       - mynetwork
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/userdb
-
-  userservice:
-    container_name: userservice-wichat_en1c
-    image: ghcr.io/arquisoft/wichat_en1c/userservice:latest
-    profiles: ["dev", "prod"]
-    build: ./users/userservice
-    depends_on:
-      - mongodb
-    ports:
-      - "8001:8001"
-    networks:
-      - mynetwork
-    environment:
+      NODE_ENV: production
+      CRYPT_SECRET: ${CRYPT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 8002
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
   llmservice:
     container_name: llmservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/llmservice:latest
     profiles: ["dev", "prod"]
-    env_file:
-      - .env
-    build: 
+    build:
       context: ./llmservice
     ports:
-      - "8003:8003"
+      - "8005:8005"
     networks:
       - mynetwork
+    environment:
+      LLM_API_KEY: ${LLM_API_KEY}
 
   gatewayservice:
     container_name: gatewayservice-wichat_en1c
@@ -58,17 +48,14 @@ services:
     build: ./gatewayservice
     depends_on:
       - mongodb
-      - userservice
       - authservice
       - llmservice
+      - gameservice
+      - questionservice
     ports:
       - "8000:8000"
     networks:
       - mynetwork
-    environment:
-      AUTH_SERVICE_URL: http://authservice:8002
-      USER_SERVICE_URL: http://userservice:8001
-      LLM_SERVICE_URL: http://llmservice:8003
 
   webapp:
     container_name: webapp-wichat_en1c
@@ -79,6 +66,30 @@ services:
       - gatewayservice
     ports:
       - "3000:3000"
+
+  gameservice:
+    container_name: gameservice-wichat_en1c
+    build: ./gameservice
+    profiles: ["dev", "prod"]
+    ports:
+      - "8001:8001"
+    networks:
+      - mynetwork
+    depends_on:
+      - questionservice
+    environment:
+      QUESTIONS_SERVICE_URL: http://questionservice:8004
+
+  questionservice:
+    container_name: questionservice-wichat_en1c
+    build: ./questionservice
+    profiles: ["dev", "prod"]
+    ports:
+      - "8004:8004" 
+    networks:
+      - mynetwork
+    depends_on:
+      - llmservice
 
   prometheus:
     image: prom/prometheus
@@ -91,9 +102,9 @@ services:
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
-    depends_on: 
+    depends_on:
       - gatewayservice
-      
+
   grafana:
     image: grafana/grafana
     container_name: grafana-wichat_en1c
@@ -110,14 +121,13 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     ports:
       - "9091:9091"
-    depends_on: 
+    depends_on:
       - prometheus
-
 
 volumes:
   mongodb_data:
-  prometheus_data: 
-  grafana_data: 
+  prometheus_data:
+  grafana_data:
 
 networks:
   mynetwork:

@@ -2,80 +2,78 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const promBundle = require('express-prom-bundle');
-//libraries required for OpenAPI-Swagger
-const swaggerUi = require('swagger-ui-express'); 
-const fs = require("fs")
-const YAML = require('yaml')
+const swaggerUi = require('swagger-ui-express');
+const fs = require("fs");
+const YAML = require('yaml');
 
 const app = express();
 const port = 8000;
 
-const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
-const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
-const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://gameservice:8001'; 
+const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://authservice:8002';
+const statsServiceUrl = process.env.STATS_SERVICE_URL || 'http://localhost:8003'; //In progress
+const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://questionservice:8004'; 
 
 app.use(cors());
 app.use(express.json());
 
-//Prometheus configuration
-const metricsMiddleware = promBundle({includeMethod: true});
+const metricsMiddleware = promBundle({ includeMethod: true });
 app.use(metricsMiddleware);
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.post('/login', async (req, res) => {
-  try {
-    // Forward the login request to the authentication service
-    const authResponse = await axios.post(authServiceUrl+'/login', req.body);
-    res.json(authResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
-});
+// Custom Proxy Middleware
+const customProxyMiddleware = (target) => {
+  return async (req, res) => {
+    try {
+      const targetUrl = target + req.url.replace(/^\/(auth|questions|game|stats)/, '');
+      console.log(`Custom Proxy: Forwarding to ${targetUrl}`);
 
-app.post('/adduser', async (req, res) => {
-  try {
-    // Forward the add user request to the user service
-    const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
-    res.json(userResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
-});
+      const axiosRes = await axios({
+        method: req.method,
+        url: targetUrl,
+        headers: req.headers,
+        data: req.body,
+        validateStatus: () => true, // Don't throw on non-2xx status
+      });
 
-app.post('/askllm', async (req, res) => {
-  try {
-    // Forward the add user request to the user service
-    const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
-    res.json(llmResponse.data);
-  } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
-});
+      Object.keys(axiosRes.headers).forEach((headerName) => {
+        res.setHeader(headerName, axiosRes.headers[headerName]);
+      });
 
-// Read the OpenAPI YAML file synchronously
-openapiPath='./openapi.yaml'
+      res.status(axiosRes.status).send(axiosRes.data);
+    } catch (error) {
+      console.error(`Custom Proxy Error: ${error.message}`);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+};
+
+// Attach Proxy Routes (using custom proxy)
+app.use('/auth', customProxyMiddleware(authServiceUrl));
+app.use('/questions', customProxyMiddleware(questionsServiceUrl));
+app.use('/game', customProxyMiddleware(gameServiceUrl));
+app.use('/stats', customProxyMiddleware(statsServiceUrl));
+
+// Swagger API Documentation
+const openapiPath = './openapi.yaml';
 if (fs.existsSync(openapiPath)) {
-  const file = fs.readFileSync(openapiPath, 'utf8');
-
-  // Parse the YAML content into a JavaScript object representing the Swagger document
-  const swaggerDocument = YAML.parse(file);
-
-  // Serve the Swagger UI documentation at the '/api-doc' endpoint
-  // This middleware serves the Swagger UI files and sets up the Swagger UI page
-  // It takes the parsed Swagger document as input
-  app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  try {
+    const file = fs.readFileSync(openapiPath, 'utf8');
+    const swaggerDocument = YAML.parse(file);
+    app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  } catch (err) {
+    console.error("Error parsing OpenAPI file:", err.message);
+  }
 } else {
-  console.log("Not configuring OpenAPI. Configuration file not present.")
+  console.log("Not configuring OpenAPI. Configuration file not present.");
 }
 
-
-// Start the gateway service
+// Start Server
 const server = app.listen(port, () => {
   console.log(`Gateway Service listening at http://localhost:${port}`);
 });
 
-module.exports = server
+module.exports = server;
