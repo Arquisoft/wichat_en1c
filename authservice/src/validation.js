@@ -15,7 +15,7 @@ const setup = (status, ...vals) => {
       res.status(status).json({
         success: false,
         message: STATUS_CODES[status],
-        errors: errors.mapped(),
+        errors: status === 400 ? errors.mapped() : undefined,
       });
     else next();
   });
