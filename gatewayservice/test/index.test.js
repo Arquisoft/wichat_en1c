@@ -4,15 +4,16 @@ const fs = require("fs");
 jest.mock("fs");
 fs.existsSync.mockReturnValue(false);
 
-// Change environment variables to point to mock server
-const mockURL = "http://localhost:9999";
-process.env.GAME_SERVICE_URL = `${mockURL}/game`;
-process.env.AUTH_SERVICE_URL = `${mockURL}/auth`;
-process.env.STATS_SERVICE_URL = `${mockURL}/stats`;
-process.env.QUESTIONS_SERVICE_URL = `${mockURL}/questions`;
-process.env.PUBLIC_PATH = "";
-
+// Modify the config to point to the mock server
 const config = require("../src/config");
+
+const mockURL = "http://localhost:9999";
+config.urls.game = `${mockURL}/game`;
+config.urls.auth = `${mockURL}/auth`;
+config.urls.stats = `${mockURL}/stats`;
+config.urls.question = `${mockURL}/questions`;
+config.publicPath = "";
+config.auth.url = `${mockURL}/auth/verify`;
 config.proxyOpts.proxyTimeout = 500;
 
 // Setup
@@ -31,6 +32,8 @@ afterAll(() => {
 describe("Gateway Service", () => {
   describe("Proxy", () => {
     test("Should proxy to the appropriate service & path", async () => {
+      console.log(config);
+
       const agent = request(server);
       const responses = await Promise.all([
         agent.get("/auth/path?ok").send({ ok: true }),
