@@ -28,7 +28,7 @@ describe('Login component', () => {
     const loginButton = screen.getByRole('button', { name: /Login/i });
 
     // Mock the axios.post request to simulate a successful login response
-    mockAxios.onPost('http://localhost:8000/auth/public/login').reply(200, { 
+    mockAxios.onPost('http://localhost:8000/auth/login').reply(200, { 
       success: true, 
       token: 'fakeToken123',
       username: 'testUser'
@@ -61,7 +61,7 @@ describe('Login component', () => {
     const loginButton = screen.getByRole('button', { name: /Login/i });
 
     // Mock the axios.post request to simulate an Unauthorized error response
-    mockAxios.onPost('http://localhost:8000/auth/public/login').reply(401, { 
+    mockAxios.onPost('http://localhost:8000/auth/login').reply(401, { 
       success: false, 
       message: 'Unauthorized'
     });
@@ -93,7 +93,7 @@ describe('Login component', () => {
     const loginButton = screen.getByRole('button', { name: /Login/i });
 
     // Mock the axios.post request to simulate a Bad Request (invalid input)
-    mockAxios.onPost('http://localhost:8000/auth/public/login').reply(400, { 
+    mockAxios.onPost('http://localhost:8000/auth/login').reply(400, { 
       success: false, 
       message: 'Bad Request',
       errors: {
