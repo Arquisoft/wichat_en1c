@@ -21,9 +21,10 @@
   },
   "homepage": "https://github.com/Arquisoft/wichat_en1c#readme",
   "workspaces": [
-    "users/authservice",
-    "users/userservice",
+    "authservice",
     "gatewayservice",
+    "gameservice",
+    "questionservice",
     "llmservice",
     "webapp"
   ]
