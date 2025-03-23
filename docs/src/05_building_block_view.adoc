@@ -271,7 +271,7 @@ image::build_block_view/auth_service.drawio.svg[]
 
 Purpose::
 
-Allows users to login, signup and manage their session.
+Allows users to login, signup and verify their local session.
 
 Motivation::
 
@@ -280,14 +280,16 @@ Keeps the user's sensitive data and session separate from the rest of the applic
 Contained Building Blocks::
 [cols="1,2", options="header"]
 |===
-| **Building Block**      | **Brief description**
-| Data Model              | Represents the user's data through interfaces.
-| DB Adapter              | Provides persistence for the model entities.
-| Login Handler           | Allows login and obtaining a session.
-| Register Handler        | Allows registering and obtaining a session for the just registered user.
-| Session Manager         | Manages sessions for the users.
-| Encryption Utilities    | Provides encryption, hashing algorithms commonly used for authentication and storing sensitive data.
-| Express.js Server       | Provides an internal secured RESTful API for the rest of microservices.
+| **Building Block**                | **Brief description**
+| Data Model                        | Represents the user's data.
+| DB Adapter (Mongoose)             | Provides persistence for the model entities.
+| Login Handler                     | Allows login and obtaining a session.
+| Register Handler                  | Allows registering a user.
+| Verify Handler                    | Allows verifying an user session. Internal service
+| Encryption Utilities (Argon2/JWT) | Provides encryption utilities to secure sessions and stored passwords.
+| Configuration                     | Provides configuration for the service.
+| Validators                        | Provides validation inputs.
+| Server (Express.js)               | Provides an internal secured RESTful API for the rest of microservices.
 |===
 
 ==== White Box "Game Service"

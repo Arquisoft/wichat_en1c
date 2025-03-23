@@ -2,7 +2,7 @@ const axios = require('axios');
 const express = require('express');
 
 const app = express();
-const port = 8003;
+const port = 8005;
 
 // Middleware to parse JSON in request body
 app.use(express.json());
@@ -43,7 +43,20 @@ function validateRequiredFields(req, requiredFields) {
     }
   }
 }
+async function getMusicianName() {
+  try {
+    const response = await axios.get('http://localhost:8004/musicians');
+    const musicianName = response.data.musicianName;
+    console.log('Musician Name:', musicianName);
+    return musicianName;
+  } catch (error) {
+    console.error('Error fetching musician name:', error.message);
+    return null;
+  }
+}
 
+// It does not work as intented. It will be updated
+getMusicianName();
 // Generic function to send questions to LLM
 async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
   try {
