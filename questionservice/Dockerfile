@@ -8,13 +8,17 @@ WORKDIR /usr/src/questionservice
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY . .
+COPY ./llm-service.js ./ 
+# TODO: Maybe move the src files to a src folder
 
 # Expose the port the app runs on
 EXPOSE 8004
 
+# Run the app as a non-root user
+USER node
+
 # Define the command to run your app
-CMD ["node", "question-service.js"]
+CMD ["npm", "start"]
