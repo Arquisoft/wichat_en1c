@@ -25,10 +25,8 @@ module.exports = (app) =>
         { timeout: 1_000 }
       );
 
-      // Attach logged-in username to headers
-      req.headers.authorization = `Basic ${Buffer.from(
-        verification.data.username
-      ).toString("base64")}`;
+      // Attach logged-in username
+      req.body.username = verification.data.username;
 
       next();
     } catch (err) {
