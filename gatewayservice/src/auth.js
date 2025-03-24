@@ -26,6 +26,7 @@ module.exports = (app) =>
       );
 
       // Attach logged-in username
+      req.body ??= {};
       req.body.username = verification.data.username;
 
       next();
