@@ -32,8 +32,6 @@ afterAll(() => {
 describe("Gateway Service", () => {
   describe("Proxy", () => {
     test("Should proxy to the appropriate service & path", async () => {
-      console.log(config);
-
       const agent = request(server);
       const responses = await Promise.all([
         agent.get("/auth/path?ok").send({ ok: true }),
