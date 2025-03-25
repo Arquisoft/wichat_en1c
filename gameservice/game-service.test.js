@@ -3,6 +3,8 @@ const request = require("supertest");
 let app;
 const dependencies = [];
 
+// TODO: Mock question-service
+// Flaky test
 beforeAll(async () => {
   // Run dependents
   dependencies.push(require("../questionservice/question-service"));
@@ -31,7 +33,7 @@ test("should return a valid question", async () => {
   expect(response.status).toBe(200);
   expect(response.body).toHaveProperty("question");
   expect(response.body.question).toBeTruthy();
-});
+}, 10_000);
 
 test("should return 400 if an answer is not sent", async () => {
   const response = await request(app).post("/answer").send({});

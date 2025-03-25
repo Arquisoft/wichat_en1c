@@ -29,23 +29,24 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  # e2e-tests:
-  #   needs: [unit-tests]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #     - run: npm --prefix authservice ci
-  #     - run: npm --prefix llmservice ci
-  #     - run: npm --prefix gatewayservice ci
-  #     - run: npm --prefix webapp ci
-  #     - run: npm --prefix gameservice ci
-  #     - run: npm --prefix questionservice ci
+  e2e-tests:
+    needs: [unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm --prefix authservice ci
+      - run: npm --prefix llmservice ci
+      - run: npm --prefix gatewayservice ci
+      - run: npm --prefix webapp ci
+      - run: npm --prefix gameservice ci
+      - run: npm --prefix questionservice ci
 
-  #     - run: npm --prefix webapp run build
-  #     - run: npm --prefix webapp run test:e2e
+      - run: npm --prefix webapp run build
+      # TODO: Execute E2E tests
+      # - run: npm --prefix webapp run test:e2e
 
   docker-push-webapp:
     name: Push webapp Docker Image to GitHub Packages
@@ -53,7 +54,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Publish to Registry
@@ -74,7 +75,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -95,7 +96,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Publish to Registry
@@ -113,7 +114,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Update OpenAPI configuration
@@ -135,7 +136,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Publish to Registry
@@ -146,14 +147,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           workdir: gameservice
-  
+
   docker-push-questionservice:
     name: Push QuestionService Docker Image to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    # needs: [e2e-tests]
+    needs: [e2e-tests]
     steps:
       - uses: actions/checkout@v4
       - name: Publish to Registry
@@ -175,7 +176,7 @@ jobs:
         docker-push-gatewayservice,
         docker-push-webapp,
         docker-push-gameservice,
-        docker-push-questionservice
+        docker-push-questionservice,
       ]
     steps:
       - name: Deploy over SSH
