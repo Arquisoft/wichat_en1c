@@ -39,6 +39,7 @@ services:
     networks:
       - mynetwork
     environment:
+      NODE_ENV: production
       LLM_API_KEY: ${LLM_API_KEY}
 
   gatewayservice:
@@ -56,6 +57,14 @@ services:
       - "8000:8000"
     networks:
       - mynetwork
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      GAME_SERVICE_URL: http://gameservice:8001
+      AUTH_SERVICE_URL: http://authservice:8002
+      STATS_SERVICE_URL: http://statservice:8003
+      QUESTIONS_SERVICE_URL: http://questionservice:8004
+      LLM_SERVICE_URL: http://llmservice:8005
 
   webapp:
     container_name: webapp-wichat_en1c
@@ -79,6 +88,7 @@ services:
     depends_on:
       - questionservice
     environment:
+      NODE_ENV: production
       QUESTIONS_SERVICE_URL: http://questionservice:8004
 
   questionservice:
@@ -87,11 +97,13 @@ services:
     build: ./questionservice
     profiles: ["dev", "prod"]
     ports:
-      - "8004:8004" 
+      - "8004:8004"
     networks:
       - mynetwork
     depends_on:
       - llmservice
+    environment:
+      NODE_ENV: production
 
   prometheus:
     image: prom/prometheus

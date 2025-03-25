@@ -21,14 +21,14 @@ const Login = () => {
   const loginUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiEndpoint}/auth/public/login`, { username, password }, {
+      const {data: {token}} = await axios.post(`${apiEndpoint}/auth/login`, { username, password }, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
   
       // If login is successful, store session and show success message
-      createSession(username); 
+      createSession(token, username); 
       setOpenSnackbar(true);
     } catch (error) {
       console.log(`Error ${error.response.data.message}`);

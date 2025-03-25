@@ -8,25 +8,17 @@ WORKDIR /usr/src/gatewayservice
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm install
-
-# Define environment variables for services
-ARG AUTH_SERVICE_URL="http://authservice:8002"
-ENV AUTH_SERVICE_URL=$AUTH_SERVICE_URL
-
-ARG GAME_SERVICE_URL="http://gameservice:8001"
-ENV GAME_SERVICE_URL=$GAME_SERVICE_URL
-
-ARG STATS_SERVICE_URL="http://localhost:8003"
-ENV STATS_SERVICE_URL=$STATS_SERVICE_URL
-
-ARG QUESTIONS_SERVICE_URL="http://questionservice:8004"
-ENV QUESTIONS_SERVICE_URL=$QUESTIONS_SERVICE_URL
+RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY . .
+COPY ./src ./src
+COPY ./openapi.yaml ./
 
+# Expose the port the app runs on
 EXPOSE 8000
 
+# Run the app as a non-root user
+USER node
+
 # Define the command to run your app
-CMD ["node", "gateway-service.js"]
+CMD ["npm", "start"]
