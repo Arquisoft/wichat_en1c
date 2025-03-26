@@ -1,9 +1,9 @@
-// src/pages/Login.test.js
+// src/test/Login.test.js
 import React from 'react';
 import { render, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Login from './Login';
+import Login from '../pages/Login';
 import { BrowserRouter } from 'react-router';
 import { SessionProvider } from '../SessionContext';
 
@@ -23,9 +23,9 @@ describe('Login component', () => {
       </BrowserRouter>
     );
 
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const loginButton = screen.getByRole('button', { name: /Login/i });
+    const usernameInput = screen.getByTestId(/Username/i);
+    const passwordInput = screen.getByTestId(/Password/i);
+    const loginButton = screen.getByTestId('button', { name: /Login/i });
 
     // Mock the axios.post request to simulate a successful login response
     mockAxios.onPost('http://localhost:8000/auth/login').reply(200, { 

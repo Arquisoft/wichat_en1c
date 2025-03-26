@@ -1,10 +1,10 @@
-// src/components/NavBar.test.js
+// src/test/NavBar.test.js
 import { render, screen, fireEvent } from "@testing-library/react";
-import NavBar from "./NavBar";
+import NavBar from "../components/NavBar";
 import { BrowserRouter } from "react-router";
 import { SessionContext } from "../SessionContext";
 
-// Mock navigate (so we can track route changes)
+// Mock navigate (track route changes)
 const mockNavigate = jest.fn();
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),

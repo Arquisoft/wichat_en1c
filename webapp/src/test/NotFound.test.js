@@ -1,7 +1,7 @@
-// src/pages/NotFound.test.js
+// src/test/NotFound.test.js
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
-import NotFound from './NotFound'; 
+import NotFound from '../pages/NotFound'; 
 
 describe('NotFound Page', () => {
   test('renders 404 text, Go Home button, and navigates to home page on button click', () => {

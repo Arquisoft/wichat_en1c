@@ -1,6 +1,6 @@
-// src/pages/Game.test.js
+// src/test/Game.test.js
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Game from './Game';
+import Game from '../pages/Game';
 import { BrowserRouter } from 'react-router';
 
 describe('Game Page Tests', () => { // Will be changed in prototype

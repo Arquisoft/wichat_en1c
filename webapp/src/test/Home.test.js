@@ -1,8 +1,8 @@
-// src/pages/Home.test.js
+// src/test/Home.test.js
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { SessionProvider } from '../SessionContext'; 
-import Home from './Home'; 
+import Home from '../pages/Home'; 
 
 describe('Home Page', () => {
   test('renders the title of the app, button and navigation to game', () => {

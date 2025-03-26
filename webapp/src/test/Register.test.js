@@ -1,15 +1,16 @@
+// src/test/Register.test.js
 import React from 'react';
 import { render, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Register from './Register';
+import Register from '../pages/Register';
 import { BrowserRouter } from 'react-router';
 import { SessionProvider } from '../SessionContext';
 
 const mockAxios = new MockAdapter(axios);
 
 describe('Register component', () => {
-  const apiEndpoint = 'http://localhost:8000/auth/public/signup';
+  const apiEndpoint = 'http://localhost:8000/auth/signup';
 
   beforeEach(() => {
     mockAxios.reset();

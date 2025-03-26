@@ -1,16 +1,14 @@
-// src/components/BackgroundVideo.test.js
+// src/test/BackgroundVideo.test.js
 import { render, screen } from '@testing-library/react';
-import BackgroundVideo from './BackgroundVideo';
+import BackgroundVideo from '../components/BackgroundVideo';
 
 describe('BackgroundVideo Component', () => {
   test('renders and applies correct attributes and styles to video element', () => {
     const videoSrc = '/homeBackground30fps.mp4';
     render(<BackgroundVideo videoSrc={videoSrc} />);
     
-    // Get the video element
+     // Check if the video element is in the document
     const videoElement = screen.getByTestId('video-element');
-    
-    // Check if the video element is in the document
     expect(videoElement).toBeInTheDocument();
 
     // Check if the video src matches the passed prop

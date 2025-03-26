@@ -1,6 +1,7 @@
 // Taken from 2024 WIQ_ES04A project
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+
 // Create a React Context for managing session-related data
 const SessionContext = createContext();
 

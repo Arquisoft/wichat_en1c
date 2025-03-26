@@ -1,7 +1,8 @@
+// src/test/App.test.js
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from '../App';
 import { BrowserRouter } from 'react-router';
-import { SessionProvider } from './SessionContext';
+import { SessionProvider } from '../SessionContext';
 
 describe('App Component', () => {
   test('renders home page initially', () => {
@@ -22,10 +23,10 @@ describe('App Component', () => {
     expect(videoElement).toBeInTheDocument();
 
     // Footer
-    expect(screen.getByText('Docs')).toBeInTheDocument();
+    expect(screen.getByText(/ChattySW ©/i)).toBeInTheDocument(); 
 
     // NavBar
-    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByAltText("WIChatLogo")).toBeInTheDocument();
   });
 
   test('renders login page when navigating to /login', () => {
@@ -70,6 +71,6 @@ describe('App Component', () => {
     );
 
     // Check if the 404 page is rendered by looking for unique text on the 404 page
-    expect(screen.getByText('404')).toBeInTheDocument(); // Adjust text based on your 404 page
+    expect(screen.getByText('404')).toBeInTheDocument(); 
   });
 });

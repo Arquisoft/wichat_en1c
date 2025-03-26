@@ -1,6 +1,6 @@
-// src/components/PrivateRoute.test.js
+// src/test/PrivateRoute.test.js
 import { render, screen } from '@testing-library/react';
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from '../components/PrivateRoute';
 import { BrowserRouter } from 'react-router';
 import React from 'react';
 
