@@ -5,8 +5,9 @@ import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { Typewriter } from "react-simple-typewriter";
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+const apiEndpoint = process.env.API_ENDPOINT || 'http://localhost:8000';
 
 // Mock game data (to simulate a backend response)
 const mockGameData = {
@@ -52,6 +53,7 @@ const Game = () => {
   const correctAudio = new Audio("/correct.mp3");
   const wrongAudio = new Audio("/wrong.mp3");
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   
   // Fetch game configuration on component mount
   useEffect(() => {
@@ -169,14 +171,14 @@ const Game = () => {
     return (
       <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
         <Typography variant="h4" gutterBottom>
-          🎉 End of the Game 🎉
+          🎉 {t('endGame')} 🎉
         </Typography>
         <Typography variant="h6" sx={{ mb: 3 }}>
-          Thanks for playing!
+          {t('thanks')}!
         </Typography>
         <form onSubmit={handleReturnHome}>
           <Button type="submit" variant="contained" color="primary">
-            Go Home
+            {t('goHome')}
           </Button>
         </form>
       </Container>
@@ -188,7 +190,7 @@ const Game = () => {
       <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
         <CircularProgress />
         <Typography variant="h6" sx={{ mt: 2 }}>
-          Loading...
+          {t('loading')}...
         </Typography>
       </Container>
     );
@@ -236,7 +238,7 @@ const Game = () => {
           </Box>
   
           <Typography variant="h6" sx={{ marginLeft: 2 }} data-testid="round-info">
-            Round: {currentRound} / {gameSettings.rounds}
+            {t('round')}: {currentRound} / {gameSettings.rounds}
           </Typography>
         </Box>
   
@@ -329,7 +331,7 @@ const Game = () => {
           <Box display="flex" alignItems="start" gap={1}>
             <HelpOutline color="primary" />
             <Typography variant="body1" data-testid="hints-used">
-              Hints used: {hintsUsed}/{mockGameData.gameSettings.maxHints}
+              {t('hints')}: {hintsUsed}/{mockGameData.gameSettings.maxHints}
             </Typography>
           </Box>
         </Tooltip>
@@ -346,7 +348,7 @@ const Game = () => {
             data-testid="hint-input"
             variant="outlined"
             size="small"
-            placeholder="Ask for a hint..."
+            placeholder={t('hintPlaceholder')}
             disabled={hintsUsed >= mockGameData.gameSettings.maxHints || hintCooldown || isPaused}
             value={hintMessage}
             onChange={(e) => setHintMessage(e.target.value)}

@@ -2,10 +2,12 @@
 import React, { useRef, useEffect } from 'react';
 import { Container, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 const NotFound = () => {
   const navigate = useNavigate();
   const buttonRef = useRef(null); // Create a reference to the button
+  const { t, i18n } = useTranslation();
 
   const handleGoHome = (e) => {
     e.preventDefault();
@@ -31,16 +33,16 @@ const NotFound = () => {
         404
       </Typography>
       <Typography variant="h5" gutterBottom>
-        Oops! Page not found.
+        {t('notFound1')}
       </Typography>
       <Typography variant="body1" paragraph>
-        The page you're looking for doesn't exist or has been moved.
+        {t('notFound2')}
       </Typography>
 
       {/* Home Button */}
       <form onSubmit={handleGoHome}>
         <Button ref={buttonRef} type="submit" variant="contained" color="primary">
-          Go Home
+          {t('goHome')}
         </Button>
       </form>
     </Container>

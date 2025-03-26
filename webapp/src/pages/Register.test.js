@@ -9,7 +9,7 @@ import { SessionProvider } from '../SessionContext';
 const mockAxios = new MockAdapter(axios);
 
 describe('Register component', () => {
-  const apiEndpoint = 'http://localhost:8000/auth/public/signup';
+  const apiEndpoint = 'http://localhost:8000/auth/signup';
 
   beforeEach(() => {
     mockAxios.reset();

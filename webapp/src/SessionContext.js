@@ -1,6 +1,6 @@
 // Taken from 2024 WIQ_ES04A project
 import React, { createContext, useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 // Create a React Context for managing session-related data
 const SessionContext = createContext();
@@ -29,14 +29,16 @@ const SessionProvider = ({ children }) => {
     }, []);
 
     // Function to create a new session when a user logs in
-    const createSession = (username) => {
-        const newSessionId = uuidv4(); // Generate a unique session ID
-        setSessionId(newSessionId);
+    const createSession = (token, username) => {
+        setSessionId(token);
         setUsername(username);
         setIsLoggedIn(true);
 
+        // Set the Authorization header for all axios requests from now on
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
         // Store session details in localStorage
-        localStorage.setItem('sessionId', newSessionId);
+        localStorage.setItem('sessionId', token);
         localStorage.setItem('username', username);
     };
 
@@ -47,6 +49,9 @@ const SessionProvider = ({ children }) => {
         setSessionId('');
         setUsername('');
         setIsLoggedIn(false);
+
+        // Remove the Authorization header for all axios requests
+        delete axios.defaults.headers.common['Authorization'];
     };
 
     // Destroys session when the app is closed

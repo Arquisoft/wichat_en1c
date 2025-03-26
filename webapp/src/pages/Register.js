@@ -3,8 +3,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+const apiEndpoint = process.env.API_ENDPOINT || 'http://localhost:8000';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -15,10 +16,12 @@ const Register = () => {
   const navigate = useNavigate();
   const fieldRef = useRef(null); // Create a reference to the form
 
+  const { t, i18n } = useTranslation();
+
   const addUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${apiEndpoint}/auth/public/signup`, { username, password }, {
+      await axios.post(`${apiEndpoint}/auth/signup`, { username, password }, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -44,7 +47,7 @@ const Register = () => {
   return (
     <Container component="main" maxWidth="xs" sx={{ marginTop: 20 }}>
       <Typography component="h1" variant="h5">
-        Register
+        {t('register')}
       </Typography>
       <form onSubmit={addUser}>
         <TextField
@@ -52,7 +55,7 @@ const Register = () => {
           name="username"
           margin="normal"
           fullWidth
-          label="Username"
+          label= {t('username')}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -60,13 +63,13 @@ const Register = () => {
           name="password"
           margin="normal"
           fullWidth
-          label="Password"
+          label= {t('password')}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Register
+           {t('register')}
         </Button>
       </form>
       <Snackbar open={openSnackbar} autoHideDuration={700} onClose={handleCloseSnackbar} message="User added successfully" />

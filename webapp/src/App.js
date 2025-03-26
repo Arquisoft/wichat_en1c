@@ -12,6 +12,8 @@ import Game from './pages/Game'; // Game.js
 import PrivateRoute from './components/PrivateRoute'; // PrivateRoute.js
 import NotFound from './pages/NotFound'; // NotFound.js
 
+import './i18n'; // Load internacionalization
+
 function App() {
   const location = useLocation(); // Get the current route
   const [videoSrc, setVideoSrc] = useState('/homeBackground30fps.mp4'); // Default background video
