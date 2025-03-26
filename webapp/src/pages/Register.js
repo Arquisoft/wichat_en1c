@@ -46,11 +46,12 @@ const Register = () => {
 
   return (
     <Container component="main" maxWidth="xs" sx={{ marginTop: 20 }}>
-      <Typography component="h1" variant="h5">
+      <Typography data-testid="reg-title" component="h1" variant="h5">
         {t('register')}
       </Typography>
       <form onSubmit={addUser}>
         <TextField
+          data-testid="reg-username"
           inputRef={fieldRef}
           name="username"
           margin="normal"
@@ -60,6 +61,7 @@ const Register = () => {
           onChange={(e) => setUsername(e.target.value)}
         />
         <TextField
+          data-testid="reg-password"
           name="password"
           margin="normal"
           fullWidth
@@ -68,7 +70,7 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button data-testid="reg-button" type="submit" variant="contained" color="primary" fullWidth>
            {t('register')}
         </Button>
       </form>

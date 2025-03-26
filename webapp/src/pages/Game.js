@@ -1,11 +1,12 @@
 // src/pages/Game.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Typography, Button, Box, LinearProgress, TextField, IconButton, Tooltip, CircularProgress } from "@mui/material";
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { Typewriter } from "react-simple-typewriter";
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { GameContext } from '../GameContext';
 
 const apiEndpoint = process.env.API_ENDPOINT || 'http://localhost:8000';
 
@@ -33,7 +34,6 @@ const Game = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentRound, setCurrentRound] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
-  const [gameEnded, setGameEnded] = useState(false);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [hintMessage, setHintMessage] = useState(""); // What the user writes in the hint input
   const [receivedHint, setReceivedHint] = useState(""); // The hint message that is returned
@@ -49,7 +49,8 @@ const Game = () => {
   const [answer, setAnswer] = useState("");
 
   const [isLoading, setIsLoading] = useState(true); // Loading state
-
+  const { setGameEnded } = useContext(GameContext);
+   
   const correctAudio = new Audio("/correct.mp3");
   const wrongAudio = new Audio("/wrong.mp3");
   const navigate = useNavigate();
@@ -78,9 +79,11 @@ const Game = () => {
     const fetchQuestion = async () => {
       setIsLoading(true); // Start loading
       try {
+        console.log("Try");
         const response = await axios.get(`${apiEndpoint}/game/question`);
         setQuestionData(response.data);
       } catch (error) {
+        console.log("Catch");
         console.error("Error fetching question:", error);
       } finally {
         setIsLoading(false); // End loading
@@ -97,7 +100,7 @@ const Game = () => {
     } else if (timeLeft === 0 && !isPaused && !isLoading) {
       wrongAudio.play();
       setIsPaused(true);
-      handleRoundEnd(false);
+      handleRoundEnd();
     }
   }, [timeLeft, isPaused, isLoading]);
 
@@ -125,17 +128,18 @@ const Game = () => {
       const isCorrect = response.data.isCorrect;
       setAnswer(response.data.correctAnswer);
       isCorrect ? correctAudio.play() : wrongAudio.play();
-      handleRoundEnd(isCorrect);
+      handleRoundEnd();
     } catch (error) {
       console.error("Error checking answer:", error);
       setIsPaused(false);
     }
   };
 
-  const handleRoundEnd = (isCorrect) => {
+  const handleRoundEnd = () => {
     setTimeout(() => {
       if (currentRound >= gameSettings.rounds) {
         setGameEnded(true);
+        navigate("/end-game")
       } else {
         setCurrentRound((prev) => prev + 1);
         setSelectedOption(null);
@@ -147,11 +151,6 @@ const Game = () => {
         setIsPaused(false);
       }
     }, 1000);
-  };
-
-  const handleReturnHome = (e) => {
-    e.preventDefault();
-    navigate("/");
   };
 
   // Hint request logic
@@ -167,25 +166,8 @@ const Game = () => {
     }
   };
 
-  if (gameEnded) {
-    return (
-      <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
-        <Typography variant="h4" gutterBottom>
-          🎉 {t('endGame')} 🎉
-        </Typography>
-        <Typography variant="h6" sx={{ mb: 3 }}>
-          {t('thanks')}!
-        </Typography>
-        <form onSubmit={handleReturnHome}>
-          <Button type="submit" variant="contained" color="primary">
-            {t('goHome')}
-          </Button>
-        </form>
-      </Container>
-    );
-  }
-
   if (isLoading) {
+    console.log("Working loading");
     return (
       <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
         <CircularProgress />
@@ -195,7 +177,7 @@ const Game = () => {
       </Container>
     );
   }
-
+  console.log("Working");
   return (
     <Container
       component="main"

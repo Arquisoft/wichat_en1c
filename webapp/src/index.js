@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'; 
 import { SessionProvider } from './SessionContext'; // Taken from 2024 WIQ_ES04A project
+import { GameProvider } from './GameContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,7 +13,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <SessionProvider>
-        <App />
+        <GameProvider>
+          <App />
+        </GameProvider>
       </SessionProvider>
     </BrowserRouter>
   </React.StrictMode>

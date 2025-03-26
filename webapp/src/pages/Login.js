@@ -51,11 +51,12 @@ const Login = () => {
 
   return (
     <Container component="main" maxWidth="xs" sx={{ marginTop: 20 }}>
-      <Typography component="h1" variant="h5">
+      <Typography data-testid="log-title" component="h1" variant="h5">
         {t('login')}
       </Typography>
         <form onSubmit={loginUser}>
           <TextField
+            data-testid="log-username"
             inputRef={fieldRef}
             margin="normal"
             fullWidth
@@ -64,6 +65,7 @@ const Login = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
+            data-testid="log-password"
             margin="normal"
             fullWidth
             label={t('password')}
@@ -71,7 +73,7 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+          <Button data-testid="log-button" type="submit" variant="contained" color="primary" fullWidth>
             {t('login')}
           </Button>
         </form>

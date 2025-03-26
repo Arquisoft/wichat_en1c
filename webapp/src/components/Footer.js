@@ -42,6 +42,7 @@ const Footer = () => {
 
       {/* Right text: Documentation link */}
       <Link 
+        data-testid="docs-link"
         href={docsLink} 
         target="_blank" // Open in a new tab
         rel="noopener noreferrer" // Prevents the new tab from being able to access the window.opener object
