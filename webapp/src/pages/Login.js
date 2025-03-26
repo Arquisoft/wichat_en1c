@@ -30,7 +30,7 @@ const Login = () => {
       });
   
       // If login is successful, store session and show success message
-      createSession(token, username);
+      createSession(token, username); 
       setOpenSnackbar(true);
     } catch (error) {
       console.log(`Error ${error.response.data.message}`);
