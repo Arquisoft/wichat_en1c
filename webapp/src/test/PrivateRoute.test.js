@@ -1,42 +1,47 @@
 // src/test/PrivateRoute.test.js
-import { render, screen } from '@testing-library/react';
-import PrivateRoute from '../components/PrivateRoute';
-import { BrowserRouter } from 'react-router';
-import React from 'react';
+import { render, screen } from "@testing-library/react";
+import PrivateRoute from "../components/PrivateRoute";
+import { BrowserRouter } from "react-router";
+import React from "react";
+import { GameContext } from "../GameContext";
+import { SessionContext } from "../SessionContext";
 
-const MockComponent = () => <div>Private Page</div>;  // Mock component to pass into the route
+const MockComponent = () => <div>Private Page</div>; // Mock component to pass into the route
 
-describe('PrivateRoute Component', () => {
-  beforeEach(() => {
-    // Reset localStorage before each test
-    localStorage.clear();
-  });
-
-  test('renders element when session exists', () => {
-    // Mocking a session ID in localStorage
-    localStorage.setItem('sessionId', 'valid-session-id');
-
+describe("PrivateRoute Component", () => {
+  const renderRoute = (contextValue, contextGame, gameEnd=false) => {
     render(
       <BrowserRouter>
-        <PrivateRoute element={MockComponent} />
+        <SessionContext.Provider value={contextValue}>
+          <GameContext.Provider value={contextGame}>
+            <PrivateRoute element={MockComponent} requireGameEnd={gameEnd}/>
+          </GameContext.Provider>
+        </SessionContext.Provider>
       </BrowserRouter>
     );
+  };
+
+  test("renders element when session exists", () => {
+
+    renderRoute({ isLoggedIn: true }, { gameEnded: false })
 
     // Check if the "Private Page" component is rendered
-    expect(screen.getByText('Private Page')).toBeInTheDocument();
+    expect(screen.getByText("Private Page")).toBeInTheDocument();
   });
 
-  test('redirects to login page when session does not exist', () => {
-    // Ensure localStorage does not contain sessionId
-    localStorage.removeItem('sessionId');
+  test("redirects to login page when session does not exist", () => {
 
-    render(
-      <BrowserRouter>
-        <PrivateRoute element={MockComponent} />
-      </BrowserRouter>
-    );
+    renderRoute({ isLoggedIn: false }, { gameEnded: false })
 
     // Check if the path is redirected to "/login"
-    expect(window.location.pathname).toBe('/login');
+    expect(window.location.pathname).toBe("/login");
+  });
+
+  test("redirects to home page when game has not been played", () => {
+
+    renderRoute({ isLoggedIn: true }, { gameEnded: false }, true)
+
+    // Check if the path is redirected to "/"
+    expect(window.location.pathname).toBe("/");
   });
 });

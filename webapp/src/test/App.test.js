@@ -1,11 +1,11 @@
 // src/test/App.test.js
-import { render, screen } from '@testing-library/react';
-import App from '../App';
-import { BrowserRouter } from 'react-router';
-import { SessionProvider } from '../SessionContext';
+import { render, screen } from "@testing-library/react";
+import App from "../App";
+import { BrowserRouter } from "react-router";
+import { SessionProvider } from "../SessionContext";
 
-describe('App Component', () => {
-  test('renders home page initially', () => {
+describe("App Component", () => {
+  test("renders home page initially", () => {
     render(
       <BrowserRouter>
         <SessionProvider>
@@ -15,22 +15,22 @@ describe('App Component', () => {
     );
 
     // Home page
-    const titleElement = screen.getByTestId('wichat-title');
+    const titleElement = screen.getByTestId("wichat-title");
     expect(titleElement).toBeInTheDocument();
 
     // BackgrounVideo
-    const videoElement = screen.getByTestId('video-element');
+    const videoElement = screen.getByTestId("video-element");
     expect(videoElement).toBeInTheDocument();
 
     // Footer
-    expect(screen.getByText(/ChattySW ©/i)).toBeInTheDocument(); 
+    expect(screen.getByText(/ChattySW ©/i)).toBeInTheDocument();
 
     // NavBar
     expect(screen.getByAltText("WIChatLogo")).toBeInTheDocument();
   });
 
-  test('renders login page when navigating to /login', () => {
-    window.history.pushState({}, '', '/login'); // Navigate to login page
+  test("renders login page when navigating to /login", () => {
+    window.history.pushState({}, "", "/login"); // Navigate to login page
 
     render(
       <BrowserRouter>
@@ -41,11 +41,11 @@ describe('App Component', () => {
     );
 
     // Check if the login page is rendered by looking for unique text on the login page
-    expect(screen.getByRole('heading', { level: 1, name: 'Login' })).toBeInTheDocument();
+    expect(screen.getByTestId("log-title")).toBeInTheDocument();
   });
 
-  test('renders register page when navigating to /register', () => {
-    window.history.pushState({}, '', '/register'); // Navigate to register page
+  test("renders register page when navigating to /register", () => {
+    window.history.pushState({}, "", "/register"); // Navigate to register page
 
     render(
       <BrowserRouter>
@@ -56,11 +56,11 @@ describe('App Component', () => {
     );
 
     // Check if the register page is rendered by looking for unique text on the register page
-    expect(screen.getByRole('heading', { level: 1, name: 'Register' })).toBeInTheDocument();
+    expect(screen.getByTestId("reg-title")).toBeInTheDocument();
   });
 
-  test('shows 404 page on invalid route', () => {
-    window.history.pushState({}, '', '/non-existing-route'); // Navigate to a non-existing route
+  test("shows 404 page on invalid route", () => {
+    window.history.pushState({}, "", "/non-existing-route"); // Navigate to a non-existing route
 
     render(
       <BrowserRouter>
@@ -71,6 +71,6 @@ describe('App Component', () => {
     );
 
     // Check if the 404 page is rendered by looking for unique text on the 404 page
-    expect(screen.getByText('404')).toBeInTheDocument(); 
+    expect(screen.getByText("404")).toBeInTheDocument();
   });
 });

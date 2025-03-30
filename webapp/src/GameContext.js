@@ -1,5 +1,5 @@
 // src/GameContext.js
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from "react";
 
 const GameContext = createContext();
 
@@ -8,12 +8,12 @@ const GameProvider = ({ children }) => {
 
   // GameEnded false when the app is closed
   useEffect(() => {
-      const handleUnload = () => setGameEnded(false);
-      window.addEventListener('beforeunload', handleUnload);
+    const handleUnload = () => setGameEnded(false);
+    window.addEventListener("beforeunload", handleUnload);
 
-      // Clean the listener
-      return () => window.removeEventListener('beforeunload', handleUnload);
-   }, []);
+    // Clean the listener
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, []);
 
   return (
     <GameContext.Provider value={{ gameEnded, setGameEnded }}>

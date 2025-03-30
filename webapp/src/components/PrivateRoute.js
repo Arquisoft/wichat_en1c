@@ -1,18 +1,20 @@
 // Taken from 2024 WIQ_ES04A project
 // src/components/PrivateRoute.js
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router';
-import PropTypes from 'prop-types';
-import { SessionContext } from '../SessionContext';
-import { GameContext, useGame } from '../GameContext';
+import React, { useContext } from "react";
+import { Navigate } from "react-router";
+import PropTypes from "prop-types";
+import { SessionContext } from "../SessionContext";
+import { GameContext, useGame } from "../GameContext";
 
 // Private route component to restrict access
-const PrivateRoute = ({ element, requireGameEnd = false }) => {
-    const { isLoggedIn } = useContext(SessionContext); // Check if user has an active session
-    const { gameEnded } = useContext(GameContext);
+const PrivateRoute = ({ element: Element, requireGameEnd = false }) => {
+  const { isLoggedIn } = useContext(SessionContext); // Check if user has an active session
+  const { gameEnded } = useContext(GameContext);
 
-    if (!isLoggedIn) return <Navigate to="/login" replace />; // Redirect to login if no session
-    if (requireGameEnd && !gameEnded) return <Navigate to="/" replace />; // Blocks if game has not ended
+  console.log(gameEnded);
+  if (!isLoggedIn) return <Navigate to="/login" replace />; // Redirect to login if no session
+  if (requireGameEnd && !gameEnded) return <Navigate to="/" replace />; // Blocks if game has not ended
+  return <Element />;
 };
 
 // PropTypes validation
@@ -20,5 +22,5 @@ PrivateRoute.propTypes = {
   element: PropTypes.elementType.isRequired,
   requireGameEnd: PropTypes.bool,
 };
-  
-  export default PrivateRoute;
+
+export default PrivateRoute;

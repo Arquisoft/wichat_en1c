@@ -1,86 +1,151 @@
 // src/test/Game.test.js
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Game from '../pages/Game';
-import { BrowserRouter } from 'react-router';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import Game from "../pages/Game";
+import { BrowserRouter } from "react-router";
+import { GameProvider } from "../GameContext";
+import axios from "axios";
 
-describe('Game Page Tests', () => { // Will be changed in prototype
-  it('should render all components correctly', () => {
+jest.mock("axios");
+
+const mockNavigate = jest.fn();
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useNavigate: () => mockNavigate,
+}));
+
+// Mock data
+const mockQuestionData = {
+  question: "Who is the musician born on 1979-01-01T00:00:00Z in the image?",
+  image: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Killa_Kela.jpg",
+  options: [
+    "Phil Shoenfelt",
+    "Killa Kella",
+    "Kevin Rowland",
+    "Cristopher Guest",
+  ],
+};
+
+const mockSettings = {
+  time: 20,
+  rounds: 2,
+  hints: 5,
+};
+
+jest.setTimeout(20000);
+
+describe("Game Page Tests", () => {
+  beforeEach(() => {
+    // Mockear axios para devolver los datos de la configuración del juego
+    axios.get.mockImplementation((url) => {
+      if (url.includes("/game/config")) {
+        return Promise.resolve({ data: mockSettings });
+      } else if (url.includes("/game/question")) {
+        return Promise.resolve({ data: mockQuestionData });
+      }
+      return Promise.reject(new Error("Unknown endpoint"));
+    });
+
+    axios.post.mockImplementation((url) => {
+      if (url.includes("/game/answer")) {
+        return Promise.resolve({
+          data: { isCorrect: true, correctAnswer: "Killa Kella" },
+        });
+      }
+      return Promise.reject(new Error("Unknown endpoint"));
+    });
+  });
+
+  it("should render all components correctly", async () => {
     render(
       <BrowserRouter>
-        <Game />
+        <GameProvider>
+          <Game />
+        </GameProvider>
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-    /*
+    await waitFor(() =>
+      expect(screen.queryByTestId("loading-text")).not.toBeInTheDocument()
+    );
+
     // Test if the question is rendered
-    expect(screen.getByTestId('question')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Who is the musician born on January 1, 1979 in the image?"
+      )
+    ).toBeInTheDocument();
 
     // Test if the image is rendered
-    expect(screen.getByTestId('question-image')).toBeInTheDocument();
+    expect(screen.getByTestId("question-image")).toBeInTheDocument();
 
     // Test if the hint section is present
-    expect(screen.getByTestId('hints-used')).toBeInTheDocument();
+    expect(screen.getByTestId("hints-used")).toBeInTheDocument();
 
     // Test if the time progress bar is rendered
-    expect(screen.getByTestId('time-progress-bar')).toBeInTheDocument();
+    expect(screen.getByTestId("time-progress-bar")).toBeInTheDocument();
 
     // Test if the round info is rendered
-    expect(screen.getByTestId('round-info')).toBeInTheDocument();
+    expect(screen.getByTestId("round-info")).toHaveTextContent("round: 1 / 2");
 
     // Test if the hint input is rendered
-    expect(screen.getByTestId('hint-input')).toBeInTheDocument();
+    expect(screen.getByTestId("hint-input")).toBeInTheDocument();
 
     // Test if the hint button is rendered
-    expect(screen.getByTestId('hint-button')).toBeInTheDocument();
+    expect(screen.getByTestId("hint-button")).toBeInTheDocument();
 
     // Test if the options are rendered
-    expect(screen.getAllByTestId(/option-/).length).toBe(4);
-    */
+    expect(screen.getByText("Phil Shoenfelt")).toBeInTheDocument();
+    expect(screen.getByText("Killa Kella")).toBeInTheDocument();
+    expect(screen.getByText("Kevin Rowland")).toBeInTheDocument();
+    expect(screen.getByText("Cristopher Guest")).toBeInTheDocument();
   });
-/*
-  it('should increase hints used when the hint button is clicked', async () => {
+
+  it("should increase hints used when the hint button is clicked", async () => {
     render(
       <BrowserRouter>
-        <Game />
+        <GameProvider>
+          <Game />
+        </GameProvider>
       </BrowserRouter>
+    );
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("loading-text")).not.toBeInTheDocument()
     );
 
     // Initial hints used should be 0
-    expect(screen.getByText('Hints used: 0/3')).toBeInTheDocument();
+    expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 0/5");
 
     // Click on the hint button
-    fireEvent.submit(screen.getByRole('form'));
+    fireEvent.click(screen.getByTestId("hint-button"));
 
     // Check if hints used increases
-    expect(screen.getByText('Hints used: 1/3')).toBeInTheDocument();
+    expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5");
   });
 
   it('should show the "End of the Game" screen when game ends', async () => {
     render(
       <BrowserRouter>
-        <Game />
+        <GameProvider>
+          <Game />
+        </GameProvider>
       </BrowserRouter>
     );
-  
-    // Function to delay by 5 seconds
-    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-  
-    // Simulate clicking the first option three times with a 5-second wait between each click
-    const firstOption = screen.getAllByRole('button')[0];
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("loading-text")).not.toBeInTheDocument()
+    );
+
+    // Function to delay
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Simulate clicking the first option two times
+    const firstOption = screen.getAllByRole("button")[0];
     fireEvent.click(firstOption);
-    await delay(1500);  // Wait for 3 seconds
+    await delay(3000);
     fireEvent.click(firstOption);
-    await delay(1500);  // Wait for 3 seconds
-    fireEvent.click(firstOption);
-  
-    // Simulate end of game by setting gameEnded to true
-    await waitFor(() => expect(screen.getByText(/🎉 End of the Game 🎉/i)).toBeInTheDocument());
-  
-    // Test if the Go Home button is visible
-    expect(screen.getByText(/Go Home/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Go Home'));
-    expect(window.location.pathname).toBe('/');
+    await delay(3000);
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/end-game"));
   });
-  */
 });

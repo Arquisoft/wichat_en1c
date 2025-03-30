@@ -1,10 +1,18 @@
 // src/components/NavBar.js
-import React, { useContext } from 'react';
-import { AppBar, Toolbar, Button, Box, Typography, Select, MenuItem } from '@mui/material';
-import Logo from '../logo.svg';
-import { useNavigate } from 'react-router';
-import { SessionContext } from '../SessionContext';
-import { useTranslation } from 'react-i18next';
+import React, { useContext } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import Logo from "../logo.svg";
+import { useNavigate } from "react-router";
+import { SessionContext } from "../SessionContext";
+import { useTranslation } from "react-i18next";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -18,28 +26,44 @@ const NavBar = () => {
 
   const handleLogout = () => {
     destroySession();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
     <AppBar position="static">
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         {/* Logo and Home button */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <Button
-            onClick={() => navigate('/')}
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            onClick={() => navigate("/")}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
           >
             <img src={Logo} alt="WIChatLogo" style={{ height: 40 }} />
           </Button>
-          <Button color="inherit" sx={{ marginLeft: 2 }} onClick={() => navigate('/')}>
-            {t('home')}
+          <Button
+            data-testid="home-nav"
+            color="inherit"
+            sx={{ marginLeft: 2 }}
+            onClick={() => navigate("/")}
+          >
+            {t("home")}
           </Button>
         </Box>
 
         {/* Session controls */}
         {isLoggedIn ? (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             {/* Language selector */}
             <Select
               value={i18n.resolvedLanguage}
@@ -50,13 +74,19 @@ const NavBar = () => {
               <MenuItem value="en">🇬🇧 EN</MenuItem>
               <MenuItem value="es">🇪🇸 ES</MenuItem>
             </Select>
-            <Typography sx={{ marginRight: 2 }}>{t('hello')}, {username}!</Typography>
-            <Button color="inherit" onClick={handleLogout}>
-              {t('logout')}
+            <Typography data-testid="hello-nav" sx={{ marginRight: 2 }}>
+              {t("hello")}, {username}!
+            </Typography>
+            <Button
+              data-testid="logout-nav"
+              color="inherit"
+              onClick={handleLogout}
+            >
+              {t("logout")}
             </Button>
           </Box>
         ) : (
-          <Box sx={{ display: 'flex' }}>
+          <Box sx={{ display: "flex" }}>
             {/* Language selector */}
             <Select
               value={i18n.resolvedLanguage}
@@ -67,11 +97,20 @@ const NavBar = () => {
               <MenuItem value="en">🇬🇧 EN</MenuItem>
               <MenuItem value="es">🇪🇸 ES</MenuItem>
             </Select>
-            <Button color="inherit" sx={{ marginRight: 2 }} onClick={() => navigate('/login')}>
-              {t('login')}
+            <Button
+              data-testid="login-nav"
+              color="inherit"
+              sx={{ marginRight: 2 }}
+              onClick={() => navigate("/login")}
+            >
+              {t("login")}
             </Button>
-            <Button color="inherit" onClick={() => navigate('/register')}>
-              {t('register')}
+            <Button
+              data-testid="register-nav"
+              color="inherit"
+              onClick={() => navigate("/register")}
+            >
+              {t("register")}
             </Button>
           </Box>
         )}

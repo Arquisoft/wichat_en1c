@@ -1,6 +1,6 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 
 // Translations
 const resources = {
@@ -45,14 +45,14 @@ const resources = {
       round: "Ronda",
       hints: "Pistas usadas",
       hintPlaceholder: "Pregunta algo...",
-      play: "Play",
+      play: "Jugar",
     },
   },
 };
 
 i18n
   .use(LanguageDetector) // Detect user language automatically
-  .use(initReactI18next) 
+  .use(initReactI18next)
   .init({
     resources,
     fallbackLng: "en", // Default language
