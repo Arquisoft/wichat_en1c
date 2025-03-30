@@ -2,8 +2,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
-const save = require("./routes/save");
 const config = require("./config");
+const save = require("./routes/save");
+const pub = require("./routes/pub");
 
 // Configure Express
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 mongoose.connect(config.mongoUri);
 
 // Routes
+pub(app);
 save(app);
 
 // Server start/stop

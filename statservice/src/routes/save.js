@@ -1,5 +1,5 @@
 // @ts-check
-const { checkExact } = require("express-validator");
+const { checkExact, body } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const validation = require("../validation");
 const { User } = require("../model");
@@ -11,7 +11,7 @@ module.exports = (app) => {
   app.post(
     "/save",
     ...validation.setup(
-      validation.fields.username,
+      validation.fields.username(body),
       ...validation.fields.game,
       checkExact()
     ),
