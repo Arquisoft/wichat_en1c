@@ -103,6 +103,31 @@ async function getUser(req, res) {
  * @param {import("mongoose").InferSchemaType<typeof Game.schema>[]} games
  */
 function computeStatsGames(games) {
+  if (games.length === 0)
+    return {
+      time: {
+        total: 0,
+        game: {
+          min: 0,
+          max: 0,
+          avg: 0,
+        },
+        question: {
+          min: 0,
+          max: 0,
+          avg: 0,
+        },
+      },
+      question: {
+        passed: 0,
+        failed: 0,
+        total: 0,
+      },
+      game: {
+        total: 0,
+      },
+    };
+
   const stats = {
     time: {
       total: 0,
@@ -130,6 +155,8 @@ function computeStatsGames(games) {
   for (const game of games) {
     const gameTime = game.time.finished.getTime() - game.time.started.getTime();
 
+    console.log(gameTime);
+
     stats.time.total += gameTime;
     stats.time.game.min = Math.min(stats.time.game.min, gameTime);
     stats.time.game.max = Math.max(stats.time.game.max, gameTime);
@@ -152,6 +179,8 @@ function computeStatsGames(games) {
 
   stats.time.game.avg = stats.time.total / games.length;
   stats.time.question.avg = stats.time.total / stats.question.total;
+
+  console.log(stats.time);
 
   return stats;
 }

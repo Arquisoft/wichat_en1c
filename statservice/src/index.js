@@ -1,6 +1,7 @@
 // @ts-check
 const express = require("express");
 const mongoose = require("mongoose");
+const { STATUS_CODES } = require("http");
 
 const config = require("./config");
 const save = require("./routes/save");
@@ -18,6 +19,23 @@ mongoose.connect(config.mongoUri);
 // Routes
 pub(app);
 save(app);
+
+// Default Handler
+app.use("*", (_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: STATUS_CODES[404],
+  });
+});
+
+// Error Handler
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  if (!res.writableEnded) {
+    const status = (err.expose ? err.status : undefined) ?? 500;
+    res.status(status).json({ success: false, message: STATUS_CODES[status] });
+  }
+});
 
 // Server start/stop
 module.exports = app
