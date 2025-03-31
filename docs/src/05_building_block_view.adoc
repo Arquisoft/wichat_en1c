@@ -93,7 +93,7 @@ Contained Building Blocks::
 |===
 | **Building Block**      | **Brief description**
 | LLM Service             | Serves as an adapter for the external LLM service.
-| Questions Service       | Generates questions and hints and uses WikiData.
+| Questions Service       | Generates questions using WikiData.
 | Game Service            | Manages game states and tracks the user's progress.
 | Statistics Service      | Tracks and provides statistics for the users.
 | Authentication Service  | Handles login, signup and session for the users.
@@ -158,14 +158,6 @@ Act as a bridge (adapter) between the external LLM service and the other interna
 Interface::
 
 Internal RESTful API for communication with the other internal microservices.
-
-// _<(Optional) Quality/Performance Characteristics>_
-
-// _<(Optional) Directory/File Location>_
-
-// _<(Optional) Fulfilled Requirements>_
-
-// _<(optional) Open Issues/Problems/Risks>_
 
 Structure::
 
@@ -241,18 +233,15 @@ image::build_block_view/questions_service.drawio.svg[]
 
 Purpose::
 
-Generates questions and hints. 
+Generates questions and hints ensuring performance and correctness. 
 - *Questions* and *answers* are generated through *WikiData*.
-- *Hints* are generated through an *LLM*.
 
 Motivation::
 
-Handles the responsibility of generating questions and hints.
+Handles the responsibility of generating questions.
 
 Why is WikiData part of the module and not standalone?:::
 Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module's one.
-Why are questions and hints generated separately?:::
-Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefitst hat come from it.
 
 Contained Building Blocks::
 [cols="1,2", options="header"]
@@ -260,7 +249,6 @@ Contained Building Blocks::
 | **Building Block**      | **Brief description**
 | WikiData Adapter        | Serves as an adapter for the external WikiData API.
 | Questions Module        | Generates questions from the WikiData information.
-| Hints Module            | Generates hints using the LLM Service.
 | Questions Cache?        | Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.
 | Express.js Server       | Provides an internal RESTful API for the rest of microservices.
 |===
@@ -298,7 +286,7 @@ image::build_block_view/game_service.drawio.svg[]
 
 Purpose::
 
-Responsible for connecting *Questions Service* with *Statistics Service*, that way we can keep track of the user's progress and provide statistics.
+Responsible for connecting *Questions Service* with *Statistics Service*, that way we can keep track of the user's progress and provide statistics. It also generates hints using *LLM Service*.
 
 Motivation::
 
@@ -309,6 +297,7 @@ Contained Building Blocks::
 |===
 | **Building Block**      | **Brief description**
 | Game Manager            | Keeps track of user games and fires stats events.
+| Hints Module            | Generates hints using the LLM Service.
 | Express.js Server       | Provides an internal secured RESTful API for the rest of microservices.
 |===
 
