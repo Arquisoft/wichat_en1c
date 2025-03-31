@@ -1,6 +1,6 @@
 // @ts-check
 
-const { body, validationResult, query } = require("express-validator");
+const { body, validationResult, query, param } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const config = require("./config");
 
@@ -22,24 +22,35 @@ const setup = (...vals) => {
   return vals;
 };
 
+const messages = {
+  missing: "Missing",
+  notObject: "Not an object",
+  notDate: "Not a date",
+  notString: "Not a string",
+  notPrevious: "Not before current date",
+  notValid: "Not valid",
+  notValidNumber: "Not a valid number",
+  notValidArray: "Not a valid array",
+};
+
 /**
  * @param {string} prefix
  */
 const timeValidators = (prefix) => [
-  body(`${prefix}.time`, `'${prefix}.time' is missing`)
+  body(`${prefix}.time`, messages.missing)
     .isObject()
-    .withMessage(`'${prefix}.time' is not an object`),
-  body(`${prefix}.time.started`, `'${prefix}.time.started' is missing`)
+    .withMessage(messages.notObject),
+  body(`${prefix}.time.started`, messages.missing)
     .isISO8601()
-    .withMessage(`'${prefix}.time.started' is not a date`)
+    .withMessage(messages.notDate)
     .isBefore()
-    .withMessage(`'${prefix}.time.started' is not before the current date`)
+    .withMessage(messages.notPrevious)
     .toDate(),
-  body(`${prefix}.time.finished`, `'${prefix}.time.finished' is missing`)
+  body(`${prefix}.time.finished`, messages.missing)
     .isISO8601()
-    .withMessage(`'${prefix}.time.finished' is not a date`)
+    .withMessage(messages.notDate)
     .isBefore()
-    .withMessage(`'${prefix}.time.finished' is not before the current date`)
+    .withMessage(messages.notPrevious)
     .toDate(),
 ];
 
@@ -47,65 +58,87 @@ module.exports = {
   fields: {
     /** @type { (fn: (fields?: string | string[], err: string) => import("express-validator").ValidationChain) => import("express-validator").ValidationChain } */
     username: (fn) =>
-      fn("username", "'username' is missing")
+      fn("username", messages.missing)
         .isString()
-        .withMessage("'username' is not a string")
+        .withMessage(messages.notString)
         .isAlphanumeric()
-        .withMessage("'username' is not valid")
+        .withMessage(messages.notValid)
         .isLength({ min: 5, max: 20 })
-        .withMessage("'username' is not valid"),
+        .withMessage(messages.notValid),
     game: [
-      body("game", "'game' is missing")
-        .isObject()
-        .withMessage("'game' is not an object"),
+      body("game", "'Missing").isObject().withMessage(messages.notObject),
       // Time
       ...timeValidators("game"),
 
       // Config
-      body("game.config", "'game.config' is missing")
+      body("game.config", messages.missing)
         .isObject()
-        .withMessage("'game.config' is not an object"),
-      body("game.config.mode", "'game.config.mode' is missing")
+        .withMessage(messages.notObject),
+      body("game.config.mode", messages.missing)
         .isString()
-        .withMessage("'game.config.mode' is not a string")
+        .withMessage(messages.notString)
         .toLowerCase()
         .isIn(config.game.config.modes)
-        .withMessage(
-          `'game.config.mode' is not a valid mode ${config.game.config.modes.toString()}`
-        ),
-      body("game.config.rounds", "'game.config.rounds' is missing")
+        .withMessage(`Not a valid mode ${config.game.config.modes.toString()}`),
+      body("game.config.rounds", messages.missing)
         .isInt({ min: config.game.config.rounds.min })
-        .withMessage("'game.config.rounds' is not a valid number"),
-      body("game.config.time", "'game.config.time' is missing")
+        .withMessage(messages.notValidNumber),
+      body("game.config.time", messages.missing)
         .isInt({ min: config.game.config.time.min })
-        .withMessage("'game.config.time' is not a valid number"),
-      body("game.config.hints", "'game.config.hints' is missing")
+        .withMessage(messages.notValidNumber),
+      body("game.config.hints", messages.missing)
         .isInt({ min: config.game.config.hints.min })
-        .withMessage("'game.config.hints' is not a valid number"),
+        .withMessage(messages.notValidNumber),
 
       // Questions
-      body("game.questions", "'game.questions' is missing")
+      body("game.questions", messages.missing)
         .isArray({
           min: config.game.questions.min,
         })
-        .withMessage("'game.questions' is not an array"),
-      body("game.questions.*.question").isString(),
+        .withMessage(messages.notValidArray),
+      body("game.questions.*.question", messages.missing)
+        .isString()
+        .withMessage(messages.notString),
       ...timeValidators("game.questions.*"),
 
       // Questions answers
-      body("game.questions.*.answers").isObject(),
-      body("game.questions.*.answers.opts").isArray({
-        min: config.game.questions.minAnswers,
-      }),
-      body("game.questions.*.answers.correct").isInt({
-        min: 0,
-        max: config.game.questions.minAnswers - 1,
-      }),
-      body("game.questions.*.answers.selected").isInt({
-        min: 0,
-        max: config.game.questions.minAnswers - 1,
-      }),
+      body("game.questions.*.image", messages.missing)
+        .isURL()
+        .withMessage("Not a valid URL"),
+      body("game.questions.*.answers", messages.missing)
+        .isObject()
+        .withMessage(messages.notObject),
+      body("game.questions.*.answers.opts", messages.missing)
+        .isArray({
+          min: config.game.questions.minAnswers,
+        })
+        .withMessage(messages.notValidArray),
+      body("game.questions.*.answers.correct", messages.missing)
+        .isInt({
+          min: 0,
+          max: config.game.questions.minAnswers - 1,
+        })
+        .withMessage(messages.notValidNumber),
+      body("game.questions.*.answers.selected", messages.missing)
+        .isInt({
+          min: 0,
+          max: config.game.questions.minAnswers - 1,
+        })
+        .withMessage(messages.notValidNumber),
     ],
+    pagination: {
+      page: query("page")
+        .default(0)
+        .isInt({ min: 0 })
+        .withMessage(messages.notValidNumber)
+        .toInt(),
+      size: query("size")
+        .default(config.pagination.defaultSize)
+        .isInt({ min: 1, max: config.pagination.maxSize })
+        .withMessage("Not valid or out of range")
+        .toInt(),
+    },
+    id: param("id").isMongoId().withMessage(messages.notValid),
   },
   setup,
 };

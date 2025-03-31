@@ -2,7 +2,8 @@
 const { checkExact, body } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const validation = require("../validation");
-const { User } = require("../model");
+const { User, Game, Question } = require("../model");
+const { default: mongoose } = require("mongoose");
 
 /**
  * @param {import("express").Router} app
@@ -18,6 +19,7 @@ module.exports = (app) => {
     async (req, res) => {
       const { username, game } = req.body;
 
+      //* Check user and append id
       const user = await User.findOne({ username });
       if (user == null) {
         res.status(404).json({
@@ -26,9 +28,29 @@ module.exports = (app) => {
         });
         return;
       }
+      game.user = user._id;
 
-      user.games.push(game);
-      await user.save();
+      //* Save questions
+      game.questions = await Promise.all(
+        game.questions.map(async (question) => {
+          const {
+            time,
+            answers: { selected },
+          } = question;
+
+          delete question.answers.selected;
+          delete question.time;
+
+          return {
+            question: await Question.create(question).then((q) => q._id),
+            time,
+            selected,
+          };
+        })
+      );
+
+      //* Save game
+      await Game.create(game);
 
       res.status(201).json({
         success: true,

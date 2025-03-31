@@ -15,4 +15,8 @@ module.exports = {
       minAnswers: 2,
     },
   },
+  pagination: {
+    maxSize: 500,
+    defaultSize: 10,
+  },
 };

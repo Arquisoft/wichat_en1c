@@ -4,25 +4,23 @@ const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
-  time: {
-    type: {
-      started: { type: Date, required: true },
-      finished: { type: Date, required: true },
-    },
-    required: true,
-  },
   question: { type: String, required: true },
+  image: { type: String, required: true },
   answers: {
     type: {
       opts: { type: [String], required: true },
       correct: { type: Number, required: true },
-      selected: { type: Number, required: true },
     },
     required: true,
   },
 });
 
 const gameSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   createdAt: { type: Date, default: Date.now },
   time: {
     type: {
@@ -40,15 +38,35 @@ const gameSchema = new mongoose.Schema({
     },
     required: true,
   },
-  questions: { type: [questionSchema], required: true },
+  questions: {
+    type: [
+      {
+        question: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Question",
+          required: true,
+        },
+        time: {
+          type: {
+            started: { type: Date, required: true },
+            finished: { type: Date, required: true },
+          },
+          required: true,
+        },
+        selected: { type: Number, required: true },
+      },
+    ],
+    required: true,
+  },
 });
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true, index: true },
   createdAt: { type: Date, default: Date.now },
-  games: [gameSchema],
 });
 
 const User = mongoose.model("User", userSchema);
+const Game = mongoose.model("Game", gameSchema);
+const Question = mongoose.model("Question", questionSchema);
 
-module.exports = { User };
+module.exports = { User, Game, Question };
