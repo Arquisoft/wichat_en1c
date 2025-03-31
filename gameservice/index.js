@@ -1,12 +1,16 @@
 const express = require('express');
 
+const config = require("./config");
+const gameConfig = require("./routes/gameConfig");
+
 const app = express();
-const port = 8001;
 
 app.use(express.json());
 
-const server = app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`); 
- });
- 
- module.exports = server;
+gameConfig(app);
+
+const server = app.listen(config.port, () => {
+    console.log(`Server running on http://localhost:${config.port}`);
+});
+
+module.exports = server;
