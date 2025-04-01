@@ -1,76 +1,36 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
-  title: Gatewayservice API
+  title: Gateway Service API
   description: Gateway OpenAPI specification.
-  version: 0.2.0
+  version: 1.0.0
 servers:
   - url: http://localhost:8000
     description: Development server
-  - url: http://SOMEIP:8000
+  - url: http://SOMEIP:8000 # TODO: Replace with the actual IP address of the server.
     description: Production server
+
+tags:
+  - name: Utility
+    description: Utility endpoints.
+  - name: Authentication (/auth)
+    description: Endpoints related to authentication.
+  - name: 🔐 Game (/game)
+    description: Endpoints related to game management.
+  - name: Questions (/questions)
+    description: Endpoints related to question retrieval.
+  - name: Statistics (/stats)
+    description: Endpoints related to statistics retrieval.
+
 paths:
-  /adduser:
-    post:
-      summary: Add a new user to the database.
-      operationId: addUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  description: User ID.
-                  example: student
-                password:
-                  type: string
-                  description: User password.
-                  example: pass
-      responses:
-        '200':
-          description: User added successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                    description: User ID
-                  password:
-                    type: string
-                    description: Hashed password
-                    example: $2b$10$ZKdNYLWFQxzt5Rei/YTc/OsZNi12YiWz30JeUFHNdAt7MyfmkTuvC
-                  _id:
-                    type: string
-                    description: Identification
-                    example: 65f756db3fa22d227a4b7c7d
-                  createdAt:
-                    type: string
-                    description: Creation date.
-                    example: '2024-03-17T20:47:23.935Z'
-                  ___v:
-                    type: integer
-                    example: '0'                                        
-        '400':
-          description: Failed to add user.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error information.
-                    example: getaddrinfo EAI_AGAIN mongodb
+  # Utility
   /health:
     get:
-      summary: Check the health status of the service.
+      tags: [Utility]
+      summary: Check healthy.
+      description: Checks if the gateway service is healthy.
       operationId: checkHealth
       responses:
-        '200':
+        "200":
           description: Service is healthy.
           content:
             application/json:
@@ -81,64 +41,174 @@ paths:
                     type: string
                     description: Health status.
                     example: OK
+  # Authentication
   /login:
     post:
-      summary: Log in to the system.
-      operationId: loginUser
+      tags: [Authentication (/auth)]
+      summary: Authenticates an user.
+      description: Authenticates a user and returns a JWT token that can be used to access protected endpoints.
+      operationId: authLogin
       requestBody:
         required: true
+        description: User credentials for authentication.
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  description: User ID.
-                  example: student
-                password:
-                  type: string
-                  description: User password.
-                  example: pass
+              $ref: "#/components/schemas/user"
       responses:
-        '200':
-          description: Login successful. Returns user token, username, and creation date.
+        "200":
+          description: Successful authentication.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  token:
-                    type: string
-                    description: User token.
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY3NTZkYjNmYTIyZDIyN2E0YjdjN2QiLCJpYXQiOjE3MTA3MDg3NDUsImV4cCI6MTcxMDcxMjM0NX0.VMG_5DOyQ4GYlJQRcu1I6ICG1IGzuo2Xuei093ONHxw
+                  success:
+                    $ref: "#/components/examples/success"
                   username:
                     type: string
-                    description: Username.
-                    example: student
-                  createdAt:
+                    description: Username of the authenticated user.
+                    example: username
+                  token:
                     type: string
-                    description: Creation date.
-                    example: '2024-03-17T20:47:23.935Z'
-        '401':
-          description: Invalid credentials.
+                    description: JWT token for authentication.
+                    example: abc123.def456.ghi789
+        "401":
+          description: Unauthorized. Invalid credentials.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    description: Shows the error info..
-                    example: Invalid credentials
-        '500':
-          description: Internal server error.
+                  success:
+                    $ref: "#/components/examples/failed"
+                  message:
+                    description: Error message.
+                    const: Unauthorized
+        "400":
+          $ref: "#/components/responses/400"
+
+  /signup:
+    post:
+      tags: [Authentication (/auth)]
+      summary: Registers an user.
+      description: Registers a new user into the system.
+      operationId: authSignup
+      requestBody:
+        required: true
+        description: User credentials for authentication.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+      responses:
+        "200":
+          description: Successful registration.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    description: Error information.
-                    example: Internal Server Error
+                  success:
+                    $ref: "#/components/examples/success"
+                  message:
+                    description: Success message.
+                    const: Created
+        "401":
+          description: Unauthorized. User already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    $ref: "#/components/examples/failed"
+                  message:
+                    description: Error message.
+                    const: Unauthorized
+        "400":
+          $ref: "#/components/responses/400"
+
+components:
+  responses:
+    "401":
+      description: Unauthorized. Invalid authorization token.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                $ref: "#/components/examples/failed"
+              message:
+                description: Error message.
+                const: Unauthorized
+
+    "400":
+      description: Bad request. Missing or invalid parameters.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                $ref: "#/components/examples/failed"
+              message:
+                description: Error message.
+                const: Bad Request
+              errors:
+                $ref: "#/components/examples/valErrors"
+                description: Validation errors.
+                type: object
+                properties:
+                  <property>:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: Type of the error.
+                        example: field
+                      value:
+                        type: string
+                        description: Value that caused the error.
+                        example: invalid username
+                      msg:
+                        type: string
+                        description: Error message.
+                        example: Invalid value
+                      path:
+                        type: string
+                        description: Path to the property that caused the error.
+                        example: username
+                      location:
+                        type: string
+                        description: Location of the error.
+                        example: body
+
+  examples:
+    success:
+      description: Indicates the operation was successful.
+      const: true
+    failed:
+      description: Indicates the operation failed.
+      const: false
+
+  schemas:
+    user:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user.
+          example: username
+        password:
+          type: string
+          description: Password of the user. Must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+          example: Str0ngPassw0rd!
+
+  securitySchemes:
+    token:
+      description: JWT token for authentication. Obtained by logging-in `/auth/login`.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
