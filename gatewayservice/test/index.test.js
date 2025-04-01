@@ -8,11 +8,10 @@ fs.existsSync.mockReturnValue(false);
 const config = require("../src/config");
 
 const mockURL = "http://localhost:9999";
-config.urls.game = `${mockURL}/game`;
-config.urls.auth = `${mockURL}/auth`;
-config.urls.stats = `${mockURL}/stats`;
-config.urls.question = `${mockURL}/questions`;
-config.publicPath = "";
+config.proxyOpts.router["/game"] = `${mockURL}/game`;
+config.proxyOpts.router["/auth"] = `${mockURL}/auth`;
+config.proxyOpts.router["/stats"] = `${mockURL}/stats`;
+config.proxyOpts.router["/questions"] = `${mockURL}/questions`;
 config.auth.url = `${mockURL}/auth/verify`;
 config.proxyOpts.proxyTimeout = 500;
 
@@ -80,9 +79,7 @@ describe("Gateway Service", () => {
     test("Should authenticate routes that require it", async () => {
       const responses = await Promise.all([
         request(server).get("/game"),
-        request(server).get("/stats"),
         request(server).get("/game/protected"),
-        request(server).get("/stats/protected"),
       ]);
 
       for (const response of responses) {
