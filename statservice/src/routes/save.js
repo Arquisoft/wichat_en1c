@@ -20,7 +20,7 @@ module.exports = (app) => {
       const { username, game } = req.body;
 
       //* Check user and append id
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username: username.toString() });
       if (user == null) {
         res.status(404).json({
           success: false,
@@ -41,6 +41,7 @@ module.exports = (app) => {
           delete question.answers.selected;
           delete question.time;
 
+          Question.validate(question); // SAFE: Sanitized by express-mongo-sanitize
           return {
             question: await Question.create(question).then((q) => q._id),
             time,
@@ -50,7 +51,7 @@ module.exports = (app) => {
       );
 
       //* Save game
-      await Game.create(game);
+      await Game.create(game); // SAFE: Sanitized by express-mongo-sanitize
 
       res.status(201).json({
         success: true,

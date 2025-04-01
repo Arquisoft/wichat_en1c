@@ -2,6 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { STATUS_CODES } = require("http");
+const mongoSanitize = require("express-mongo-sanitize");
 
 const config = require("./config");
 const save = require("./routes/save");
@@ -12,6 +13,7 @@ const app = express();
 
 app.set("trust proxy", true);
 app.use(express.json());
+app.use(mongoSanitize());
 
 // Connect to MongoDB
 mongoose.connect(config.mongoUri);
