@@ -60,11 +60,20 @@ module.exports = (app) => {
       res.json({
         success: true,
         username: user.username,
-        games: games.map((g) =>
-          g.toJSON({
-            transform: removeMongoDBFields,
-          })
-        ),
+        games: games.map((g) => {
+          const json = g.toJSON({
+            transform: (doc, ret) => {
+              removeMongoDBFields(doc, ret);
+              delete ret.user;
+            },
+          });
+
+          // Keep ID of the game
+          // @ts-expect-error
+          json.id = g._id;
+
+          return json;
+        }),
       });
     }
   );

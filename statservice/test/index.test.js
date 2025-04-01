@@ -312,11 +312,42 @@ describe("User routes", () => {
 
 describe("Games routes", () => {
   it("Should reject invalid game IDs", async () => {
-    // TODO:
+    const response = await request(app).get("/public/games/invalidid").send();
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Bad Request");
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it("Should reject non-existant game IDs", async () => {
+    const response = await request(app)
+      .get("/public/games/111111111111111111111111")
+      .send();
+
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Not Found");
   });
 
   it("Should get game by ID", async () => {
-    // TODO:
+    await request(app).post("/save").send({ username, game: data.game });
+    const gamesRes = await request(app)
+      .get(`/public/users/${username}/games`)
+      .query({
+        size: 1,
+      })
+      .send();
+
+    expect(gamesRes.body.games[0].id).toBeDefined();
+
+    const response = await request(app)
+      .get(`/public/games/${gamesRes.body.games[0].id}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.game).toMatchObject(data.jsonGame);
   });
 });
 
