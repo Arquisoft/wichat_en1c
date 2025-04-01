@@ -32,6 +32,14 @@ proxy(app);
 // Swagger
 swagger(app);
 
+// Default Handler
+app.use("*", (_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: STATUS_CODES[404],
+  });
+});
+
 // Error Handler
 app.use((err, _req, res, _next) => {
   console.error(err);

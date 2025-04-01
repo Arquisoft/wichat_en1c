@@ -42,7 +42,7 @@ paths:
                     description: Health status.
                     example: OK
   # Authentication
-  /login:
+  /auth/login:
     post:
       tags: [Authentication (/auth)]
       summary: Authenticates an user.
@@ -75,20 +75,11 @@ paths:
                     example: abc123.def456.ghi789
         "401":
           description: Unauthorized. Invalid credentials.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    $ref: "#/components/examples/failed"
-                  message:
-                    description: Error message.
-                    const: Unauthorized
+          $ref: "#/components/responses/401"
         "400":
           $ref: "#/components/responses/400"
 
-  /signup:
+  /auth/signup:
     post:
       tags: [Authentication (/auth)]
       summary: Registers an user.
@@ -116,23 +107,154 @@ paths:
                     const: Created
         "401":
           description: Unauthorized. User already exists.
+          $ref: "#/components/responses/401"
+        "400":
+          $ref: "#/components/responses/400"
+
+  # TODO: Game
+  # TODO: Questions
+  # Statistics
+  /stats/users/{username}:
+    get:
+      tags: [Statistics (/stats)]
+      summary: Get user statistics.
+      description: Retrieves the statistics of a user by their username.
+      operationId: statsUserStats
+      parameters:
+        - description: Username of the user whose stats to get.
+          $ref: "#/components/parameters/username"
+      responses:
+        "200":
+          description: Successful retrieval of user games.
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   success:
-                    $ref: "#/components/examples/failed"
-                  message:
-                    description: Error message.
-                    const: Unauthorized
+                    $ref: "#/components/examples/success"
+                  username:
+                    type: string
+                    description: Username of the user whose stats were computed.
+                    example: myusername
+                  stats:
+                    $ref: "#/components/schemas/stats"
+        "404":
+          description: Not found. User not found.
+          $ref: "#/components/responses/404"
+
         "400":
+          description: Bad request. Missing or invalid path variable.
+          $ref: "#/components/responses/400"
+
+  /stats/users/{username}/games:
+    get:
+      tags: [Statistics (/stats)]
+      summary: Get user games.
+      description: Retrieves the games of a user by their username.
+      operationId: statsUserGames
+      parameters:
+        - description: Username of the user whose games to get.
+          $ref: "#/components/parameters/username"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
+      responses:
+        "200":
+          description: Successful retrieval of user statistics.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    $ref: "#/components/examples/success"
+                  username:
+                    type: string
+                    description: Username of the user whose stats were computed.
+                    example: myusername
+                  games:
+                    type: array
+                    description: List of games played by the user.
+                    items:
+                      $ref: "#/components/schemas/game"
+
+        "404":
+          description: Not found. User not found.
+          $ref: "#/components/responses/404"
+
+        "400":
+          description: Bad request. Missing or invalid path variable.
+          $ref: "#/components/responses/400"
+
+  /stats/games/{gameId}:
+    get:
+      tags: [Statistics (/stats)]
+      summary: Get game.
+      description: Retrieves a game by its id.
+      operationId: statsGame
+      parameters:
+        - $ref: "#/components/parameters/gameId"
+      responses:
+        "200":
+          description: Successful retrieval of the game.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    $ref: "#/components/examples/success"
+                  game:
+                    $ref: "#/components/schemas/game"
+
+        "404":
+          description: Not found. User not found.
+          $ref: "#/components/responses/404"
+
+        "400":
+          description: Bad request. Missing or invalid path variable.
           $ref: "#/components/responses/400"
 
 components:
+  parameters:
+    gameId:
+      name: gameId
+      description: Unique identifier of the game.
+      in: path
+      required: true
+      schema:
+        type: string
+        example: 67ea966e140740014eb1a65e
+    username:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+        example: myusername
+    page:
+      name: page
+      description: Page number for pagination.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    size:
+      name: size
+      description: Size for pagination.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 500
+
   responses:
     "401":
-      description: Unauthorized. Invalid authorization token.
+      description: Unauthorized.
       content:
         application/json:
           schema:
@@ -143,6 +265,19 @@ components:
               message:
                 description: Error message.
                 const: Unauthorized
+
+    "404":
+      description: Not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                $ref: "#/components/examples/failed"
+              message:
+                description: Error message.
+                const: Not Found
 
     "400":
       description: Bad request. Missing or invalid parameters.
@@ -157,7 +292,6 @@ components:
                 description: Error message.
                 const: Bad Request
               errors:
-                $ref: "#/components/examples/valErrors"
                 description: Validation errors.
                 type: object
                 properties:
@@ -205,6 +339,198 @@ components:
           type: string
           description: Password of the user. Must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.
           example: Str0ngPassw0rd!
+    stats:
+      type: object
+      description: User statistics.
+      properties:
+        time:
+          type: object
+          description: Time statistics.
+          properties:
+            total:
+              type: integer
+              description: Total time spent playing by the user in MS.
+              example: 333800
+            game:
+              type: object
+              description: Game time statistics.
+              properties:
+                min:
+                  type: integer
+                  description: Minimum time spent on a game in MS.
+                  example: 66760
+                max:
+                  type: integer
+                  description: Maximum time spent on a game in MS.
+                  example: 66760
+                avg:
+                  type: integer
+                  description: Average time spent on a game in MS.
+                  example: 66760
+            question:
+              type: object
+              description: Question time statistics.
+              properties:
+                min:
+                  type: integer
+                  description: Minimum time spent on a question in MS.
+                  example: 66760
+                max:
+                  type: integer
+                  description: Maximum time spent on a question in MS.
+                  example: 66760
+                avg:
+                  type: integer
+                  description: Average time spent on a question in MS.
+                  example: 66760
+        question:
+          type: object
+          description: Question statistics.
+          properties:
+            passed:
+              type: integer
+              description: Number of questions passed by the user.
+              example: 2
+            failed:
+              type: integer
+              description: Number of questions failed by the user.
+              example: 3
+            total:
+              type: integer
+              description: Total number of questions attempted by the user.
+              example: 5
+        game:
+          type: object
+          description: Game statistics.
+          properties:
+            total:
+              type: integer
+              description: Total number of games played by the user.
+              example: 5
+
+    game:
+      type: object
+      description: Game.
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the game. May not appear.
+          nullable: true
+          example: 67ea966e140740014eb1a65e
+        user:
+          type: object
+          description: User who played the game. May not appear.
+          nullable: true
+          properties:
+            username:
+              type: string
+              description: Username of the user who played the game.
+              example: myusername
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation time of the game.
+          example: 2025-03-31T13:19:42.271Z
+        time:
+          type: object
+          description: Game time tracking.
+          properties:
+            started:
+              type: string
+              format: date-time
+              description: Start time of the game.
+              example: 2025-03-23T11:37:28.575Z
+            finished:
+              type: string
+              format: date-time
+              description: Finish time of the game.
+              example: 2025-03-23T11:38:35.335Z
+        config:
+          type: object
+          description: Game configuration.
+          properties:
+            mode:
+              type: enum
+              description: Game mode.
+              example: musicians
+              enum:
+                - musicians
+            rounds:
+              type: integer
+              description: Number of rounds in the game.
+              example: 3
+              min: 1
+            time:
+              type: integer
+              description: Time limit for each question in seconds.
+              example: 100
+              min: 1
+            hints:
+              type: integer
+              description: Number of hints available for each question.
+              example: 3
+              min: 0
+        questions:
+          type: array
+          description: List of questions in the game.
+          items:
+            type: object
+            description: Question tracking.
+            properties:
+              question:
+                type: object
+                description: Question object.
+                properties:
+                  question:
+                    type: string
+                    description: Question.
+                    example: Question?
+                  image:
+                    type: string
+                    format: uri
+                    description: URL of the image shown in the question.
+                    example: https://example.org
+                  answers:
+                    type: object
+                    description: Question answers.
+                    properties:
+                      opts:
+                        type: array
+                        items:
+                          type: string
+                        description: List of possible answers.
+                        example:
+                          - 1
+                          - 2
+                      correct:
+                        type: integer
+                        description: Index of the correct answer option.
+                        example: 1
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: Creation time of the question.
+                    example: 2025-03-31T13:19:42.270Z
+
+              time:
+                type: object
+                description: Time tracking for the question.
+                properties:
+                  started:
+                    type: string
+                    format: date-time
+                    description: Start time of the question.
+                    example: 2025-03-23T11:37:28.575Z
+                  finished:
+                    type: string
+                    format: date-time
+                    description: Finish time of the question.
+                    example: 2025-03-23T11:38:35.335Z
+
+              selected:
+                type: integer
+                description: Index of the selected answer option.
+                example: 0
 
   securitySchemes:
     token:

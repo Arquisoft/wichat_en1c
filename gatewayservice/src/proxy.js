@@ -9,11 +9,9 @@ const { STATUS_CODES } = require("http");
 module.exports = (app) =>
   app.use(
     createProxyMiddleware({
-      pathFilter: (path) =>
-        // @ts-expect-error
-        Object.keys(config.proxyOpts.router).some((prefix) =>
-          path.startsWith(prefix)
-        ),
+      router: (req) => config.urls[req.url?.split("/")[1]],
+      pathRewrite: { "^/[^/]+/?": "" },
+      pathFilter: (path) => config.urls[path.split("/")[1]] !== undefined,
       on: {
         /**
          * Error handler

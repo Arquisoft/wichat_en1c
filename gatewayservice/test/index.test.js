@@ -8,10 +8,10 @@ fs.existsSync.mockReturnValue(false);
 const config = require("../src/config");
 
 const mockURL = "http://localhost:9999";
-config.proxyOpts.router["/game"] = `${mockURL}/game`;
-config.proxyOpts.router["/auth"] = `${mockURL}/auth`;
-config.proxyOpts.router["/stats"] = `${mockURL}/stats`;
-config.proxyOpts.router["/questions"] = `${mockURL}/questions`;
+config.urls.game = `${mockURL}/game`;
+config.urls.auth = `${mockURL}/auth`;
+config.urls.stats = `${mockURL}/stats`;
+config.urls.questions = `${mockURL}/questions`;
 config.auth.url = `${mockURL}/auth/verify`;
 config.proxyOpts.proxyTimeout = 500;
 
@@ -127,5 +127,13 @@ describe("Gateway Service", () => {
   test("Should raise 404 if no OpenAPI file reachable", async () => {
     const response = await request(server).get("/api-doc");
     expect(response.statusCode).toBe(404);
+  });
+
+  it("Should reject invalid routes", async () => {
+    const response = await request(server).get("/nonexistent").send();
+
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Not Found");
   });
 });
