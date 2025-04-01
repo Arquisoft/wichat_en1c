@@ -155,8 +155,6 @@ function computeStatsGames(games) {
   for (const game of games) {
     const gameTime = game.time.finished.getTime() - game.time.started.getTime();
 
-    console.log(gameTime);
-
     stats.time.total += gameTime;
     stats.time.game.min = Math.min(stats.time.game.min, gameTime);
     stats.time.game.max = Math.max(stats.time.game.max, gameTime);
@@ -179,8 +177,6 @@ function computeStatsGames(games) {
 
   stats.time.game.avg = stats.time.total / games.length;
   stats.time.question.avg = stats.time.total / stats.question.total;
-
-  console.log(stats.time);
 
   return stats;
 }
