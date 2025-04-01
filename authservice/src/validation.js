@@ -28,7 +28,7 @@ module.exports = {
       .isString()
       .isAlphanumeric()
       .isLength({ min: 5, max: 20 }),
-    password: body("password").isString().isStrongPassword(config.pass),
+    password: body("password").isString().isStrongPassword(config.pass).hide(),
     token: body("token").isJWT(),
   },
   setup,
