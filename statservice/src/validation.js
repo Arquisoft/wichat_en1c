@@ -66,7 +66,7 @@ module.exports = {
         .isLength({ min: 5, max: 20 })
         .withMessage(messages.notValid),
     game: [
-      body("game", "'Missing").isObject().withMessage(messages.notObject),
+      body("game", messages.missing).isObject().withMessage(messages.notObject),
       // Time
       ...timeValidators("game"),
 
