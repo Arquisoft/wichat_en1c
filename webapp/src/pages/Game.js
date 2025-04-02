@@ -181,11 +181,7 @@ const Game = () => {
       setReceivedHint("");
       setHintMessage("");
       setHintCooldown(true);
-      const randomHint =
-        mockGameData.hints[
-          Math.floor(Math.random() * mockGameData.hints.length)
-        ];
-      setReceivedHint(randomHint); // Store the received hint
+      setReceivedHint( mockGameData.hints[0]); // Store the received hint
       setTimeout(() => setHintCooldown(false), 3000);
       setHintsUsed(hintsUsed + 1);
     }
