@@ -1,15 +1,14 @@
 // src/pages/Home.js
 import React, { useRef, useEffect } from "react";
-import { Container, Typography, Button } from "@mui/material";
+import { Container, Button } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { useNavigate } from "react-router";
-import i18n from "../i18n";
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const navigate = useNavigate();
   const buttonRef = useRef(null); // Create a reference to the button
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleGame = (e) => {
     e.preventDefault();

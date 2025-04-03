@@ -7,7 +7,7 @@ import { GameContext } from "../GameContext";
 
 const EndGame = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const buttonRef = useRef(null); // Create a reference to the button
 
   const { setGameEnded } = useContext(GameContext);

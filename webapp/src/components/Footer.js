@@ -8,7 +8,7 @@ const repoLink = "https://github.com/Arquisoft/wichat_en1c"; // Direct link to t
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <Box

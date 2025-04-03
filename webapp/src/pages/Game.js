@@ -75,7 +75,7 @@ const Game = () => {
   const correctAudio = new Audio("/correct.mp3");
   const wrongAudio = new Audio("/wrong.mp3");
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   // Fetch game configuration on component mount
   useEffect(() => {
@@ -150,6 +150,19 @@ const Game = () => {
       console.error("Error checking answer:", error);
       setIsPaused(false);
     }
+  };
+
+  const getButtonColor = (selectedOption, option, answer) => {
+    if (selectedOption === option) {
+      if (option === answer) {
+        return "success";
+      }
+      return "error";
+    }
+    if (selectedOption && selectedOption !== option) {
+      return "secondary";
+    }
+    return "primary";
   };
 
   useEffect(() => {
@@ -272,7 +285,7 @@ const Game = () => {
           <img
             data-testid="question-image"
             src={questionData.image}
-            alt="Question Image"
+            alt="Question"
             style={{
               maxWidth: "300px", // Set max width of the image
               maxHeight: "300px", // Set max height of the image
@@ -291,15 +304,7 @@ const Game = () => {
               data-testid={`option-${index}`}
               key={option}
               variant="contained"
-              color={
-                selectedOption === option
-                  ? option === answer
-                    ? "success"
-                    : "error"
-                  : selectedOption && selectedOption !== option
-                  ? "secondary"
-                  : "primary"
-              }
+              color={getButtonColor(selectedOption, option, answer)}
               disabled={isPaused && selectedOption !== option}
               onClick={() => handleOptionClick(option)}
               sx={{

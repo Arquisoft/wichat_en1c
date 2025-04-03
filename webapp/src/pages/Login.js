@@ -24,7 +24,7 @@ const Login = () => {
   const navigate = useNavigate();
   const fieldRef = useRef(null); // Create a reference to the form
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const loginUser = async (e) => {
     e.preventDefault();

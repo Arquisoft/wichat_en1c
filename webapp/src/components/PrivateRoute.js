@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import { Navigate } from "react-router";
 import PropTypes from "prop-types";
 import { SessionContext } from "../SessionContext";
-import { GameContext, useGame } from "../GameContext";
+import { GameContext } from "../GameContext";
 
 // Private route component to restrict access
 const PrivateRoute = ({ element: Element, requireGameEnd = false }) => {

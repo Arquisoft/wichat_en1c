@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 const NotFound = () => {
   const navigate = useNavigate();
   const buttonRef = useRef(null); // Create a reference to the button
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleGoHome = (e) => {
     e.preventDefault();

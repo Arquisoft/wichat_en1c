@@ -14,8 +14,7 @@ ARG API_URI="http://localhost:8000"
 ENV API_ENDPOINT=$API_URI
 
 #Create an optimized version of the webapp
-RUN npm run build
-RUN npm install --ignore-scripts -g serve --production
+RUN npm run build && npm install --ignore-scripts -g serve --production
 
 # Run the app as a non-root user
 USER node
