@@ -41,7 +41,7 @@ _Each logo has a link to its ADR._
 
 ## Architecture
 
-The project architecture is a **non-pure microservices** ([ADR](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-5-architectural-pattern)) architecture. The different modules or microservices are:
+The project architecture is a **non-pure microservices** ([ADR](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-5-arquitectural-pattern)) architecture. The different modules or microservices are:
 
 - **Webapp**. Web application that provides a UI for the application services, accessible through the Gateway Service.
 - **Gateway Service**. Service that serves as the barrier between the Internet (and WebApp) and the rest of the services.
