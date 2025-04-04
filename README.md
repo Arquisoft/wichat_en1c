@@ -31,7 +31,7 @@ WiChat is a web application inspired by the "Saber y Ganar" quiz show. Building 
   <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech">
     <img src=".github/images/docker.webp" style="height: 100px">
   </a>
-  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech">
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-1-dbms-tech">
     <img src=".github/images/mongodb.svg" style="height: 100px">
   </a>
 </div>
