@@ -69,8 +69,8 @@ The architecture is classified as **non-pure** because the microservices are int
    JWT_SECRET=<secret_used_to_encrypt&sign_JWTs>
    ```
 
-   > [!IMPORTANT]
-   > Note that this file must **NOT** be shared publicly.
+> [!IMPORTANT]
+> Note that this file must **NOT** be shared publicly.
 
 3. Launch the application with **Docker Compose** or do a **component-by-component** start.
    - **Docker Compose**:
