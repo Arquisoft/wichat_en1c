@@ -8,14 +8,6 @@
 
 WiChat is a web application inspired by the "Saber y Ganar" quiz show. Building upon the general idea of previous year's projects, this version enhances the experience with image-based questions and a conversational hint system powered by a Large Language Model, offering dynamic and interactive assistance.
 
-## Team members
-
-- **Héctor Triguero del Río**. UO288992@uniovi.es
-- **Fernando Cachon Alonso**. UO295255@uniovi.es
-- **Daniel Fernández Cabrero**. UO288499@uniovi.es
-- **Umut Dolangac**. UO311846@uniovi.es
-- **Diego Martínez Chamorro**. UO294054@uniovi.es
-
 ## Powered by
 
 <div>
@@ -38,6 +30,14 @@ WiChat is a web application inspired by the "Saber y Ganar" quiz show. Building 
 <br>
 
 _Each logo has a link to its ADR._
+
+## Team members
+
+- **Héctor Triguero del Río**. UO288992@uniovi.es
+- **Fernando Cachon Alonso**. UO295255@uniovi.es
+- **Daniel Fernández Cabrero**. UO288499@uniovi.es
+- **Umut Dolangac**. UO311846@uniovi.es
+- **Diego Martínez Chamorro**. UO294054@uniovi.es
 
 ## Architecture
 
@@ -62,14 +62,15 @@ The architecture is classified as **non-pure** because the microservices are int
    ```
 
 2. Create an `.env` at the root of the project with the following structure:
+
    ```properties
    LLM_API_KEY=<llm_api_token>
    CRYPT_SECRET=<secret_used_to_encrypt_password>
    JWT_SECRET=<secret_used_to_encrypt&sign_JWTs>
    ```
 
-> [!IMPORTANT]
-> Note that this file must **NOT** be shared publicly.
+   > [!IMPORTANT]
+   > Note that this file must **NOT** be shared publicly.
 
 3. Launch the application with **Docker Compose** or do a **component-by-component** start.
    - **Docker Compose**:
