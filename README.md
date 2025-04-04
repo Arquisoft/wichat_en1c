@@ -1,5 +1,7 @@
 # WiChat EN 1C
 
+![alt text](.github/images/logo.png)
+
 [![Actions Status](https://github.com/arquisoft/wichat_en1c/workflows/CI%20for%20wichat_en1c/badge.svg)](https://github.com/arquisoft/wichat_en1c/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
@@ -16,16 +18,26 @@ WiChat is a web application inspired by the "Saber y Ganar" quiz show. Building 
 
 ## Powered by
 
-<div style="background-color: white; padding: 1em; border-radius: 1em; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1em;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1150px-React-icon.svg.png" style="max-height: 100px; object-fit: contain;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" style="max-height: 100px; object-fit: contain;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/1920px-Node.js_logo.svg.png" style="max-height: 100px; object-fit: contain;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/512px-MongoDB_Logo.svg.png" style="max-height: 100px; object-fit: contain;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Docker_logo.png" style="max-height: 100px; object-fit: contain;">
+<div>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-2-frontend-tech">
+    <img src=".github/images/react.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-7-web-server-framework">
+    <img src=".github/images/express.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-3-backend-tech">
+    <img src=".github/images/node.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech">
+    <img src=".github/images/docker.webp" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech">
+    <img src=".github/images/mongodb.svg" style="height: 100px">
+  </a>
 </div>
 <br>
 
-_ADRs: [React](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-2-frontend-tech), [Express](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-7-web-server-framework), [Node.js](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-3-backend-tech), [MongoDB](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-1-dbms-tech), [Docker](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech)_
+_Each logo has a link to its ADR._
 
 ## Architecture
 
