@@ -51,11 +51,12 @@ module.exports = (app) => {
                 model: "gemini"
             }
             const serviceResponse = await axios.post(`${llmServiceUrl}/ask`, serviceData);
-            if (serviceResponse.status !== 210 || serviceResponse.data.success !== true)
-                return res.status(500).json({ error: "Could not save game data" });
+            if (serviceResponse.status !== 200)
+                return res.status(500).json({ error: "Could not get hint from LLM" });
+
 
             // Return hint
-            const answer = serviceResponse.data;
+            const hint = serviceResponse.data.answer;
 
             try {
                 cache.useHint(username, answer.answer);
@@ -63,7 +64,7 @@ module.exports = (app) => {
                 return res.status(500).json({ error: error.message });
             }
 
-            res.json(answer);
+            res.json({hint});
         } catch (error) {
             return res.status(500).json({ error: "There was an error when obtaining a hint" });
         }

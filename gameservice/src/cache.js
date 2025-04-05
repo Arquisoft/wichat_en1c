@@ -68,7 +68,7 @@ module.exports = {
     getUserCorrectAnswer(username) {
         // Get current game for user
         const userGame = cache.get(username);
-        if (!userGame || userGame.game.questions.length === 0)
+        if (!userGame)
             throw new Error('Could not get correct answer of the question');
 
         // Get correct answer for the current question
@@ -80,7 +80,7 @@ module.exports = {
     finishGame(username) {
         // Get current game for user
         const userGame = cache.get(username);
-        if (!userGame || userGame.game.questions.length === 0)
+        if (!userGame)
             throw new Error('Could not finish game for the user');
 
         // Save finished game time
@@ -100,8 +100,8 @@ module.exports = {
     quitGame(username) {
         // Get current game for user
         const userGame = cache.get(username);
-        if (!userGame || userGame.game.questions.length === 0)
-            throw new Error('Could quit game for the user');
+        if (!userGame)
+            throw new Error('Could not quit game for the user');
 
         // Delete data from cache
         cache.delete(username);

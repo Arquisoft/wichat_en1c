@@ -29,6 +29,8 @@ module.exports = (app) => {
         } catch (error) {
             return res.status(500).json({ error: "There was an error when saving game data" });
         }
+
+        return res.status(200);
     })
 
     app.post('/game/quit', async (req, res) => {
@@ -44,5 +46,6 @@ module.exports = (app) => {
             return res.status(500).json({ error: error.message });
         }
 
+        return res.status(200);
     })
 };  
