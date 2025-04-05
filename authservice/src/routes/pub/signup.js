@@ -33,7 +33,9 @@ module.exports = (app) => {
           password: await argon2.hash(password, config.crypt),
         })
           .save()
-          .then(() => res.status(201).json({ success: true }));
+          .then(() =>
+            res.status(201).json({ success: true, message: STATUS_CODES[201] })
+          );
     }
   );
 };

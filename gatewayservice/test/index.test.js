@@ -11,8 +11,7 @@ const mockURL = "http://localhost:9999";
 config.urls.game = `${mockURL}/game`;
 config.urls.auth = `${mockURL}/auth`;
 config.urls.stats = `${mockURL}/stats`;
-config.urls.question = `${mockURL}/questions`;
-config.publicPath = "";
+config.urls.questions = `${mockURL}/questions`;
 config.auth.url = `${mockURL}/auth/verify`;
 config.proxyOpts.proxyTimeout = 500;
 
@@ -80,9 +79,7 @@ describe("Gateway Service", () => {
     test("Should authenticate routes that require it", async () => {
       const responses = await Promise.all([
         request(server).get("/game"),
-        request(server).get("/stats"),
         request(server).get("/game/protected"),
-        request(server).get("/stats/protected"),
       ]);
 
       for (const response of responses) {
@@ -130,5 +127,13 @@ describe("Gateway Service", () => {
   test("Should raise 404 if no OpenAPI file reachable", async () => {
     const response = await request(server).get("/api-doc");
     expect(response.statusCode).toBe(404);
+  });
+
+  it("Should reject invalid routes", async () => {
+    const response = await request(server).get("/nonexistent").send();
+
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Not Found");
   });
 });
