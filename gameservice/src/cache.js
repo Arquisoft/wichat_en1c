@@ -21,7 +21,12 @@ module.exports = {
                         started: now,
                         finished: null,
                     },
-                    config: config,
+                    config: {
+                        mode: "",
+                        rounds: config.rounds,
+                        time: config.time,
+                        hints: config.hints
+                    },
                     questions: []
                 }
             });
@@ -68,5 +73,24 @@ module.exports = {
         const currentQuestion = userGame.game.questions[userGame.game.questions.length - 1];
         const correctAnswer = currentQuestion.answers.correct;
         return correctAnswer;
+    },
+
+    finishGame(username){
+        // Get current game for user
+        const userGame = cache.get(username);
+        if (!userGame || userGame.game.questions.length === 0)
+            throw new Error('Could not get finish game for the user');
+
+        // Save finished game time
+        userGame.game.time.finished = new Date().toISOString();
+
+        // Get user game data to send
+        const gameData = JSON.stringify(userGame);     
+
+        // Delete data from cache
+        cache.delete(username);
+
+        // Return the user game data
+        return gameData;
     }
 };

@@ -1,4 +1,5 @@
 // Modules
+const axios = require('axios');
 const cache = require("../cache");
 
 module.exports = (app) => {
@@ -74,7 +75,7 @@ module.exports = (app) => {
         }
     });
 
-    
+
     // Functions
     async function getQuestion() {
         try {
