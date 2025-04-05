@@ -196,6 +196,37 @@ paths:
         "401":
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
+  /game/save:
+    post:
+      tags: [🔐 Game (/game)]
+      summary: Saves the game.
+      description: Saves the game.
+      operationId: gameSave
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      responses:
+        "200":
+          description: Successful save.
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+
+  /game/quit:
+    post:
+      tags: [🔐 Game (/game)]
+      summary: Quits the game.
+      description: Quits the game.
+      operationId: gameQuit
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      responses:
+        "200":
+          description: Successful quit.
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
 
   # TODO: Questions
   # Statistics
