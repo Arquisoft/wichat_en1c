@@ -28,6 +28,22 @@ services:
       PORT: 8002
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
+  statservice:
+    container_name: statservice-wichat_en1c
+    image: ghcr.io/arquisoft/wichat_en1c/statservice:latest
+    profiles: ["dev", "prod"]
+    build: ./statservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8003:8003"
+    networks:
+      - mynetwork
+    environment:
+      NODE_ENV: production
+      PORT: 8003
+      MONGODB_URI: mongodb://mongodb:27017/userdb
+
   llmservice:
     container_name: llmservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/llmservice:latest
@@ -48,11 +64,10 @@ services:
     profiles: ["dev", "prod"]
     build: ./gatewayservice
     depends_on:
-      - mongodb
       - authservice
-      - llmservice
       - gameservice
       - questionservice
+      - statservice
     ports:
       - "8000:8000"
     networks:
@@ -64,7 +79,6 @@ services:
       AUTH_SERVICE_URL: http://authservice:8002
       STATS_SERVICE_URL: http://statservice:8003
       QUESTIONS_SERVICE_URL: http://questionservice:8004
-      LLM_SERVICE_URL: http://llmservice:8005
 
   webapp:
     container_name: webapp-wichat_en1c
@@ -87,6 +101,7 @@ services:
       - mynetwork
     depends_on:
       - questionservice
+      - statservice
     environment:
       NODE_ENV: production
       QUESTIONS_SERVICE_URL: http://questionservice:8004
