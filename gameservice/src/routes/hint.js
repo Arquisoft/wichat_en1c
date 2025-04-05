@@ -19,7 +19,12 @@ module.exports = (app) => {
             return res.status(400).json({ error: 'Query must be sent' });
 
         // Get current question data
-        const questionData = cache.getCurrentQuestionData(username);
+        let questionData;
+        try {
+            questionData = cache.getCurrentQuestionData(username);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
 
         // Check if hints were generated before
         let hintsPromptText = "";
@@ -51,7 +56,13 @@ module.exports = (app) => {
 
             // Return hint
             const answer = serviceResponse.data;
-            cache.useHint(username, answer.answer)
+
+            try {
+                cache.useHint(username, answer.answer);
+            } catch (error) {
+                return res.status(500).json({ error: error.message });
+            }
+
             res.json(answer);
         } catch (error) {
             return res.status(500).json({ error: "There was an error when obtaining a hint" });

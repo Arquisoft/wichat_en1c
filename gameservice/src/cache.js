@@ -81,7 +81,7 @@ module.exports = {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame || userGame.game.questions.length === 0)
-            throw new Error('Could not get finish game for the user');
+            throw new Error('Could not finish game for the user');
 
         // Save finished game time
         userGame.game.time.finished = new Date().toISOString();
@@ -111,7 +111,7 @@ module.exports = {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
-            throw new Error('Could not get finish game for the user');
+            throw new Error('Could not get current question data for the user');
         const currentQuestion = userGame.game.questions[userGame.game.questions.length - 1];
         const data = {
             question: currentQuestion.question,
@@ -126,7 +126,7 @@ module.exports = {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
-            throw new Error('Could not get finish game for the user');
+            throw new Error('Could not save used hint for the user');
 
         // Save hint in temporal cache
         userGame.game.hints++;
