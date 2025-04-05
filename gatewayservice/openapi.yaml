@@ -156,16 +156,17 @@ paths:
           description: Successful retrieval of the question.
           content:
             application/json:
-              type: object
-              properties:
-                correctAnswer:
-                  type: string
-                  description: Correct answer option.
-                  example: "Answer 1"
-                isCorrect:
-                  type: boolean
-                  description: Indicates whether the user-selected answer was correct.
-                  example: true
+              schema:
+                type: object
+                properties:
+                  correctAnswer:
+                    type: string
+                    description: Correct answer option.
+                    example: "Answer 1"
+                  isCorrect:
+                    type: boolean
+                    description: Indicates whether the user-selected answer was correct.
+                    example: true
         "400":
           $ref: "#/components/responses/400"
         "401":
@@ -185,12 +186,13 @@ paths:
           description: Successful hint retrieval.
           content:
             application/json:
-              type: object
-              properties:
-                hint:
-                  type: string
-                  description: Hint for the current question.
-                  example: "The musician was highly influential in the 90s."
+              schema:
+                type: object
+                properties:
+                  hint:
+                    type: string
+                    description: Hint for the current question.
+                    example: "The musician was highly influential in the 90s."
         "401":
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
