@@ -40,7 +40,7 @@ const resources = {
       username: "Usuario",
       password: "Contraseña",
       endGame: "Fin del juego",
-      thanks: "Gracias por jugar",
+      thanks: "¡Gracias por jugar",
       loading: "Cargando",
       round: "Ronda",
       hints: "Pistas usadas",

@@ -12,7 +12,7 @@ import { SessionContext } from "../SessionContext"; // Import the context
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
-const apiEndpoint = process.env.API_ENDPOINT || "http://localhost:8000";
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
 const Login = () => {
   const [username, setUsername] = useState("");

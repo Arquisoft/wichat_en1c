@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install --ignore-scripts --omit=dev
 
 ARG API_URI="http://localhost:8000"
-ENV API_ENDPOINT=$API_URI
+ENV REACT_APP_API_ENDPOINT=$API_URI
 
 #Create an optimized version of the webapp
 RUN npm run build && npm install --ignore-scripts -g serve --production

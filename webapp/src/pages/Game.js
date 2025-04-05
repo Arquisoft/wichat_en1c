@@ -18,7 +18,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { GameContext } from "../GameContext";
 
-const apiEndpoint = process.env.API_ENDPOINT || "http://localhost:8000";
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
 // Mock game data (to simulate a backend response)
 const mockGameData = {
@@ -287,8 +287,8 @@ const Game = () => {
             src={questionData.image}
             alt="Question"
             style={{
-              maxWidth: "300px", // Set max width of the image
-              maxHeight: "300px", // Set max height of the image
+              maxWidth: "265px", // Set max width of the image
+              maxHeight: "265px", // Set max height of the image
               height: "auto", // Let the height adjust proportionally
               width: "auto", // Let the width adjust proportionally
               borderRadius: "10px", // Rounded corners for the image
@@ -337,7 +337,7 @@ const Game = () => {
         </Box>
       </Box>
 
-      {/* Right side: Hint section (now properly aligned) */}
+      {/* Right side: Hint section */}
       <Box
         sx={{
           display: "flex",
@@ -420,12 +420,13 @@ const Game = () => {
             }}
           >
             <Typewriter
+              data-testid="hint-message"
               key={receivedHint} // Force tywriter to reset
               words={[receivedHint]}
               cursor
               cursorStyle="_"
-              typeSpeed={50}
-              deleteSpeed={20} // In case we need to use it
+              typeSpeed={20}
+              deleteSpeed={20} 
             />
           </Typography>
         )}
