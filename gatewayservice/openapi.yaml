@@ -112,6 +112,89 @@ paths:
           $ref: "#/components/responses/400"
 
   # TODO: Game
+  /game/question:
+    get:
+      tags: [🔐 Game (/game)]
+      summary: Get question.
+      description: Retrieves a question for the game.
+      operationId: gameGetQuestion
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      responses:
+        "200":
+          description: Successful retrieval of the question.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+  /game/answer:
+    post:
+      tags: [🔐 Game (/game)]
+      summary: Validate answer.
+      description: Sends the answer selected by the user to check whether it is valid.
+      operationId: gameValidateAnswer
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                # * Username is appended by the Gateway service to the request.
+                selectedAnswer: # TODO: Check whether this is string or int.
+                  type: string
+                  description: Selected answer option.
+                  example: "Answer 1"
+      responses:
+        "200":
+          description: Successful retrieval of the question.
+          content:
+            application/json:
+              type: object
+              properties:
+                correctAnswer:
+                  type: string
+                  description: Correct answer option.
+                  example: "Answer 1"
+                isCorrect:
+                  type: boolean
+                  description: Indicates whether the user-selected answer was correct.
+                  example: true
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+  /game/hint:
+    get:
+      tags: [🔐 Game (/game)]
+      summary: Get a hint.
+      description: Generates a hint for the currect question.
+      operationId: gameGetHint
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      responses:
+        "200":
+          description: Successful hint retrieval.
+          content:
+            application/json:
+              type: object
+              properties:
+                hint:
+                  type: string
+                  description: Hint for the current question.
+                  example: "The musician was highly influential in the 90s."
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+
   # TODO: Questions
   # Statistics
   /stats/users/{username}:
@@ -326,6 +409,10 @@ components:
     failed:
       description: Indicates the operation failed.
       const: false
+    username:
+      description: Username of the user.
+      type: string
+      example: myusername
 
   schemas:
     user:
@@ -407,7 +494,6 @@ components:
               type: integer
               description: Total number of games played by the user.
               example: 5
-
     game:
       type: object
       description: Game.
@@ -531,6 +617,27 @@ components:
                 type: integer
                 description: Index of the selected answer option.
                 example: 0
+    question:
+      type: object
+      description: Question.
+      properties:
+        question:
+          type: string
+          description: Question.
+          example: Who is the musician shown in the picture?
+        image:
+          type: string
+          format: uri
+          description: URL of the image shown in the question.
+          example: https://example.org/image.png
+        options:
+          type: array
+          items:
+            type: string
+          description: List of possible answers.
+          example:
+            - Answer 1
+            - Answer 2
 
   securitySchemes:
     token:
