@@ -494,6 +494,26 @@ components:
               type: integer
               description: Total number of games played by the user.
               example: 5
+            hints:
+              type: object
+              description: Hints statistics.
+              properties:
+                total:
+                  type: integer
+                  description: Total number of hints used by the user.
+                  example: 3
+                avg:
+                  type: integer
+                  description: Average number of hints used per game by the user.
+                  example: 1
+                max:
+                  type: integer
+                  description: Maximum number of hints used in a game by the user.
+                  example: 2
+                min:
+                  type: integer
+                  description: Minimum number of hints used in a game by the user.
+                  example: 0
     game:
       type: object
       description: Game.
@@ -556,6 +576,11 @@ components:
               description: Number of hints available for each question.
               example: 3
               min: 0
+        hints:
+          type: integer
+          description: Number of hints used in the game.
+          example: 1
+          min: 0
         questions:
           type: array
           description: List of questions in the game.
