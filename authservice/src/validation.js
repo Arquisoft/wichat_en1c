@@ -15,7 +15,7 @@ const setup = (status, ...vals) => {
       res.status(status).json({
         success: false,
         message: STATUS_CODES[status],
-        errors: errors.mapped(),
+        errors: status === 400 ? errors.mapped() : undefined,
       });
     else next();
   });
@@ -28,7 +28,7 @@ module.exports = {
       .isString()
       .isAlphanumeric()
       .isLength({ min: 5, max: 20 }),
-    password: body("password").isString().isStrongPassword(config.pass),
+    password: body("password").isString().isStrongPassword(config.pass).hide(),
     token: body("token").isJWT(),
   },
   setup,
