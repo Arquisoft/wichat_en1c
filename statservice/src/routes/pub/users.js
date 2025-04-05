@@ -133,6 +133,12 @@ function computeStatsGames(games) {
         total: 0,
       },
       game: {
+        hints: {
+          total: 0,
+          min: 0,
+          max: 0,
+          avg: 0,
+        },
         total: 0,
       },
     };
@@ -157,6 +163,12 @@ function computeStatsGames(games) {
       total: -1,
     },
     game: {
+      hints: {
+        total: 0,
+        min: Number.MAX_VALUE,
+        max: 0,
+        avg: -1,
+      },
       total: games.length,
     },
   };
@@ -167,6 +179,10 @@ function computeStatsGames(games) {
     stats.time.total += gameTime;
     stats.time.game.min = Math.min(stats.time.game.min, gameTime);
     stats.time.game.max = Math.max(stats.time.game.max, gameTime);
+
+    stats.game.hints.total += game.hints;
+    stats.game.hints.min = Math.min(stats.game.hints.min, game.hints);
+    stats.game.hints.max = Math.max(stats.game.hints.max, game.hints);
 
     for (const question of game.questions) {
       const questionTime =
@@ -183,6 +199,7 @@ function computeStatsGames(games) {
   }
 
   stats.question.total = stats.question.passed + stats.question.failed;
+  stats.game.hints.avg = stats.game.hints.total / games.length;
 
   stats.time.game.avg = stats.time.total / games.length;
   stats.time.question.avg = stats.time.total / stats.question.total;
