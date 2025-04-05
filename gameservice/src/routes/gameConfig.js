@@ -4,6 +4,7 @@ module.exports = (app) => {
 
     app.get('/game/config', async (req, res) => {
         const gameConfig = {
+            port: process.env.PORT || 8001,
             time: config.time,
             rounds: config.rounds,
             hints: config.hints

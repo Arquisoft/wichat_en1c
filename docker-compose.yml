@@ -102,9 +102,13 @@ services:
     depends_on:
       - questionservice
       - statservice
+      - llmservice
     environment:
       NODE_ENV: production
+      PORT: 8001
       QUESTIONS_SERVICE_URL: http://questionservice:8004
+      STATS_SERVICE_URL: http://statservice:8003
+      LLM_SERVICE_URL: http://statservice:8005
 
   questionservice:
     container_name: questionservice-wichat_en1c
