@@ -1,13 +1,13 @@
 const express = require("express");
 const axios = require("axios");
+const queries = require("./queries");
 const app = express();
 const port = 8004;
 
 const WIKIDATA_SPARQL_URL = "https://query.wikidata.org/sparql";
-const CACHE_SIZE = 10; // Number of questions to keep in cache
-const REFILL_THRESHOLD = 3; // When cache drops to this size, refill it
+const CACHE_SIZE = 10;
+const REFILL_THRESHOLD = 3;
 
-// Question cache and control variables
 let questionCache = [];
 let isRefilling = false;
 
@@ -24,34 +24,43 @@ async function queryWikidata(sparqlQuery) {
   }
 }
 
-const sparqlQuery = `
-  SELECT ?musicianLabel ?birthDate ?image
-  WHERE {
-    ?musician wdt:P106 wd:Q639669;
-              wdt:P27 wd:Q145;
-              wdt:P569 ?birthDate;
-              wdt:P18 ?image.
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-  }
-  LIMIT 20
-`;
-
-async function generateQuestion() {
+async function generateQuestion(category = 'musician') {
+  const sparqlQuery = queries[category] || queries.musician;
   const results = await queryWikidata(sparqlQuery);
   if (!results || results.length < 5) return null;
 
-  const correctMusician = results[Math.floor(Math.random() * results.length)];
-  const otherMusicians = results.filter((m) => m !== correctMusician);
+  const correctPerson = results[Math.floor(Math.random() * results.length)];
+  const otherPeople = results.filter((m) => m !== correctPerson);
+
+
+  
+  // Date Format (DD/MM/YYYY)
+  const rawDate = correctPerson.birthDate.value;
+  const formattedDate = formatWikidataDate(rawDate);
+
 
   return {
-    question: `Who is the musician born on ${correctMusician.birthDate.value} in the image?`,
-    image: correctMusician.image.value,
+    question: `Who is the ${category} born on ${formattedDate} in the image?`,
+    image: correctPerson.image.value,
     options: [
-      correctMusician.musicianLabel.value,
-      ...otherMusicians.slice(0, 3).map((m) => m.musicianLabel.value),
+      correctPerson[`${category}Label`].value,
+      ...otherPeople.slice(0, 3).map((m) => m[`${category}Label`].value),
     ].sort(() => Math.random() - 0.5),
-    musicianName: correctMusician.musicianLabel.value,
+    correctAnswer: correctPerson[`${category}Label`].value,
+    category: category
   };
+}
+
+function formatWikidataDate(wikidataDate) {
+  try {
+    
+    const datePart = wikidataDate.split('T')[0]; 
+    const [year, month, day] = datePart.split('-');
+    return `${day}/${month}/${year}`;
+  } catch (e) {
+    console.error('Date could not formatted correctly:', wikidataDate);
+    return wikidataDate; 
+  }
 }
 
 async function refillCache() {
@@ -60,11 +69,14 @@ async function refillCache() {
   
   try {
     while (questionCache.length < CACHE_SIZE) {
-      const question = await generateQuestion();
+      
+      const categories = ['musician', 'scientist', 'actor', 'painter', 'writer'];
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+      
+      const question = await generateQuestion(randomCategory);
       if (question) {
         questionCache.push(question);
       }
-      // Small delay to avoid hammering the API
       await new Promise(resolve => setTimeout(resolve, 200));
     }
   } catch (error) {
@@ -84,25 +96,41 @@ setInterval(() => {
   }
 }, 1000);
 
-app.get("/musicians", async (req, res) => {
+app.get("/question", async (req, res) => {
   if (questionCache.length === 0) {
-    // If cache is empty (shouldn't happen), generate one on the fly
     const question = await generateQuestion();
     if (question) {
-      res.json(question);
+      res.json(question);s
     } else {
       res.status(503).json({ error: "Service temporarily unavailable" });
     }
     return;
   }
 
-  // Get the first question from cache
   const question = questionCache.shift();
   res.json(question);
 
-  // Trigger refill if needed
   if (questionCache.length <= REFILL_THRESHOLD && !isRefilling) {
     refillCache();
+  }
+});
+
+// Category endpoints: musician, scientist, actor, painter, writer
+app.get("/question/:category", async (req, res) => {
+  const category = req.params.category;
+  if (!queries[category]) {
+    return res.status(400).json({ error: "Invalid category" });
+  }
+
+  try {
+    const question = await generateQuestion(category);
+    if (question) {
+      res.json(question);
+    } else {
+      res.status(503).json({ error: "Could not generate question" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
