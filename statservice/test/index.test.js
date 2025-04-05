@@ -162,6 +162,12 @@ describe("User routes", () => {
         },
         game: {
           total: 0,
+          hints: {
+            total: 0,
+            min: 0,
+            max: 0,
+            avg: 0,
+          },
         },
       });
     });

@@ -29,6 +29,7 @@ const gameSchema = new mongoose.Schema({
     },
     required: true,
   },
+  hints: { type: Number, required: true },
   config: {
     type: {
       mode: { type: String, required: true },

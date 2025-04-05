@@ -67,6 +67,10 @@ module.exports = {
         .withMessage(messages.notValid),
     game: [
       body("game", messages.missing).isObject().withMessage(messages.notObject),
+      // Number of hints
+      body("game.hints", messages.missing)
+        .isInt({ min: 0 })
+        .withMessage(messages.notValidNumber),
       // Time
       ...timeValidators("game"),
 

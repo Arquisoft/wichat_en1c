@@ -1,3 +1,4 @@
+// @ts-check
 const date = new Date("2021-01-01");
 const date2 = new Date("2021-01-01T00:00:15Z");
 const date3 = new Date("2021-01-01T00:00:20Z");
@@ -14,6 +15,7 @@ const game = {
     time: 100,
     hints: 3,
   },
+  hints: 2,
   questions: [
     {
       time: {
@@ -43,6 +45,7 @@ const game = {
     },
   ],
 };
+
 const dbGame = {
   ...game,
   questions: [
@@ -126,7 +129,7 @@ const stats = {
     question: { min: 5_000, max: 15_000, avg: 10_000 },
   },
   question: { passed: 1, failed: 1, total: 2 },
-  game: { total: 1 },
+  game: { total: 1, hints: { min: 2, max: 2, avg: 2, total: 2 } },
 };
 
 module.exports = {
