@@ -14,7 +14,12 @@ module.exports = (app) => {
             return res.status(400).json({ error: 'Username must be sent' });
 
         // Finish user's game and get the game data
-        const userData = cache.finishGame(username);
+        let userData;
+        try {
+            userData = cache.finishGame(username);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
 
         // Send data to Statistics Service to be sent
         try {
@@ -22,8 +27,22 @@ module.exports = (app) => {
             if (serviceResponse.status !== 210 || serviceResponse.data.success !== true)
                 return res.status(500).json({ error: "Could not save game data" });
         } catch (error) {
-            console.error('Error when saving game data: ', error);
-            return null;
+            return res.status(500).json({ error: "There was an error when saving game data" });
         }
+    })
+
+    app.post('/game/quit', async (req, res) => {
+        // Get the username
+        const { username } = req.body;
+        if (!username)
+            return res.status(400).json({ error: 'Username must be sent' });
+
+        // Finish user's game
+        try {
+            cache.quitGame(username);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+
     })
 };  
