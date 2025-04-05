@@ -42,6 +42,21 @@ See https://docs.arc42.org/section-5/[Building Block View] in the arc42 document
 ****
 endif::arc42help[]
 
+=== Context
+
+image::build_block_view/blackbox.drawio.svg[]
+
+Contained Building Blocks::
+[cols="1,2", options="header"]
+|===
+| **Building Block**      | **Brief description**
+| WiChat                  | Overall system that is being documented.
+| Player                  | Regular players of the game which interact with the system through the web interface.
+| API User                | Users of the different public APIs.
+| WikiData                | API used to generate questions and answers for the game.
+| LLM                     | LLM API used to generate hints for the game.
+|===
+
 === Whitebox Overall System
 
 ifdef::arc42help[]
@@ -249,7 +264,7 @@ Contained Building Blocks::
 | **Building Block**      | **Brief description**
 | WikiData Adapter        | Serves as an adapter for the external WikiData API.
 | Questions Module        | Generates questions from the WikiData information.
-| Questions Cache?        | Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.
+| Questions Cache         | Allows caching of questions to reduce the load on the WikiData API. It is necessary for performace reasons.
 | Express.js Server       | Provides an internal RESTful API for the rest of microservices.
 |===
 
@@ -301,38 +316,38 @@ Contained Building Blocks::
 | Express.js Server       | Provides an internal secured RESTful API for the rest of microservices.
 |===
 
-=== Level 3
+// === Level 3
 
-https://github.com/Arquisoft/wichat_en1c/issues/26
+// https://github.com/Arquisoft/wichat_en1c/issues/26
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
+// ifdef::arc42help[]
+// [role="arc42help"]
+// ****
+// Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
 
-When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.
-****
-endif::arc42help[]
+// When you need more detailed levels of your architecture please copy this
+// part of arc42 for additional levels.
+// ****
+// endif::arc42help[]
 
-==== White Box <_building block x.1_>
+// ==== White Box <_building block x.1_>
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Specifies the internal structure of _building block x.1_.
-****
-endif::arc42help[]
+// ifdef::arc42help[]
+// [role="arc42help"]
+// ****
+// Specifies the internal structure of _building block x.1_.
+// ****
+// endif::arc42help[]
 
-_<white box template>_
-
-
-==== White Box <_building block x.2_>
-
-_<white box template>_
+// _<white box template>_
 
 
+// ==== White Box <_building block x.2_>
 
-==== White Box <_building block y.1_>
+// _<white box template>_
 
-_<white box template>_
+
+
+// ==== White Box <_building block y.1_>
+
+// _<white box template>_
