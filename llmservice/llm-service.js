@@ -56,7 +56,7 @@ async function getMusicianName() {
 }
 
 // It does not work as intented. It will be updated
-getMusicianName();
+//getMusicianName();
 // Generic function to send questions to LLM
 async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
   try {
