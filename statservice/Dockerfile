@@ -2,7 +2,7 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /usr/src/gatewayservice
+WORKDIR /usr/src/statservice
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -12,10 +12,9 @@ RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
 COPY ./src ./src
-COPY ./openapi.yaml ./
 
 # Expose the port the app runs on
-EXPOSE 8000
+EXPOSE 8002
 
 # Run the app as a non-root user
 USER node
