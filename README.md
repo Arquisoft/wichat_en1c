@@ -1,83 +1,103 @@
-# wichat_en1c
+# WiChat EN 1C
+
+![alt text](.github/images/logo.png)
 
 [![Actions Status](https://github.com/arquisoft/wichat_en1c/workflows/CI%20for%20wichat_en1c/badge.svg)](https://github.com/arquisoft/wichat_en1c/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_en1c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_en1c)
 
+WiChat is a web application inspired by the "Saber y Ganar" quiz show. Building upon the general idea of previous year's projects, this version enhances the experience with image-based questions and a conversational hint system powered by a Large Language Model, offering dynamic and interactive assistance.
+
+## Powered by
+
+<div>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-2-frontend-tech">
+    <img src=".github/images/react.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-7-web-server-framework">
+    <img src=".github/images/express.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-3-backend-tech">
+    <img src=".github/images/node.png" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-4-deployment-tech">
+    <img src=".github/images/docker.webp" style="height: 100px">
+  </a>
+  <a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-1-dbms-tech">
+    <img src=".github/images/mongodb.svg" style="height: 100px">
+  </a>
+</div>
+<br>
+
+_Each logo has a link to its ADR._
+
 ## Team members
+
 - **Héctor Triguero del Río**. UO288992@uniovi.es
 - **Fernando Cachon Alonso**. UO295255@uniovi.es
 - **Daniel Fernández Cabrero**. UO288499@uniovi.es
 - **Umut Dolangac**. UO311846@uniovi.es
 - **Diego Martínez Chamorro**. UO294054@uniovi.es
 
-<p float="left">
-<img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
-<img src="https://miro.medium.com/max/365/1*Jr3NFSKTfQWRUyjblBSKeg.png" height="100">
-</p>
+## Architecture
 
-This is a base project for the Software Architecture course in 2024/2025. It is a basic application composed of several components.
+The project architecture is a **non-pure microservices** ([ADR](https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records#adr-5-arquitectural-pattern)) architecture. The different modules or microservices are:
 
-- **User service**. Express service that handles the insertion of new users in the system.
-- **Auth service**. Express service that handles the authentication of users.
-- **LLM service**. Express service that handles the communication with the LLM.
-- **Gateway service**. Express service that is exposed to the public and serves as a proxy to the two previous ones.
-- **Webapp**. React web application that uses the gateway service to allow basic login and new user features.
+- **Webapp**. Web application that provides a UI for the application services, accessible through the Gateway Service.
+- **Gateway Service**. Service that serves as the barrier between the Internet (and WebApp) and the rest of the services.
+- **Auth Service**. Handles the authentication of users.
+- **LLM Service**. Handles the communication with the LLM. This service is internal.
+- **Game Service**. Handles the game's logic: rounds, time, etc.
+- **Questions Service**. Handles generating questions from the WikiData DB.
+- **Statistics Service**. Keeps track of the games played by the user and computes statistics about them.
 
-Both the user and auth service share a Mongo database that is accessed with mongoose.
+The architecture is classified as **non-pure** because the microservices are interdependent and share a single database. This design choice minimizes code duplication and reduces overall complexity. However, it comes at the expense of reliability and availability, which are not critical priorities for this project.
 
-## Quick start guide
+## Quick start
 
-First, clone the project:
+1. First, clone the project:
 
-```git clone git@github.com:arquisoft/wichat_en1c.git```
+   ```sh
+   git clone https://github.com/Arquisoft/wichat_en1c.git
+   ```
 
-### LLM API key configuration
+2. Create an `.env` at the root of the project with the following structure:
 
-In order to communicate with the LLM integrated in this project, we need to setup an API key. Two integrations are available in this propotipe: gemini and empaphy. The API key provided must match the LLM provider used.
+   ```properties
+   LLM_API_KEY=<llm_api_token>
+   CRYPT_SECRET=<secret_used_to_encrypt_password>
+   JWT_SECRET=<secret_used_to_encrypt&sign_JWTs>
+   ```
 
-We need to create two .env files. 
-- The first one in the llmservice directory (for executing the llmservice using ```npm start```). The content of this .env file should be as follows:
-```
-LLM_API_KEY="YOUR-API-KEY"
-```
-- The second one located in the root of the project (along the docker-compose.yml). This .env file is used for the docker-compose when launching the app with docker. The content of this .env file should be as follows:
-```
-LLM_API_KEY="YOUR-API-KEY"
-```
+> [!IMPORTANT]
+> Note that this file must **NOT** be shared publicly.
 
-Note that these files must NOT be uploaded to the github repository (they are excluded in the .gitignore).
-
-An extra configuration for the LLM to work in the deployed version of the app is to create the same .env file (with the LLM_API_KEY variable) in the virtual machine (in the home of the azureuser directory).
-
-### Launching Using docker
-For launching the propotipe using docker compose, just type:
-```docker compose --profile dev up --build```
-
-### Component by component start
-First, start the database. Either install and run Mongo or run it using docker:
-
-```docker run -d -p 27017:27017 --name=my-mongo mongo:latest```
-
-You can use also services like Mongo Altas for running a Mongo database in the cloud.
-
-Now launch the auth, user and gateway services. Just go to each directory and run `npm install` followed by `npm start`.
-
-Lastly, go to the webapp directory and launch this component with `npm install` followed by `npm start`.
-
-After all the components are launched, the app should be available in localhost in port 3000.
+3. Launch the application with **Docker Compose** or do a **component-by-component** start.
+   - **Docker Compose**:
+   ```sh
+   docker compose --profile dev up --build
+   ```
+   - **Component-by-component**:
+   ```sh
+   docker run -d -p 27017:27017 --name=my-mongo mongo:latest # run Database
+   cd <service>
+   npm i
+   npm start
+   ```
 
 ## Deployment
+
 For the deployment, we have several options. The first and more flexible is to deploy to a virtual machine using SSH. This will work with any cloud service (or with our own server). Other options include using the container services that all the cloud services provide. This means, deploying our Docker containers directly. Here I am going to use the first approach. I am going to create a virtual machine in a cloud service and after installing docker and docker-compose, deploy our containers there using GitHub Actions and SSH.
 
 ### Machine requirements for deployment
+
 The machine for deployment can be created in services like Microsoft Azure or Amazon AWS. These are in general the settings that it must have:
 
 - Linux machine with Ubuntu > 20.04 (the recommended is 24.04).
 - Docker installed.
 - Open ports for the applications installed (in this case, ports 3000 for the webapp and 8000 for the gateway service).
 
-Once you have the virtual machine created, you can install **docker** using the following instructions:
+Once you have the virtual machine created, you can install **Docker** using the following instructions:
 
 ```ssh
 sudo apt update
@@ -90,36 +110,15 @@ sudo usermod -aG docker ${USER}
 ```
 
 ### Continuous delivery (GitHub Actions)
-Once we have our machine ready, we could deploy by hand the application, taking our docker-compose file and executing it in the remote machine. In this repository, this process is done automatically using **GitHub Actions**. The idea is to trigger a series of actions when some condition is met in the repository. The precondition to trigger a deployment is going to be: "create a new release". The actions to execute are the following:
 
-![imagen](https://github.com/user-attachments/assets/7ead6571-0f11-4070-8fe8-1bbc2e327ad2)
+Once the machine is ready, the application can be deployed manually by transferring the `docker-compose.yml` file to the remote machine and executing it. However, this repository automates the deployment process using **GitHub Actions**. The deployment is triggered when a new release is created, executing the following [workflow](https://raw.githubusercontent.com/arquisoft/wichat_en1c/master/.github/workflows/release.yml).
 
+This workflow ensures that unit tests for each module and end-to-end (e2e) tests are successfully executed before pushing the Docker images and deploying them. This approach prevents deploying versions that fail the tests and makes deployments fast and repeatable.
 
-As you can see, unitary tests of each module and e2e tests are executed before pushing the docker images and deploying them. Using this approach we avoid deploying versions that do not pass the tests.
+Please note the GitHub Actions workflow requires three secrets to be configured in the repository:
 
-The deploy action is the following:
+- `DEPLOY_HOST`: The IP address of the remote machine.
+- `DEPLOY_USER`: The username with permissions to execute commands on the remote machine.
+- `DEPLOY_KEY`: The private key used to authenticate the user on the remote machine.
 
-```yml
-deploy:
-    name: Deploy over SSH
-    runs-on: ubuntu-latest
-    needs: [docker-push-userservice,docker-push-authservice,docker-push-llmservice,docker-push-gatewayservice,docker-push-webapp]
-    steps:
-    - name: Deploy over SSH
-      uses: fifsky/ssh-action@master
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        user: ${{ secrets.DEPLOY_USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        command: |
-          wget https://raw.githubusercontent.com/arquisoft/wichat_en1c/master/docker-compose.yml -O docker-compose.yml
-          docker compose --profile prod down
-          docker compose --profile prod up -d --pull always
-```
-
-This action uses three secrets that must be configured in the repository:
-- DEPLOY_HOST: IP of the remote machine.
-- DEPLOY_USER: user with permission to execute the commands in the remote machine.
-- DEPLOY_KEY: key to authenticate the user in the remote machine.
-
-Note that this action logs in the remote machine and downloads the docker-compose file from the repository and launches it. Obviously, previous actions have been executed which have uploaded the docker images to the GitHub Packages repository.
+This workflow logs into the remote machine, downloads the `docker-compose.yml` file from the repository, and launches the application. Prior steps in the workflow ensure that the Docker images are built and uploaded to the GitHub Packages repository.

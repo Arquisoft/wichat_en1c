@@ -1,28 +1,33 @@
 // @ts-check
 const express = require("express");
 const mongoose = require("mongoose");
-
-const pub = require("./routes/pub");
-const verify = require("./routes/verify");
-const config = require("./config");
 const { STATUS_CODES } = require("http");
+const mongoSanitize = require("express-mongo-sanitize");
+
+const config = require("./config");
+const save = require("./routes/save");
+const pub = require("./routes/pub");
 
 // Configure Express
 const app = express();
 
 app.set("trust proxy", true);
 app.use(express.json());
+app.use(mongoSanitize());
 
 // Connect to MongoDB
 mongoose.connect(config.mongoUri);
 
 // Routes
 pub(app);
-verify(app);
+save(app);
 
-// 404 Handler
-app.use((_req, res) => {
-  res.status(404).json({ success: false, message: STATUS_CODES[404] });
+// Default Handler
+app.use("*", (_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: STATUS_CODES[404],
+  });
 });
 
 // Error Handler
@@ -37,6 +42,8 @@ app.use((err, _req, res, _next) => {
 // Server start/stop
 module.exports = app
   .listen(config.port, () => {
-    console.log(`Auth Service listening at http://localhost:${config.port}`);
+    console.log(
+      `Statistics Service listening at http://localhost:${config.port}`
+    );
   })
   .on("close", async () => await mongoose.connection.close());
