@@ -1,10 +1,10 @@
-// src/components/NavBar.test.js
+// src/test/NavBar.test.js
 import { render, screen, fireEvent } from "@testing-library/react";
-import NavBar from "./NavBar";
+import NavBar from "../components/NavBar";
 import { BrowserRouter } from "react-router";
 import { SessionContext } from "../SessionContext";
 
-// Mock navigate (so we can track route changes)
+// Mock navigate (track route changes)
 const mockNavigate = jest.fn();
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
@@ -26,7 +26,7 @@ describe("NavBar Component", () => {
     renderNavBar({ username: "", isLoggedIn: false });
 
     const logo = screen.getByAltText("WIChatLogo");
-    const homeButton = screen.getByText("Home");
+    const homeButton = screen.getByTestId("home-nav");
 
     expect(logo).toBeInTheDocument();
     expect(homeButton).toBeInTheDocument();
@@ -35,8 +35,8 @@ describe("NavBar Component", () => {
   test("shows Login and Register buttons when not logged in", () => {
     renderNavBar({ username: "", isLoggedIn: false });
 
-    expect(screen.getByText("Login")).toBeInTheDocument();
-    expect(screen.getByText("Register")).toBeInTheDocument();
+    expect(screen.getByTestId("login-nav")).toBeInTheDocument();
+    expect(screen.getByTestId("register-nav")).toBeInTheDocument();
   });
 
   test("shows welcome message and Logout when logged in", () => {
@@ -46,8 +46,8 @@ describe("NavBar Component", () => {
       destroySession: jest.fn(),
     });
 
-    expect(screen.getByText("Hello, Daniel!")).toBeInTheDocument();
-    expect(screen.getByText("Logout")).toBeInTheDocument();
+    expect(screen.getByText(/Daniel!/i)).toBeInTheDocument();
+    expect(screen.getByTestId("logout-nav")).toBeInTheDocument();
   });
 
   test("navigates to home when clicking the logo", () => {
@@ -67,7 +67,7 @@ describe("NavBar Component", () => {
       destroySession: mockDestroySession,
     });
 
-    const logoutButton = screen.getByText("Logout");
+    const logoutButton = screen.getByTestId("logout-nav");
     fireEvent.click(logoutButton);
 
     expect(mockDestroySession).toHaveBeenCalled();
@@ -77,10 +77,10 @@ describe("NavBar Component", () => {
   test("navigates to login and register correctly", () => {
     renderNavBar({ username: "", isLoggedIn: false });
 
-    fireEvent.click(screen.getByText("Login"));
+    fireEvent.click(screen.getByTestId("login-nav"));
     expect(mockNavigate).toHaveBeenCalledWith("/login");
 
-    fireEvent.click(screen.getByText("Register"));
+    fireEvent.click(screen.getByTestId("register-nav"));
     expect(mockNavigate).toHaveBeenCalledWith("/register");
   });
 });
