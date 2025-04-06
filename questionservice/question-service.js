@@ -74,8 +74,9 @@ function formatWikidataDate(wikidataDate) {
     const datePart = wikidataDate.split('T')[0]; 
     const [year, month, day] = datePart.split('-');
     return `${day}/${month}/${year}`;
-  } catch (_e) {
+  } catch (e) {
     console.error('Date could not formatted correctly:', wikidataDate);
+    console.error(e);
     return wikidataDate; 
   }
 }
