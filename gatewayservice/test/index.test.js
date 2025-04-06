@@ -79,7 +79,9 @@ describe("Gateway Service", () => {
     test("Should authenticate routes that require it", async () => {
       const responses = await Promise.all([
         request(server).get("/game"),
+        request(server).get("/stats"),
         request(server).get("/game/protected"),
+        request(server).get("/stats/protected"),
       ]);
 
       for (const response of responses) {

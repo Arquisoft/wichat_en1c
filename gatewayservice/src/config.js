@@ -11,7 +11,7 @@ const config = {
   },
   auth: {
     url: (process.env.AUTH_SERVICE_URL ?? "http://localhost:8002") + "/verify",
-    paths: ["/game"],
+    paths: ["/game", "/stats"],
   },
   /** @type {import("http-proxy-middleware").Options} */
   proxyOpts: {
