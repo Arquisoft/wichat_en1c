@@ -4,24 +4,14 @@ const config = require("./config");
 const { STATUS_CODES } = require("http");
 
 /**
- * @type {import("http-proxy-middleware").Options['router']}
- */
-const router = {
-  "/game": config.urls.game,
-  "/auth": config.urls.auth + config.publicPath,
-  "/stats": config.urls.stats,
-  "/questions": config.urls.question,
-};
-
-/**
  * @param {import("express").Application} app
  */
 module.exports = (app) =>
   app.use(
     createProxyMiddleware({
-      router,
-      pathFilter: (path) =>
-        Object.keys(router).some((prefix) => path.startsWith(prefix)),
+      router: (req) => config.urls[req.url?.split("/")[1]],
+      pathRewrite: { "^/[^/]+/?": "" },
+      pathFilter: (path) => config.urls[path.split("/")[1]] !== undefined,
       on: {
         /**
          * Error handler

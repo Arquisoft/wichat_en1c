@@ -26,8 +26,8 @@ const Stats = () => {
         const fetchStats = async () => {
             setLoading(true); // Set loading to true before fetching
             try {
-                const response = await axios.get(`${apiEndpoint}/users/${username}/games`);
-                setStats(response.stats);
+                const response = await axios.get(`${apiEndpoint}/stats/users/${username}`);
+                setStats(response.data.stats);
             } catch (err) {
                 console.error('Error fetching stats:', err);
             } finally {
