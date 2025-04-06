@@ -2,10 +2,18 @@ const request = require("supertest");
 const axios = require('axios');
 const cache = require('../src/cache');
 const config = require('../src/config');
-const app = require('../src/index');
 
 jest.mock('axios');
 jest.mock('../src/cache');
+
+let app;
+beforeAll(() => {
+  app = require("../src/index");
+});
+
+afterAll(async () => {
+  await app.close();
+});
 
 // CONFIG
 describe('/game/config', () => {
