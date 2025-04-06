@@ -43,6 +43,7 @@ function validateRequiredFields(req, requiredFields) {
     }
   }
 }
+
 async function getMusicianName() {
   try {
     const response = await axios.get('http://localhost:8004/musicians');
@@ -56,7 +57,7 @@ async function getMusicianName() {
 }
 
 // It does not work as intented. It will be updated
-getMusicianName();
+//getMusicianName();
 // Generic function to send questions to LLM
 async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
   try {
@@ -91,6 +92,7 @@ app.post('/ask', async (req, res) => {
     const { question, model } = req.body;
     //load the api key from an environment variable
     const apiKey = process.env.LLM_API_KEY;
+    
     if (!apiKey) {
       return res.status(400).json({ error: 'API key is missing.' });
     }
