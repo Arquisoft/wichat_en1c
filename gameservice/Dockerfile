@@ -11,8 +11,7 @@ COPY package*.json ./
 RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY ./game-service.js ./ 
-# TODO: Maybe move the src files to a src folder
+COPY ./src ./src
 
 # Expose the port the app runs on
 EXPOSE 8001

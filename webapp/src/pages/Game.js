@@ -217,7 +217,7 @@ const Game = () => {
         });
         setReceivedHint(response.hint); // Store the received hint
         setHintsUsed(hintsUsed + 1);
-      } catch {
+      } catch (error) {
         console.error("Error when trying to save game:", error);
         setReceivedHint(t("errorHint"));
       } finally {
