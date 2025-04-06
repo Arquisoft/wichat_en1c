@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8000
     description: Development server
-  - url: http://SOMEIP:8000 # TODO: Replace with the actual IP address of the server.
+  - url: http://4.251.8.219:8000
     description: Production server
 
 tags:
@@ -41,6 +41,7 @@ paths:
                     type: string
                     description: Health status.
                     example: OK
+
   # Authentication
   /auth/login:
     post:
@@ -78,7 +79,6 @@ paths:
           $ref: "#/components/responses/401"
         "400":
           $ref: "#/components/responses/400"
-
   /auth/signup:
     post:
       tags: [Authentication (/auth)]
@@ -211,7 +211,6 @@ paths:
         "401":
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
-
   /game/quit:
     post:
       tags: [🔐 Game (/game)]
@@ -260,6 +259,7 @@ paths:
         "400":
           description: Bad request. Invalid category.
           $ref: "#/components/responses/400"
+
   # Statistics
   /stats/users/{username}:
     get:
@@ -293,7 +293,6 @@ paths:
         "400":
           description: Bad request. Missing or invalid path variable.
           $ref: "#/components/responses/400"
-
   /stats/users/{username}/games:
     get:
       tags: [Statistics (/stats)]
@@ -332,7 +331,6 @@ paths:
         "400":
           description: Bad request. Missing or invalid path variable.
           $ref: "#/components/responses/400"
-
   /stats/games/{gameId}:
     get:
       tags: [Statistics (/stats)]
