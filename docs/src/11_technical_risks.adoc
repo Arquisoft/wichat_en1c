@@ -25,3 +25,15 @@ See https://docs.arc42.org/section-11/[Risks and Technical Debt] in the arc42 do
 
 ****
 endif::arc42help[]
+
+Considering the recent loss of a team member, the team's tendency towards end-of-sprint workload accumulation, challenges with branch merging due to testing, and the adoption of new technologies, the following are key risks and potential areas of technical debt that require attention (Relevance from 1(low) to 3(high)):
+
+[cols="1,1,3"]
+|===
+| Category & Item                                 | Relevance | Considerations & Potential Mitigation
+| Team Capacity Risk: Loss of a team member.     | 2         | Reduced team capacity directly impacts velocity and potentially deadlines. Mitigation: Re-evaluate current workload distribution, prioritize critical tasks, explore options for temporary or permanent replacement, and ensure thorough knowledge transfer from the departed member.
+| Workflow Risk & Potential Debt: End-of-sprint workload spikes. | 2         | Accumulating work at the end of a sprint leads to rushed implementations, increasing the risk of bugs and impeding sustainable pace. It can also result in "quick fixes" that introduce technical debt. Mitigation: Implement stricter "work in progress" limits, encourage continuous integration and testing throughout the sprint, and focus on completing tasks earlier.
+| Code Integration Risk & Potential Debt: Branch merge conflicts due to testing issues. | 2         | Frequent merge conflicts disrupt development flow and signal potential issues with test coverage, quality, or understanding. This can lead to hastily resolved conflicts and hidden technical debt. Mitigation: Enhance team understanding and application of testing strategies, enforce stricter test requirements before merging, and consider more robust branching strategies. Investigate the root causes of test failures and conflicts.
+| Technology Adoption Risk & Potential Debt: Limited experience with React, MongoDB, Jest, and Puppeteer. | 1-2 (reducing over time) | While the team is using these technologies, a lack of deep understanding can lead to suboptimal implementations, performance issues, or maintainability challenges (potential technical debt). Mitigation: Encourage ongoing learning through documentation, tutorials, and internal knowledge sharing. Implement thorough code reviews focusing on best practices for these technologies. Dedicate time for focused learning on testing frameworks.
+| Implicit Knowledge Risk: Reliance on individual team member knowledge. | 1         | Despite efforts towards knowledge sharing, some critical aspects or modules might still heavily rely on the understanding of specific team members. Proactive knowledge transfer and documentation of key functionalities and architectural decisions are crucial to ensure maintainability by the entire team.
+|===
