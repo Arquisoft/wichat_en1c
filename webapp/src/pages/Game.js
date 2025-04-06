@@ -17,6 +17,7 @@ import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { GameContext } from "../GameContext";
+import { SessionContext } from "../SessionContext";
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
@@ -77,11 +78,13 @@ const Game = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const { username } = useContext(SessionContext);
+
   // Fetch game configuration on component mount
   useEffect(() => {
     const fetchGameConfig = async () => {
       try {
-        const response = await axios.get(`${apiEndpoint}/game/config`);
+        const response = await axios.get(`${apiEndpoint}/game/config`, {username: username,});
         setGameSettings(response.data);
         setTimeLeft(response.data.time); // Set initial time from config
       } catch (error) {
@@ -92,7 +95,7 @@ const Game = () => {
 
     return async () => {
       try {
-        await axios.post(`${apiEndpoint}/game/quit`);
+        await axios.post(`${apiEndpoint}/game/quit`, {username: username,});
       } catch (error) {
         console.error("Error when trying to quit game:", error);
       }};
@@ -103,7 +106,7 @@ const Game = () => {
     const fetchQuestion = async () => {
       setIsLoading(true); // Start loading
       try {
-        const response = await axios.get(`${apiEndpoint}/game/question`);
+        const response = await axios.get(`${apiEndpoint}/game/question`, {username: username,});
         setQuestionData(response.data);
       } catch (error) {
         console.error("Error fetching question:", error);
@@ -148,7 +151,7 @@ const Game = () => {
     setIsPaused(true);
     try {
       const response = await axios.post(`${apiEndpoint}/game/answer`, {
-        selectedAnswer: option,
+        username: username, selectedAnswer: option,
       });
       const isCorrect = response.data.isCorrect;
       setAnswer(response.data.correctAnswer);
@@ -176,7 +179,7 @@ const Game = () => {
   useEffect(async () => {
     if (gameEnded) {
         try {
-          await axios.get(`${apiEndpoint}/game/save`);
+          await axios.get(`${apiEndpoint}/game/save`, {username: username,});
         } catch (error) {
           console.error("Error when trying to save game:", error);
         };
@@ -209,7 +212,7 @@ const Game = () => {
       try {
         const response = await axios.post(
         `${apiEndpoint}/game/hint`,
-        { query: hintMessage },
+        { username: username, query: hintMessage },
         {
           headers: {
             "Content-Type": "application/json",
