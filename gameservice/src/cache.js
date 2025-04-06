@@ -10,7 +10,7 @@ module.exports = {
         const now = new Date().toISOString();
 
         // Get current game for user
-        const userGame = cache.get(username);
+        let userGame = cache.get(username);
 
         // If there`s no current game for user, create one
         if (!userGame) {
