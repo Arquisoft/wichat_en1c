@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const docsLink = "https://arquisoft.github.io/wichat_en1c/"; // Direct link to the documentation
 const repoLink = "https://github.com/Arquisoft/wichat_en1c"; // Direct link to the repository
-const apiLink = "http://4.251.8.219:8000/api-doc/";
+const apiLink = "https://4.251.8.219:8000/api-doc/";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

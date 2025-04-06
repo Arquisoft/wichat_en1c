@@ -27,6 +27,45 @@ See https://docs.arc42.org/section-10/[Quality Requirements] in the arc42 docume
 ****
 endif::arc42help[]
 
+.Reliability
+The system must maintain a high level of operational stability and accuracy. This is measurable through several key indicators:
+
+- *Question Generation Accuracy:* The rate of incorrectly generated distractors in quiz questions sourced from Wikidata should be less than 5%.
+
+- *AI Hint Accuracy:* The AI-powered hint system should provide accurate and relevant hints, with the occurrence of hallucinations or misleading information being less than 2% of hint requests.
+
+- *Core Functionality Error Rate:* The system's handling of user registrations, logins, game data storage, and gameplay should have an error rate of less than 1%.
+
+.Performance Efficiency
+The system must provide a responsive and efficient user experience, even under moderate load. This can be measured by:
+
+- *Concurrent User Capacity:* The system should be able to handle up to 20 concurrent users while maintaining an average response time for critical user interactions (loading questions, submitting answers, requesting hints) below 1 second.
+
+- *AI Hint Generation Latency:* The time taken to generate an AI hint should not introduce a performance bottleneck, adding no more than 0.7 seconds to the overall response time for a hint request.
+
+.Security
+The confidentiality and integrity of user data and system access must be ensured. Measurable aspects include:
+
+- *Data Storage Security:* User personal data and authentication credentials must be stored using robust encryption algorithms and protected against unauthorized access.
+
+- *API Access Control:* API endpoints should be secured through authentication and authorization mechanisms (JWT), preventing any successful unauthorized access attempts as verified by security testing.
+
+.Usability
+The system should be intuitive and easy to use for all users, including those new to the application. This can be evaluated by:
+
+- *First-Time User Success Rate:* At least 80% of new users should be able to successfully register and complete a basic game within 10 minutes without needing external assistance.
+
+- *User Interface Clarity:* User feedback should indicate that at least 90% of users find the game interactions to be "easy to understand."
+
+- *Learning Curve:* The average time required for a new user to become proficient with the core functionalities of the system should be less than 39 minutes, as measured by their ability to complete defined tasks during an onboarding process.
+
+.Maintainability
+The system's architecture should facilitate future modifications, extensions, and bug fixes with minimal effort and risk. This can be assessed by:
+
+- *Modularity for New Features:* Adding a new game mode or integrating a new question source should require modifications to no more than 5% of the existing codebase and be achievable within a timeframe of 2 weeks.
+
+- *Ease of Updating External Dependencies:* Updating the AI hint model or integrating a completely new LLM service should be possible with a development effort of no more than 3 days.
+
 === Quality Tree
 
 ifdef::arc42help[]
@@ -49,6 +88,33 @@ In any case the tree should include links to the scenarios of the following sect
 
 ****
 endif::arc42help[]
+
+* Quality
+** Reliability
+*** <<login>> (Core Functionality)
+*** <<start-game>> (Core Functionality)
+*** <<answer>> (Core Functionality)
+*** <<hint>> (AI Hint Accuracy)
+*** <<stats>> (Core Functionality)
+** Performance Efficiency
+*** <<login>> (Response Time)
+*** <<start-game>> (Response Time)
+*** <<answer>> (Response Time)
+*** <<hint>> (AI Hint Generation Latency)
+*** <<stats>> (Response Time)
+** Security
+*** <<login>> (Authentication)
+*** (Implicitly covers all interactions involving user data)
+** Usability
+*** <<login>> (First-Time User Success)
+*** <<start-game>> (First-Time User Success)
+*** <<answer>> (User Interface Clarity)
+*** <<hint>> (User Interface Clarity)
+*** <<stats>> (User Interface Clarity)
+** Maintainability
+*** <<email-add>> (Modularity)
+*** <<new-game>> (Modularity)
+*** <<switch-LLM>> (Modularity)
 
 === Quality Scenarios
 
@@ -77,3 +143,24 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 Tabular or free form text.
 ****
 endif::arc42help[]
+
+**Usage Scenarios**
+
+[cols="1,1"]
+|===
+| Usage Scenario                                                                                                | System Reaction
+| [[login]] **User Login:** A user opens the web application, enters valid credentials (username and password), and clicks the "Login" button. | The system authenticates the user within 0.5 seconds and redirects them to the home interface. If the credentials are invalid, an error message is displayed to the user within 0.3 seconds.
+| [[start-game]] **Start Game:** A logged-in user clicks the "Play" button.                                               | The system retrieves the first question (including image and answer options) within 1 second and displays it to the user.
+| [[answer]] **Answer Question:** The user selects an answer option and clicks the "Submit Answer" button.                     | The system evaluates the answer within 0.3 seconds, provides immediate feedback (correct/incorrect), updates the user's score, and presents the next question within 1.5 seconds.
+| [[hint]] **Request Hint:** The user writes a qeustion and clicks the "Hint" button for a question.                                       | The system sends a request to the LLM Service and displays a relevant hint to the user within 1 second.
+| [[stats]] **View Statistics:** A logged-in user navigates to the "Statistics" section.                                    | The system retrieves and displays the user's game statistics (games played, correct answers, etc.) within 1 second.
+|===
+
+**Change Scenarios**
+
+|===
+| Change Scenario                                                                                                 | System Reaction
+| [[email-add]] **Adding Email Login:** The requirement is to allow users to log in using their email address in addition to their username. | The Authentication Service is modified and deployed without disrupting the existing username-based login functionality. New users can register with email, and existing users can optionally link their email to their account. Both login methods function correctly after the change, verified by automated tests.
+| [[new-game]] **Integrating a New Game Mode:** A new game mode (e.g., 1 text question, 4 image answers ) needs to be added to the application.         | New components and logic for the new game mode are added primarily within the Game Service and WebApp. The existing game modes remain functional without modification. The new mode can be accessed through the user interface without altering the main navigation flow.
+| [[switch-LLM]] **Switching LLM Provider:** The current LLM provider is replaced with a new one (requiring a different API).       | The LLM Service is adapted to communicate with the new LLM provider through a new adapter. The interface exposed by the LLM Service to other microservices remains consistent, minimizing impact on the Game Service. Hint functionality remains operational after the change.
+|===
