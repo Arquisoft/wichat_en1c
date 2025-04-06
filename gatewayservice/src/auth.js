@@ -25,6 +25,7 @@ module.exports = (app) =>
         { timeout: 1_000 }
       );
 
+      // FIXME: This is not working nor tested with unit tests
       // Attach logged-in username
       req.body ??= {};
       req.body.username = verification.data.username;

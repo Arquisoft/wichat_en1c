@@ -92,7 +92,7 @@ const Game = () => {
 
     return async () => {
       try {
-        await axios.get(`${apiEndpoint}/game/quit`);
+        await axios.post(`${apiEndpoint}/game/quit`);
       } catch (error) {
         console.error("Error when trying to quit game:", error);
       }};
