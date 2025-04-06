@@ -107,7 +107,7 @@ async function refillCache() {
 refillCache();
 
 // Background cache maintenance
-setInterval(() => {
+const bgRefill = setInterval(() => {
   if (questionCache.length <= REFILL_THRESHOLD && !isRefilling) {
     refillCache();
   }
@@ -155,11 +155,12 @@ const server = app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-process.on('SIGINT', () => {
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
+server.on("close", () => {
+  clearInterval(bgRefill); // Stop the background refill process
+});
+
+process.on("SIGINT", () => {
+  server.close();
 });
 
 module.exports = server;
