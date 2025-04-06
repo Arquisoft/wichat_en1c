@@ -29,8 +29,16 @@ async function generateQuestion(category = 'musician') {
   const results = await queryWikidata(sparqlQuery);
   if (!results || results.length < 5) return null;
 
-  const correctPerson = results[Math.floor(Math.random() * results.length)];
-  const otherPeople = results.filter((m) => m !== correctPerson);
+  // Filter: If name includes numeric, skip the name.
+  const validResults = results.filter(person => {
+    const label = person[`${category}Label`].value;
+    return !/\d/.test(label); 
+  });
+
+  if (validResults.length < 5) return null;
+
+  const correctPerson = validResults[Math.floor(Math.random() * validResults.length)];
+  const otherPeople = validResults.filter((m) => m !== correctPerson);
 
 
   
@@ -38,14 +46,23 @@ async function generateQuestion(category = 'musician') {
   const rawDate = correctPerson.birthDate.value;
   const formattedDate = formatWikidataDate(rawDate);
 
+  const options = new Set();
+  options.add(correctPerson[`${category}Label`].value);
+  for (const person of otherPeople) {
+    if (options.size >= 4) break; // We only need 4 options total
+    const label = person[`${category}Label`].value;
+    if (!options.has(label)) {
+      options.add(label);
+    }
+  }
+
+  // If we couldn't get enough unique options, return null
+  if (options.size < 4) return null;
 
   return {
     question: `Who is the ${category} born on ${formattedDate} in the image?`,
     image: correctPerson.image.value,
-    options: [
-      correctPerson[`${category}Label`].value,
-      ...otherPeople.slice(0, 3).map((m) => m[`${category}Label`].value),
-    ].sort(() => Math.random() - 0.5),
+    options: [...options].sort(() => Math.random() - 0.5),
     correctAnswer: correctPerson[`${category}Label`].value,
     category: category
   };
@@ -100,7 +117,7 @@ app.get("/question", async (req, res) => {
   if (questionCache.length === 0) {
     const question = await generateQuestion();
     if (question) {
-      res.json(question);s
+      res.json(question);
     } else {
       res.status(503).json({ error: "Service temporarily unavailable" });
     }
