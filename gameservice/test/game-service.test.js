@@ -16,6 +16,17 @@ afterAll(async () => {
 });
 
 // CONFIG
+describe('config.js', ()=>{
+  test('should have correct config values', () => {
+    expect(config).toEqual({
+      port: config.port,
+      time: config.time,
+      rounds: config.rounds,
+      hints: config.hints,
+    });
+  });
+})
+
 describe('/game/config', () => {
   test("should return game configuration values", async () => {
     const response = await request(app).get("/game/config");
