@@ -48,6 +48,7 @@ const resources = {
       },
       noStatsYet: "Play some games to see your statistics here!",
       stats: "Stats",
+      errorHint: "An error has occurred trying to retrieve yuor hint"
     },
   },
   es: {
@@ -91,6 +92,7 @@ const resources = {
       },
       noStatsYet: "¡Juega algunas partidas para ver tus estadísticas aquí!",
       stats: "Estadísticas",
+      errorHint: "Ha ocurrido un error intentando obtener su pista"
     },
   },
 };
