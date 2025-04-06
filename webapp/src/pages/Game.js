@@ -100,6 +100,7 @@ const Game = () => {
         setQuestionData(response.data);
       } catch (error) {
         console.error("Error fetching question:", error);
+        navigate("/");
       } finally {
         setIsLoading(false); // End loading
       }

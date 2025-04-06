@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const docsLink = "https://arquisoft.github.io/wichat_en1c/"; // Direct link to the documentation
 const repoLink = "https://github.com/Arquisoft/wichat_en1c"; // Direct link to the repository
+const apiLink = "https://4.251.8.219:8000/api-doc/";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -24,12 +25,24 @@ const Footer = () => {
         backgroundColor: "#f7f7f7",
       }}
     >
-      {/* Left text: Company name */}
+      {/* Company name */}
       <Typography variant="body2" sx={{ flex: 1, textAlign: "left" }}>
         ChattySW © {currentYear}
       </Typography>
 
-      {/* Center text: Repository link */}
+      {/* Api documentation link */}
+      <Link
+        data-testid="api-docs-link"
+        href={apiLink}
+        target="_blank" // Open in a new tab
+        rel="noopener noreferrer" // Prevents the new tab from being able to access the window.opener object
+        variant="body2"
+        sx={{ flex: 1, textAlign: "left" }}
+      >
+        API
+      </Link>
+
+      {/* Repository link */}
       <Link
         href={repoLink}
         target="_blank" // Open in a new tab
@@ -40,7 +53,7 @@ const Footer = () => {
         WIChat_en1c
       </Link>
 
-      {/* Right text: Documentation link */}
+      {/* Documentation link */}
       <Link
         data-testid="docs-link"
         href={docsLink}

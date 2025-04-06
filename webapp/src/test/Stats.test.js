@@ -34,10 +34,13 @@ const mockStatsData = {
 describe("Stats Component Tests", () => {
     beforeEach(() => {
         axios.get.mockImplementation((url) => {
-            if (url.includes("/users/testuser/games")) {
-                return Promise.resolve({  stats: mockStatsData  });
-            } else if (url.includes("/users/nonexistentuser/games")) { 
-                return Promise.reject({ isAxiosError: true, response: { status: 404 } });
+            if (url.includes("/stats/users/testuser")) {
+                return Promise.resolve({  data:{stats: mockStatsData}  });
+            } else if (url.includes("/stats/users/nonexistentuser")) {
+              return Promise.reject({
+                isAxiosError: true,
+                response: { status: 404 },
+              });
             }
             return Promise.reject(new Error(`Unknown endpoint: ${url}`));
         });
