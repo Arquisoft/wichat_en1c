@@ -1,10 +1,12 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 let mongoserver;
-let userservice;
+let gameservice;
 let authservice;
 let llmservice;
 let gatewayservice;
+let questionservice;
+let statservice;
 
 async function startServer() {
     console.log('Starting MongoDB memory server...');
@@ -13,9 +15,10 @@ async function startServer() {
     process.env.MONGODB_URI = mongoUri;
     authservice = await require("../../authservice/src/index");
     llmservice = await require("../../llmservice/llm-service");
-    gatewayservice = await require("../../gatewayservice/gateway-service");
+    gatewayservice = await require("../../gatewayservice/src/index");
     gameservice = await require("../../gameservice/game-service");
     questionservice = await require("../../questionservice/question-service");
+    statservice = await require("../../statservice/src/index");
 }
 
 startServer();
