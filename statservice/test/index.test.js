@@ -123,8 +123,6 @@ describe("User routes", () => {
         .get(`/public/users/${username}`)
         .send();
 
-      console.log(JSON.stringify(response.body));
-
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
       expect(response.body.username).toBe(username);
@@ -135,8 +133,6 @@ describe("User routes", () => {
       const response = await request(app)
         .get(`/public/users/${username}`)
         .send();
-
-      console.log(JSON.stringify(response.body));
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
