@@ -16,7 +16,7 @@ module.exports = (app) => {
         // Finish user's game and get the game data
         let userData;
         try {
-            userData = await cache.finishGame(username);
+            userData = cache.finishGame(username);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
@@ -27,6 +27,7 @@ module.exports = (app) => {
             if (serviceResponse.status !== 210 || serviceResponse.data.success !== true)
                 return res.status(500).json({ error: "Could not save game data" });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ error: "There was an error when saving game data" });
         }
 
@@ -41,7 +42,7 @@ module.exports = (app) => {
 
         // Finish user's game
         try {
-            await cache.quitGame(username);
+            cache.quitGame(username);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }

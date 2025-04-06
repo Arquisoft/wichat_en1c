@@ -21,7 +21,7 @@ module.exports = (app) => {
         // Get current question data
         let questionData;
         try {
-            questionData = await cache.getCurrentQuestionData(username);
+            questionData = cache.getCurrentQuestionData(username);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
@@ -59,13 +59,14 @@ module.exports = (app) => {
             const hint = serviceResponse.data.answer;
 
             try {
-                await cache.useHint(username, answer.answer);
+                cache.useHint(username, answer.answer);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
 
             res.json({hint});
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ error: "There was an error when obtaining a hint" });
         }
     })

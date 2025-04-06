@@ -30,6 +30,7 @@ module.exports = (app) => {
             // Send question data for the frontend
             res.json(questionToSend);
         } catch (error) {
+            console.error(error);
             res.status(500).json({ error: 'There was an error when obtaining the question' });
         }
     });
@@ -62,7 +63,7 @@ module.exports = (app) => {
 
             // Save answered question data for user
             try {
-                await cache.answer(username, selectedAnswer);
+                cache.answer(username, selectedAnswer);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
@@ -70,6 +71,7 @@ module.exports = (app) => {
             // Send answer result data for the frontend
             res.json(result);
         } catch (error) {
+            console.error(error);
             res.status(500).json({ error: 'There was an error when checking the answer' });
         }
     });
@@ -82,6 +84,7 @@ module.exports = (app) => {
             const questionData = serviceResponse.data;
             return questionData;
         } catch (error) {
+            console.error(error);
             return null;
         }
     }
