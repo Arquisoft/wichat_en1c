@@ -111,7 +111,7 @@ paths:
         "400":
           $ref: "#/components/responses/400"
 
-  # TODO: Game
+  # Game
   /game/question:
     get:
       tags: [🔐 Game (/game)]
@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/question"
+                $ref: "#/components/schemas/gameQuestion"
         "401":
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
@@ -147,7 +147,7 @@ paths:
               type: object
               properties:
                 # * Username is appended by the Gateway service to the request.
-                selectedAnswer: # TODO: Check whether this is string or int.
+                selectedAnswer:
                   type: string
                   description: Selected answer option.
                   example: "Answer 1"
@@ -228,7 +228,38 @@ paths:
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
 
-  # TODO: Questions
+  # Questions
+  /questions/question:
+    get:
+      tags: [Questions (/questions)]
+      summary: Get question.
+      description: Retrieves a complete question with answer.
+      operationId: questionsGet
+      responses:
+        "200":
+          description: Successful retrieval of the question.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+  /questions/question/{category}:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/category"
+      tags: [Questions (/questions)]
+      summary: Get question from a category.
+      description: Retrieves a complete question with answer from a category.
+      operationId: questionsGetCategory
+      responses:
+        "200":
+          description: Successful retrieval of the question.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+        "400":
+          description: Bad request. Invalid category.
+          $ref: "#/components/responses/400"
   # Statistics
   /stats/users/{username}:
     get:
@@ -367,6 +398,20 @@ components:
         default: 10
         minimum: 1
         maximum: 500
+    category:
+      name: category
+      description: Category of the question.
+      in: path
+      required: false
+      schema:
+        type: string
+        enum:
+          - musician
+          - scientist
+          - actor
+          - painter
+          - writer
+        example: musician
 
   responses:
     "401":
@@ -675,9 +720,9 @@ components:
                 type: integer
                 description: Index of the selected answer option.
                 example: 0
-    question:
+    gameQuestion:
       type: object
-      description: Question.
+      description: Question as sent by the Game Service.
       properties:
         question:
           type: string
@@ -696,6 +741,36 @@ components:
           example:
             - Answer 1
             - Answer 2
+
+    question:
+      type: object
+      description: Complete question with answer.
+      properties:
+        question:
+          type: string
+          description: Question.
+          example: Who is the musician shown in the picture?
+        image:
+          type: string
+          format: uri
+          description: URL of the image shown in the question.
+          example: https://example.org/image.png
+        options:
+          type: array
+          items:
+            type: string
+          description: List of possible answers.
+          example:
+            - Answer 1
+            - Answer 2
+        answer:
+          type: string
+          description: Correct answer.
+          example: Answer 1
+        category:
+          type: string
+          description: Category of the question.
+          example: musician
 
   securitySchemes:
     token:
