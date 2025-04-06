@@ -57,18 +57,36 @@ See https://docs.arc42.org/section-8/[Concepts] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== _<Concept 1>_
+=== User Experience (UX)
 
-_<explanation>_
+The user experience in the system involves the design of the user interface and the level of accessibility, usability and
+satisfaction that it provides. As the part of the system that the user interacts with, the focus is put in providing
+a user-friendly interface, which gives a proper user experience. This user experience is a key concept in web applications
+such as the one developed, in which a high degree of usability is required for the user's satisfaction and overall
+experience.
 
+=== Internationalization
 
+As a key part of User Experience, Internationalization (i18n) is a very important part in the system. The adjustment
+to several languages and the flexibility it provides, allows the system to be user-friendly, providing a high usability
+to several types of users based on their languages, overrunning language barriers.
 
-=== _<Concept 2>_
+=== Architectural patterns
 
-_<explanation>_
+The system follows several architectural patterns: Microservices pattern, so the system is composed of different
+independent components, and Gateway pattern, which provides a single interface for all the users that manages
+and redirects all their requests. The use of these architectural patterns provides a high degree of mantainability
+and also high flexibility in the development. 
 
-...
+=== Security
 
-=== _<Concept n>_
+As a key in all types of systems, security is a very important concept in this one and its development. Resources and data
+are protected and only provided to allowed users, implementing an authentication systemps that enforces the system's security.
 
-_<explanation>_
+=== Error handling
+
+Proper error handling techniques are implemented in each system's component to ensure the reliability and availability
+of the system. Every call or dependency between components or important parts is managed to throw and detect types 
+of errors and not propagate them thorughout the application, sending proper messages and codes to the different
+components to ensure the availability of the system and its proper working without failing. This enhances, in case
+an error occurs, the user experience so the user is informed if some process can not be carried out.
