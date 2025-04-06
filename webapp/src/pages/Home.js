@@ -10,9 +10,9 @@ const Home = () => {
   const buttonRef = useRef(null); // Create a reference to the button
   const { t } = useTranslation();
 
-  const handleGame = (e) => {
+  const handleButton = (route) => (e) => {
     e.preventDefault();
-    navigate("/game");
+    navigate(route);
   };
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const Home = () => {
       />
 
       {/* Play Button */}
-      <form onSubmit={handleGame}>
+      <form onSubmit={handleButton("/game")}>
         <Button
           data-testid="play-button"
           ref={buttonRef}
@@ -50,6 +50,19 @@ const Home = () => {
           startIcon={<PlayArrow />} // Play Icon
         >
           {t("play")}
+        </Button>
+      </form>
+
+      {/* Stats Button */}
+      <form onSubmit={handleButton("/stats")}>
+        <Button
+          data-testid="stats-button"
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ marginTop: 1 }}
+        >
+          {t("stats")}
         </Button>
       </form>
     </Container>

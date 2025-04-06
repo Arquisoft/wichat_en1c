@@ -19,7 +19,7 @@ describe("Home Page", () => {
 
     const playButton = screen.getByTestId("play-button");
 
-    // Check if the Play button text is rendered
+    // Check if the Play button is rendered
     expect(playButton).toBeInTheDocument();
 
     // Find the button and simulate a click
@@ -27,5 +27,26 @@ describe("Home Page", () => {
 
     // Check if the URL has changed to '/game'
     expect(window.location.pathname).toBe("/game");
+  });
+
+  test("renders button and navigation to stats", () => {
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Home />
+        </SessionProvider>
+      </BrowserRouter>
+    );
+
+    const statsButton = screen.getByTestId("stats-button");
+
+    // Check if the Stats button is rendered
+    expect(statsButton).toBeInTheDocument();
+
+    // Find the button and simulate a click
+    fireEvent.click(statsButton);
+
+    // Check if the URL has changed to '/stats'
+    expect(window.location.pathname).toBe("/stats");
   });
 });

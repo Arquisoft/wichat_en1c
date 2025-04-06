@@ -12,6 +12,7 @@ import Game from "./pages/Game"; // Game.js
 import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute.js
 import NotFound from "./pages/NotFound"; // NotFound.js
 import EndGame from "./pages/EndGame"; // EndGame.js
+import Stats from "./pages/Stats"; // Stats.js
 
 import "./i18n"; // Load internationalization
 
@@ -51,6 +52,8 @@ function App() {
             path="/end-game"
             element={<PrivateRoute element={EndGame} requireGameEnd={true} />}
           />
+          {/* Stats Page (protected) */}
+          <Route path="/stats" element={<PrivateRoute element={Stats} />} />
           {/* Not Existing Path */}
           <Route path="*" element={<NotFound data-testid="not-found-page" />} />
         </Routes>

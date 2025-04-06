@@ -193,8 +193,7 @@ defineFeature(feature, (test) => {
           .split("/")
           .map((part) => part.trim());
         const used = parseInt(usedStr, 10);
-        const total = parseInt(totalStr, 10);
-        expect(used === total);
+        expect(used).toBe(0);
       } else {
         console.warn("Could not parse hints information:", hintText);
         expect(true).toBe(false);
@@ -250,8 +249,7 @@ defineFeature(feature, (test) => {
           .split("/")
           .map((part) => part.trim());
         const used = parseInt(usedStr, 10);
-        const total = parseInt(totalStr, 10);
-        expect(used === total);
+        expect(used).toBe(0);
       } else {
         console.warn("Could not parse hints information:", hintText);
         expect(true).toBe(false);
