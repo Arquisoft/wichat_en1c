@@ -9,21 +9,20 @@ module.exports = (app) => {
     // Endpoints
     app.get('/game/question', async (req, res) => {
         try {
-            // Get a question
-            const questionData = await getQuestion();
-            if (!questionData)
-                return res.status(500).json({ error: 'Could not obtain question from service' });
 
             // Get the username
             const { username } = req.body;
             if (!username)
                 return res.status(400).json({ error: 'Username must be sent' });
 
+            // Get a question
+            const questionData = await getQuestion();
+            if (!questionData)
+                return res.status(500).json({ error: 'Could not obtain question from service' });
+
             // Create data to be saved and sent
             const { correctOption, ...questionToSend } = questionData;
             const { image, ...questionToSave } = questionData;
-
-            questionToSave.correctIndex = questionData.options.indexOf(questionData.correctOption);
 
             // Save generated question data for user
             cache.addQuestion(username, questionToSave);
@@ -50,11 +49,11 @@ module.exports = (app) => {
             // Check if answer is correct
             let correctAnswer;
             try {
-                correctAnswer = cache.getUserCorrectAnswer(username);
+                correctAnswer = await cache.getUserCorrectAnswer(username);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
-
+            
             const isCorrect = selectedAnswer === correctAnswer;
             const result = {
                 correctAnswer: correctAnswer,
@@ -63,7 +62,7 @@ module.exports = (app) => {
 
             // Save answered question data for user
             try {
-                cache.answer(username, selectedAnswer);
+                await cache.answer(username, selectedAnswer);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
@@ -83,7 +82,6 @@ module.exports = (app) => {
             const questionData = serviceResponse.data;
             return questionData;
         } catch (error) {
-            console.error('Error when obtaining the question: ', error);
             return null;
         }
     }

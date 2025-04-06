@@ -1,54 +1,314 @@
 const request = require("supertest");
+const axios = require('axios');
+const cache = require('../src/cache');
+const config = require('../src/config');
+const app = require('../src/index');
 
-let app;
-const dependencies = [];
+jest.mock('axios');
+jest.mock('../src/cache');
 
-// TODO: Mock question-service
-// Flaky test
-beforeAll(async () => {
-  // Run dependents
-  dependencies.push(require("../questionservice/question-service"));
+// CONFIG
+describe('/game/config', () => {
+  test("should return game configuration values", async () => {
+    const response = await request(app).get("/game/config");
 
-  // Run app
-  app = require("./game-service");
-});
+    expect(response.status).toBe(200);
+    expect(response.body.port).toBe(8001);
+    expect(response.body.time).toBe(config.time);
+    expect(response.body.rounds).toBe(config.rounds);
+    expect(response.body.hints).toBe(config.hints);
+  });
+})
 
-afterAll(async () => {
-  dependencies.forEach((dependent) => dependent.close());
-  app.close();
-});
+// QUESTION
+describe('/game/question', () => {
 
-test("should return game configuration values", async () => {
-  const response = await request(app).get("/config");
+  beforeEach(() => {
+    axios.get.mockReset();
+    cache.addQuestion.mockReset();
+  });
 
-  expect(response.status).toBe(200);
-  expect(response.body.time).toBe(20);
-  expect(response.body.rounds).toBe(3);
-  expect(response.body.hints).toBe(3);
-});
+  test('should return valid question', async () => {
+    const mockQuestion = {
+      question: 'Where is Madrid?',
+      options: ['Spain', 'France', 'Italy', 'Belgium'],
+      correctOption: 'Spain',
+      image: 'image.png'
+    };
 
-test("should return a valid question", async () => {
-  const response = await request(app).get("/question");
+    axios.get.mockResolvedValueOnce({ data: mockQuestion });
 
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty("question");
-  expect(response.body.question).toBeTruthy();
-}, 10_000);
+    cache.addQuestion.mockImplementationOnce(() => { });
 
-test("should return 400 if an answer is not sent", async () => {
-  const response = await request(app).post("/answer").send({});
+    const response = await request(app)
+      .get('/game/question')
+      .send({ username: 'user' });
 
-  expect(response.status).toBe(400);
-});
 
-test("should return valid answer data if an answer is sent", async () => {
-  const response = await request(app)
-    .post("/answer")
-    .send({ selectedAnswer: "answer" });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      question: 'Where is Madrid?',
+      options: ['Spain', 'France', 'Italy', 'Belgium'],
+      image: 'image.png'
+    });
 
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty("correctAnswer");
-  expect(response.body).toHaveProperty("isCorrect");
-  expect(response.body.correctAnswer).toBeTruthy();
-  expect(response.body.isCorrect).toBe(false);
-});
+    expect(cache.addQuestion).toHaveBeenCalledWith('user', {
+      question: 'Where is Madrid?',
+      options: ['Spain', 'France', 'Italy', 'Belgium'],
+      correctOption: 'Spain',
+    });
+  });
+
+  test('should return 400 if username is not sent', async () => {
+    const response = await request(app)
+      .get('/game/question')
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Username must be sent');
+  });
+
+  test('should return 500 if getQuestion() catches error', async () => {
+    axios.get.mockRejectedValueOnce(new Error('Error obtaining question'));
+
+    const response = await request(app)
+      .get('/game/question')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not obtain question from service');
+  });
+
+  test('should return 500 if getQuestion() returns null', async () => {
+    axios.get.mockResolvedValueOnce({ data: null });
+
+    const response = await request(app)
+      .get('/game/question')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not obtain question from service');
+  });
+})
+
+// ANSWER
+describe('/game/answer', () => {
+  beforeEach(() => {
+    cache.getUserCorrectAnswer.mockReset();
+    cache.answer.mockReset();
+  });
+
+  test('should return 400 if username is not sent', async () => {
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ selectedAnswer: 'Spain' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Username must be sent');
+  });
+
+  test('should return 400 if selected answer is not sent', async () => {
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Selected answer must be sent');
+  });
+
+  test('should return that answer is correct if selected answer is equal to correct answer', async () => {
+    cache.getUserCorrectAnswer.mockResolvedValueOnce('Spain');
+    cache.answer.mockImplementationOnce(() => { });
+
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ username: 'user', selectedAnswer: 'Spain' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      correctAnswer: 'Spain',
+      isCorrect: true
+    });
+
+    expect(cache.answer).toHaveBeenCalledWith('user', 'Spain');
+  });
+
+  test('should return that answer is incorrect if selected answer is not equal to correct answer', async () => {
+    cache.getUserCorrectAnswer.mockResolvedValueOnce('Spain');
+    cache.answer.mockImplementationOnce(() => { });
+
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ username: 'user', selectedAnswer: 'France' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      correctAnswer: 'Spain',
+      isCorrect: false
+    });
+
+    expect(cache.answer).toHaveBeenCalledWith('user', 'France');
+  });
+
+  test('should return 500 if cache.getUserCorrectAnswer() throws error', async () => {
+    cache.getUserCorrectAnswer.mockRejectedValueOnce(new Error('Could not get correct answer of the question'));
+
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ username: 'user', selectedAnswer: 'Spain' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not get correct answer of the question');
+  });
+
+  test('should return 500 if cache.answer() throws error', async () => {
+    cache.getUserCorrectAnswer.mockResolvedValueOnce('Spain');
+    cache.answer.mockRejectedValueOnce(new Error('Could not save answer for user'));
+
+    const response = await request(app)
+      .post('/game/answer')
+      .send({ username: 'user', selectedAnswer: 'Spain' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not save answer for user');
+  });
+})
+
+// SAVE
+describe('/game/save', () => {
+  test('should return 400 if username is not sent', async () => {
+    const response = await request(app)
+      .post('/game/save')
+      .send({});
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Username must be sent');
+  });
+
+  test('should return 500 if cache.finishGame() throws an error', async () => {
+    cache.finishGame.mockImplementationOnce(() => {
+      throw new Error('Could not finish game for the user');
+    });
+
+    const response = await request(app)
+      .post('/game/save')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not finish game for the user');
+  });
+
+  test('should return 500 if Stats Service returns error', async () => {
+    cache.finishGame.mockImplementationOnce(() => ({}));
+
+    axios.post.mockResolvedValueOnce({
+      status: 404,
+      data: { success: false },
+    });
+
+    const response = await request(app)
+      .post('/game/save')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not save game data');
+  });
+})
+
+// QUIT
+describe('/game/quit', () => {
+  test('should return 400 if username is not sent', async () => {
+    const response = await request(app)
+      .post('/game/quit')
+      .send({});
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Username must be sent');
+  });
+
+  test('should return 500 if cache.quitGame() throws an error', async () => {
+    cache.quitGame.mockImplementationOnce(() => {
+      throw new Error('Could not quit game for the user');
+    });
+
+    const response = await request(app)
+      .post('/game/quit')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not quit game for the user');
+  });
+})
+
+// HINT
+describe('/game/hint', () => {
+  test('should return 400 if username is not sent', async () => {
+    const response = await request(app)
+      .post('/game/hint')
+      .send({ query: 'Give me a hint' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Username must be sent');
+  });
+
+  test('should return 400 if query is not sent', async () => {
+    const response = await request(app)
+      .post('/game/hint')
+      .send({ username: 'user' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Query must be sent');
+  });
+
+  test('should return 500 if cache.getCurrentQuestionData() throws error', async () => {
+    cache.getCurrentQuestionData.mockImplementationOnce(() => {
+      throw new Error('Could not get current question data for the user');
+    });
+
+    const response = await request(app)
+      .post('/game/hint')
+      .send({ username: 'user', query: 'Give me a hint' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not get current question data for the user');
+  });
+
+  test('should return 500 if LLM service does not return 200', async () => {
+    cache.getCurrentQuestionData.mockReturnValue({
+      question: 'Where is Madrid?',
+      options: ['Spain', 'France', 'Italy', 'Belgium'],
+      correctAnswer: 'Spain',
+      hints: [],
+    });
+
+    axios.post.mockResolvedValueOnce({
+      status: 500,
+      data: {},
+    });
+
+    const response = await request(app)
+      .post('/game/hint')
+      .send({ username: 'user', query: 'Give me a hint' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Could not get hint from LLM');
+  });
+
+  test('should return 500 if LLM Service throws error', async () => {
+    cache.getCurrentQuestionData.mockReturnValue({
+      question: 'Where is Madrid?',
+      options: ['Spain', 'France', 'Italy', 'Belgium'],
+      correctAnswer: 'Spain',
+      hints: [],
+    });
+
+    axios.post.mockRejectedValueOnce(new Error('LLM Error'));
+
+    const response = await request(app)
+      .post('/game/hint')
+      .send({ username: 'user', query: 'Give me a hint' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('There was an error when obtaining a hint');
+  });
+})
+
+

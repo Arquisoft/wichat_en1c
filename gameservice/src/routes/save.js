@@ -16,7 +16,7 @@ module.exports = (app) => {
         // Finish user's game and get the game data
         let userData;
         try {
-            userData = cache.finishGame(username);
+            userData = await cache.finishGame(username);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
@@ -41,7 +41,7 @@ module.exports = (app) => {
 
         // Finish user's game
         try {
-            cache.quitGame(username);
+            await cache.quitGame(username);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
