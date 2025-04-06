@@ -182,7 +182,7 @@ describe('/game/answer', () => {
 
   test('should return 500 if cache.answer() throws error', async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce('Spain');
-    cache.answer.mockRejectedValueOnce(new Error('Could not save answer for user'));
+    cache.answer.mockImplementationOnce(() => {throw new Error('Could not save answer for user');});
 
     const response = await request(app)
       .post('/game/answer')
