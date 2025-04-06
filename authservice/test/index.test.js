@@ -246,3 +246,11 @@ describe("Verify route", () => {
     }
   });
 });
+
+it("Should reject invalid routes", async () => {
+  const response = await request(app).get("/nonexistent").send();
+
+  expect(response.status).toBe(404);
+  expect(response.body.success).toBe(false);
+  expect(response.body.message).toBe("Not Found");
+});
