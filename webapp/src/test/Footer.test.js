@@ -24,4 +24,11 @@ test("renders Footer with correct information", () => {
     "href",
     "https://arquisoft.github.io/wichat_en1c/"
   );
+
+  const apiLink = screen.getByTestId("api-docs-link");
+  expect(apiLink).toBeInTheDocument();
+  expect(apiLink).toHaveAttribute(
+    "href",
+    "http://4.251.8.219:8000/api-doc/"
+  );
 });
