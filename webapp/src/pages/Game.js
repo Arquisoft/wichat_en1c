@@ -89,6 +89,13 @@ const Game = () => {
       }
     };
     fetchGameConfig();
+
+    return async () => {
+      try {
+        await axios.get(`${apiEndpoint}/game/quit`);
+      } catch (error) {
+        console.error("Error when trying to quit game:", error);
+      }};
   }, []);
 
   // Fetch question data at the start of each round
@@ -166,8 +173,13 @@ const Game = () => {
     return "primary";
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (gameEnded) {
+        try {
+          await axios.get(`${apiEndpoint}/game/save`);
+        } catch (error) {
+          console.error("Error when trying to save game:", error);
+        };
       navigate("/end-game");
     }
   }, [gameEnded]);
@@ -190,14 +202,28 @@ const Game = () => {
   };
 
   // Hint request logic
-  const handleHintRequest = () => {
+  const handleHintRequest = async () => {
     if (hintsUsed < gameSettings.hints && !hintCooldown) {
       setReceivedHint("");
-      setHintMessage("");
       setHintCooldown(true);
-      setReceivedHint( mockGameData.hints[0]); // Store the received hint
-      setTimeout(() => setHintCooldown(false), 3000);
-      setHintsUsed(hintsUsed + 1);
+      try {
+        const response = await axios.post(
+        `${apiEndpoint}/game/hint`,
+        { query: hintMessage },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setReceivedHint(response.hint); // Store the received hint
+        setHintsUsed(hintsUsed + 1);
+      } catch {
+        console.error("Error when trying to save game:", error);
+        setReceivedHint(t("errorHint"));
+      } finally {
+        setHintMessage("");
+        setTimeout(() => setHintCooldown(false), 3000);
+      }
     }
   };
 
