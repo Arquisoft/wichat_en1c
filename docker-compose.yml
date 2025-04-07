@@ -28,6 +28,22 @@ services:
       PORT: 8002
       MONGODB_URI: mongodb://mongodb:27017/userdb
 
+  statservice:
+    container_name: statservice-wichat_en1c
+    image: ghcr.io/arquisoft/wichat_en1c/statservice:latest
+    profiles: ["dev", "prod"]
+    build: ./statservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8003:8003"
+    networks:
+      - mynetwork
+    environment:
+      NODE_ENV: production
+      PORT: 8003
+      MONGODB_URI: mongodb://mongodb:27017/userdb
+
   llmservice:
     container_name: llmservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/llmservice:latest
@@ -39,6 +55,7 @@ services:
     networks:
       - mynetwork
     environment:
+      NODE_ENV: production
       LLM_API_KEY: ${LLM_API_KEY}
 
   gatewayservice:
@@ -47,15 +64,21 @@ services:
     profiles: ["dev", "prod"]
     build: ./gatewayservice
     depends_on:
-      - mongodb
       - authservice
-      - llmservice
       - gameservice
       - questionservice
+      - statservice
     ports:
       - "8000:8000"
     networks:
       - mynetwork
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      GAME_SERVICE_URL: http://gameservice:8001
+      AUTH_SERVICE_URL: http://authservice:8002
+      STATS_SERVICE_URL: http://statservice:8003
+      QUESTIONS_SERVICE_URL: http://questionservice:8004
 
   webapp:
     container_name: webapp-wichat_en1c
@@ -78,8 +101,14 @@ services:
       - mynetwork
     depends_on:
       - questionservice
+      - statservice
+      - llmservice
     environment:
+      NODE_ENV: production
+      PORT: 8001
       QUESTIONS_SERVICE_URL: http://questionservice:8004
+      STATS_SERVICE_URL: http://statservice:8003
+      LLM_SERVICE_URL: http://llmservice:8005
 
   questionservice:
     container_name: questionservice-wichat_en1c
@@ -87,11 +116,13 @@ services:
     build: ./questionservice
     profiles: ["dev", "prod"]
     ports:
-      - "8004:8004" 
+      - "8004:8004"
     networks:
       - mynetwork
     depends_on:
       - llmservice
+    environment:
+      NODE_ENV: production
 
   prometheus:
     image: prom/prometheus
