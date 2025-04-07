@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Game from "../pages/Game";
 import { BrowserRouter } from "react-router";
 import { GameProvider } from "../GameContext";
+import { SessionProvider } from "../SessionContext";
 import axios from "axios";
 
 jest.mock("axios");
