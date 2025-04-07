@@ -131,7 +131,7 @@ describe("Game Page Tests", () => {
     fireEvent.click(screen.getByTestId("hint-button"));
 
     // Check if hints used increases
-    expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5");
+    await waitFor(() =>expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5"));
   });
 
   it('should show the "End of the Game" screen when game ends', async () => {
