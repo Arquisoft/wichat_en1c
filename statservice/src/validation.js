@@ -11,6 +11,9 @@ const setup = (...vals) => {
   vals.push((req, res, next) => {
     const errors = validationResult(req);
 
+    console.log(req.body);
+    console.log(errors.mapped());
+
     if (!errors.isEmpty())
       res.status(400).json({
         success: false,
@@ -49,8 +52,6 @@ const timeValidators = (prefix) => [
   body(`${prefix}.time.finished`, messages.missing)
     .isISO8601()
     .withMessage(messages.notDate)
-    .isBefore()
-    .withMessage(messages.notPrevious)
     .toDate(),
 ];
 
@@ -120,13 +121,11 @@ module.exports = {
       body("game.questions.*.answers.correct", messages.missing)
         .isInt({
           min: 0,
-          max: config.game.questions.minAnswers - 1,
         })
         .withMessage(messages.notValidNumber),
       body("game.questions.*.answers.selected", messages.missing)
         .isInt({
           min: 0,
-          max: config.game.questions.minAnswers - 1,
         })
         .withMessage(messages.notValidNumber),
     ],

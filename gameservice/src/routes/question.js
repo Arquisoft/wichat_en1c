@@ -22,10 +22,9 @@ module.exports = (app) => {
 
             // Create data to be saved and sent
             const { correctOption, ...questionToSend } = questionData;
-            const { image, ...questionToSave } = questionData;
 
             // Save generated question data for user
-            cache.addQuestion(username, questionToSave);
+            cache.addQuestion(username, questionData);
 
             // Send question data for the frontend
             res.json(questionToSend);

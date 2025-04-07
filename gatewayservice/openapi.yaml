@@ -118,6 +118,8 @@ paths:
       summary: Get question.
       description: Retrieves a question for the game.
       operationId: gameGetQuestion
+      parameters:
+        - $ref: "#/components/parameters/username_query"
       security:
         - token: []
       # * Username is appended by the Gateway service to the request.
@@ -173,7 +175,7 @@ paths:
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
   /game/hint:
-    get:
+    post:
       tags: [🔐 Game (/game)]
       summary: Get a hint.
       description: Generates a hint for the currect question.
@@ -373,6 +375,13 @@ components:
     username:
       name: username
       in: path
+      required: true
+      schema:
+        type: string
+        example: myusername
+    username_query:
+      name: username
+      in: query
       required: true
       schema:
         type: string

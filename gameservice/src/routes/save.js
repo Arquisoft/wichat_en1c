@@ -24,14 +24,13 @@ module.exports = (app) => {
         // Send data to Statistics Service to be sent
         try {
             const serviceResponse = await axios.post(`${statsServiceUrl}/save`, userData);
-            if (serviceResponse.status !== 210 || serviceResponse.data.success !== true)
+            if (serviceResponse.status !== 201 || serviceResponse.data.success !== true)
                 return res.status(500).json({ error: "Could not save game data" });
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ error: "There was an error when saving game data" });
         }
 
-        return res.status(200);
+        return res.status(200).send();
     })
 
     app.post('/game/quit', async (req, res) => {
@@ -47,6 +46,6 @@ module.exports = (app) => {
             return res.status(500).json({ error: error.message });
         }
 
-        return res.status(200);
+        return res.status(200).send();
     })
 };  

@@ -179,7 +179,7 @@ const Game = () => {
   useEffect(async () => {
     if (gameEnded) {
         try {
-          await axios.get(`${apiEndpoint}/game/save`, {username: username,});
+          await axios.post(`${apiEndpoint}/game/save`, {username: username,});
         } catch (error) {
           console.error("Error when trying to save game:", error);
         };

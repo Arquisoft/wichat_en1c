@@ -35,18 +35,21 @@ module.exports = {
             userGame = cache.get(username);
         }
 
+        console.log(questionData)
+
         // Save new question data 
         userGame.game.questions.push({
-            time: {
-                started: now,
-                finished: null
-            },
-            question: questionData.question,
-            answers: {
-                opts: questionData.options,
-                selected: null,
-                correct: questionData.correctOption
-            }
+          time: {
+            started: now,
+            finished: null,
+          },
+          question: questionData.question,
+          image: questionData.image,
+          answers: {
+            opts: questionData.options,
+            selected: null,
+            correct: questionData.options.indexOf(questionData.correctAnswer),
+          },
         });
     },
 
@@ -73,7 +76,7 @@ module.exports = {
 
         // Get correct answer for the current question
         const currentQuestion = userGame.game.questions[userGame.game.questions.length - 1];
-        const correctAnswer = currentQuestion.answers.correct;
+        const correctAnswer = currentQuestion.answers.opts[currentQuestion.answers.correct];
         return correctAnswer;
     },
 
@@ -88,13 +91,12 @@ module.exports = {
 
         // Remove used hints and get user game data to send
         const { usedHints, ...gameWithoutHints } = userGame;
-        const gameData = JSON.stringify(gameWithoutHints);
 
         // Delete data from cache
         cache.delete(username);
 
         // Return the user game data
-        return gameData;
+        return gameWithoutHints;
     },
 
     quitGame(username) {
