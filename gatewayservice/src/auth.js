@@ -17,7 +17,8 @@ module.exports = (app) =>
       if (type?.toLowerCase() !== "bearer" || token == null || token === "")
         throw Error("Invalid token");
 
-      const verification = await axios.post(
+      /* const verification =  */
+      await axios.post(
         config.auth.url,
         {
           token,
@@ -27,8 +28,8 @@ module.exports = (app) =>
 
       // FIXME: This is not working nor tested with unit tests
       // Attach logged-in username
-      req.body ??= {};
-      req.body.username = verification.data.username;
+      // req.body ??= {};
+      // req.body.username = verification.data.username;
 
       next();
     } catch (err) {
