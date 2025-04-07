@@ -476,9 +476,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-building-block-view">5. Building Block View</a>
 <ul class="sectlevel2">
-<li><a href="#_whitebox_overall_system">5.1. Whitebox Overall System</a></li>
-<li><a href="#_level_2">5.2. Level 2</a></li>
-<li><a href="#_level_3">5.3. Level 3</a></li>
+<li><a href="#_context">5.1. Context</a></li>
+<li><a href="#_whitebox_overall_system">5.2. Whitebox Overall System</a></li>
+<li><a href="#_level_2">5.3. Level 2</a></li>
 </ul>
 </li>
 <li><a href="#section-runtime-view">6. Runtime View</a>
@@ -496,9 +496,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-concepts">8. Cross-cutting Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_concept_1">8.1. <em>&lt;Concept 1&gt;</em></a></li>
-<li><a href="#_concept_2">8.2. <em>&lt;Concept 2&gt;</em></a></li>
-<li><a href="#_concept_n">8.3. <em>&lt;Concept n&gt;</em></a></li>
+<li><a href="#_user_experience_ux">8.1. User Experience (UX)</a></li>
+<li><a href="#_internationalization">8.2. Internationalization</a></li>
+<li><a href="#_architectural_patterns">8.3. Architectural patterns</a></li>
+<li><a href="#_security">8.4. Security</a></li>
+<li><a href="#_error_handling">8.5. Error handling</a></li>
 </ul>
 </li>
 <li><a href="#section-design-decisions">9. Architecture Decisions</a></li>
@@ -1386,7 +1388,54 @@ Thus it contains the white box description of selected building blocks of level 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_whitebox_overall_system">5.1. Whitebox Overall System</h3>
+<h3 id="_context">5.1. Context</h3>
+<div class="imageblock">
+<div class="content">
+<img src="./images/build_block_view/blackbox.drawio.svg" alt="blackbox.drawio">
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Contained Building Blocks</dt>
+</dl>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Building Block</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Brief description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WiChat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overall system that is being documented.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Player</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular players of the game which interact with the system through the web interface.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Users of the different public APIs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WikiData</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API used to generate questions and answers for the game.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM API used to generate hints for the game.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_whitebox_overall_system">5.2. Whitebox Overall System</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1501,7 +1550,7 @@ Check <a href="#_llm_service">LLM Service</a> for an example of reusable design.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Questions Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions and hints and uses WikiData.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions using WikiData.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Game Service</p></td>
@@ -1587,7 +1636,7 @@ Its headline is the name of the black box.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_llm_service">5.1.1. LLM Service</h4>
+<h4 id="_llm_service">5.2.1. LLM Service</h4>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1632,10 +1681,6 @@ according the the following black box template:</p>
 <dd>
 <p>Internal RESTful API for communication with the other internal microservices.</p>
 </dd>
-</dl>
-</div>
-<div class="dlist">
-<dl>
 <dt class="hdlist1">Structure</dt>
 <dd>
 <p>Just an <strong>Express.js app</strong> with an <strong>adapter</strong> for the external LLM.</p>
@@ -1644,7 +1689,7 @@ according the the following black box template:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_statistics_service">5.1.2. Statistics Service</h4>
+<h4 id="_statistics_service">5.2.2. Statistics Service</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Purpose</dt>
@@ -1663,7 +1708,7 @@ according the the following black box template:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_webapp">5.1.3. WebApp</h4>
+<h4 id="_webapp">5.2.3. WebApp</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Purpose</dt>
@@ -1682,7 +1727,7 @@ according the the following black box template:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gateway">5.1.4. Gateway</h4>
+<h4 id="_gateway">5.2.4. Gateway</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Purpose</dt>
@@ -1702,7 +1747,7 @@ according the the following black box template:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_level_2">5.2. Level 2</h3>
+<h3 id="_level_2">5.3. Level 2</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1716,7 +1761,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_white_box_questions_service">5.2.1. White Box "Questions Service"</h4>
+<h4 id="_white_box_questions_service">5.3.1. White Box "Questions Service"</h4>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1733,30 +1778,23 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <dl>
 <dt class="hdlist1">Purpose</dt>
 <dd>
-<p>Generates questions and hints.</p>
+<p>Generates questions and hints ensuring performance and correctness.</p>
 <div class="ulist">
 <ul>
 <li>
 <p><strong>Questions</strong> and <strong>answers</strong> are generated through <strong>WikiData</strong>.</p>
-</li>
-<li>
-<p><strong>Hints</strong> are generated through an <strong>LLM</strong>.</p>
 </li>
 </ul>
 </div>
 </dd>
 <dt class="hdlist1">Motivation</dt>
 <dd>
-<p>Handles the responsibility of generating questions and hints.</p>
+<p>Handles the responsibility of generating questions.</p>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Why is WikiData part of the module and not standalone?</dt>
 <dd>
 <p>Since the service is used only for generating questions and answers (and this will most likely remain true), it is more efficient to have it as part of the module and reduce the overall system complexity at the cost of increasing the module&#8217;s one.</p>
-</dd>
-<dt class="hdlist1">Why are questions and hints generated separately?</dt>
-<dd>
-<p>Since questions and hints have different data sources, generation algorithms and, most importantly, different responsibilities, it is better to have them separated to promote independence and the benefitst hat come from it.</p>
 </dd>
 </dl>
 </div>
@@ -1785,12 +1823,8 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Generates questions from the WikiData information.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hints Module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generates hints using the LLM Service.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Questions Cache?</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allows caching of questions to reduce the load on the WikiData API. If necessary for performace reasons.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Questions Cache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows caching of questions to reduce the load on the WikiData API. It is necessary for performace reasons.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Express.js Server</p></td>
@@ -1800,7 +1834,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_white_box_auth_service">5.2.2. White Box "Auth Service"</h4>
+<h4 id="_white_box_auth_service">5.3.2. White Box "Auth Service"</h4>
 <div class="imageblock">
 <div class="content">
 <img src="./images/build_block_view/auth_service.drawio.svg" alt="auth service.drawio">
@@ -1871,7 +1905,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_white_box_game_service">5.2.3. White Box "Game Service"</h4>
+<h4 id="_white_box_game_service">5.3.3. White Box "Game Service"</h4>
 <div class="imageblock">
 <div class="content">
 <img src="./images/build_block_view/game_service.drawio.svg" alt="game service.drawio">
@@ -1881,7 +1915,7 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <dl>
 <dt class="hdlist1">Purpose</dt>
 <dd>
-<p>Responsible for connecting <strong>Questions Service</strong> with <strong>Statistics Service</strong>, that way we can keep track of the user&#8217;s progress and provide statistics.</p>
+<p>Responsible for connecting <strong>Questions Service</strong> with <strong>Statistics Service</strong>, that way we can keep track of the user&#8217;s progress and provide statistics. It also generates hints using <strong>LLM Service</strong>.</p>
 </dd>
 <dt class="hdlist1">Motivation</dt>
 <dd>
@@ -1907,53 +1941,15 @@ Leave out normal, simple, boring or standardized parts of your system</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Keeps track of user games and fires stats events.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hints Module</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generates hints using the LLM Service.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Express.js Server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides an internal secured RESTful API for the rest of microservices.</p></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_level_3">5.3. Level 3</h3>
-<div class="paragraph">
-<p><a href="https://github.com/Arquisoft/wichat_en1c/issues/26" class="bare">https://github.com/Arquisoft/wichat_en1c/issues/26</a></p>
-</div>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.</p>
-</div>
-<div class="paragraph">
-<p>When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_x_1">5.3.1. White Box &lt;_building block x.1_&gt;</h4>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Specifies the internal structure of <em>building block x.1</em>.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_x_2">5.3.2. White Box &lt;_building block x.2_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_y_1">5.3.3. White Box &lt;_building block y.1_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -2373,24 +2369,47 @@ on this list.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_1">8.1. <em>&lt;Concept 1&gt;</em></h3>
+<h3 id="_user_experience_ux">8.1. User Experience (UX)</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The user experience in the system involves the design of the user interface and the level of accessibility, usability and
+satisfaction that it provides. As the part of the system that the user interacts with, the focus is put in providing
+a user-friendly interface, which gives a proper user experience. This user experience is a key concept in web applications
+such as the one developed, in which a high degree of usability is required for the user&#8217;s satisfaction and overall
+experience.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_2">8.2. <em>&lt;Concept 2&gt;</em></h3>
+<h3 id="_internationalization">8.2. Internationalization</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>As a key part of User Experience, Internationalization (i18n) is a very important part in the system. The adjustment
+to several languages and the flexibility it provides, allows the system to be user-friendly, providing a high usability
+to several types of users based on their languages, overrunning language barriers.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_n">8.3. <em>&lt;Concept n&gt;</em></h3>
+<h3 id="_architectural_patterns">8.3. Architectural patterns</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The system follows several architectural patterns: Microservices pattern, so the system is composed of different
+independent components, and Gateway pattern, which provides a single interface for all the users that manages
+and redirects all their requests. The use of these architectural patterns provides a high degree of mantainability
+and also high flexibility in the development.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security">8.4. Security</h3>
+<div class="paragraph">
+<p>As a key in all types of systems, security is a very important concept in this one and its development. Resources and data
+are protected and only provided to allowed users, implementing an authentication systemps that enforces the system&#8217;s security.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_error_handling">8.5. Error handling</h3>
+<div class="paragraph">
+<p>Proper error handling techniques are implemented in each system&#8217;s component to ensure the reliability and availability
+of the system. Every call or dependency between components or important parts is managed to throw and detect types
+of errors and not propagate them thorughout the application, sending proper messages and codes to the different
+components to ensure the availability of the system and its proper working without failing. This enhances, in case
+an error occurs, the user experience so the user is informed if some process can not be carried out.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -2399,6 +2418,10 @@ on this list.</p>
 <div class="sect1">
 <h2 id="section-design-decisions">9. Architecture Decisions</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The ADRs (Architecture Decision Records) are stored in the GitHub Wiki of the project and are available at:
+<a href="https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records" class="bare">https://github.com/Arquisoft/wichat_en1c/wiki/Decision-Records</a></p>
+</div>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -2471,6 +2494,82 @@ concrete and measurable.</p>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<div class="title">Reliability</div>
+<p>The system must maintain a high level of operational stability and accuracy. This is measurable through several key indicators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Question Generation Accuracy:</strong> The rate of incorrectly generated distractors in quiz questions sourced from Wikidata should be less than 5%.</p>
+</li>
+<li>
+<p><strong>AI Hint Accuracy:</strong> The AI-powered hint system should provide accurate and relevant hints, with the occurrence of hallucinations or misleading information being less than 2% of hint requests.</p>
+</li>
+<li>
+<p><strong>Core Functionality Error Rate:</strong> The system&#8217;s handling of user registrations, logins, game data storage, and gameplay should have an error rate of less than 1%.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title">Performance Efficiency</div>
+<p>The system must provide a responsive and efficient user experience, even under moderate load. This can be measured by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Concurrent User Capacity:</strong> The system should be able to handle up to 20 concurrent users while maintaining an average response time for critical user interactions (loading questions, submitting answers, requesting hints) below 1 second.</p>
+</li>
+<li>
+<p><strong>AI Hint Generation Latency:</strong> The time taken to generate an AI hint should not introduce a performance bottleneck, adding no more than 0.7 seconds to the overall response time for a hint request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title">Security</div>
+<p>The confidentiality and integrity of user data and system access must be ensured. Measurable aspects include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Data Storage Security:</strong> User personal data and authentication credentials must be stored using robust encryption algorithms and protected against unauthorized access.</p>
+</li>
+<li>
+<p><strong>API Access Control:</strong> API endpoints should be secured through authentication and authorization mechanisms (JWT), preventing any successful unauthorized access attempts as verified by security testing.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title">Usability</div>
+<p>The system should be intuitive and easy to use for all users, including those new to the application. This can be evaluated by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>First-Time User Success Rate:</strong> At least 80% of new users should be able to successfully register and complete a basic game within 10 minutes without needing external assistance.</p>
+</li>
+<li>
+<p><strong>User Interface Clarity:</strong> User feedback should indicate that at least 90% of users find the game interactions to be "easy to understand."</p>
+</li>
+<li>
+<p><strong>Learning Curve:</strong> The average time required for a new user to become proficient with the core functionalities of the system should be less than 39 minutes, as measured by their ability to complete defined tasks during an onboarding process.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title">Maintainability</div>
+<p>The system&#8217;s architecture should facilitate future modifications, extensions, and bug fixes with minimal effort and risk. This can be assessed by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Modularity for New Features:</strong> Adding a new game mode or integrating a new question source should require modifications to no more than 5% of the existing codebase and be achievable within a timeframe of 2 weeks.</p>
+</li>
+<li>
+<p><strong>Ease of Updating External Dependencies:</strong> Updating the AI hint model or integrating a completely new LLM service should be possible with a development effort of no more than 3 days.</p>
+</li>
+</ul>
+</div>
 <div class="sect2">
 <h3 id="_quality_tree">10.1. Quality Tree</h3>
 <div class="sidebarblock arc42help">
@@ -2501,6 +2600,112 @@ concrete and measurable.</p>
 <p>In any case the tree should include links to the scenarios of the following section.</p>
 </div>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Quality</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Reliability</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#login">[login]</a> (Core Functionality)</p>
+</li>
+<li>
+<p><a href="#start-game">[start-game]</a> (Core Functionality)</p>
+</li>
+<li>
+<p><a href="#answer">[answer]</a> (Core Functionality)</p>
+</li>
+<li>
+<p><a href="#hint">[hint]</a> (AI Hint Accuracy)</p>
+</li>
+<li>
+<p><a href="#stats">[stats]</a> (Core Functionality)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Performance Efficiency</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#login">[login]</a> (Response Time)</p>
+</li>
+<li>
+<p><a href="#start-game">[start-game]</a> (Response Time)</p>
+</li>
+<li>
+<p><a href="#answer">[answer]</a> (Response Time)</p>
+</li>
+<li>
+<p><a href="#hint">[hint]</a> (AI Hint Generation Latency)</p>
+</li>
+<li>
+<p><a href="#stats">[stats]</a> (Response Time)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Security</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#login">[login]</a> (Authentication)</p>
+</li>
+<li>
+<p>(Implicitly covers all interactions involving user data)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Usability</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#login">[login]</a> (First-Time User Success)</p>
+</li>
+<li>
+<p><a href="#start-game">[start-game]</a> (First-Time User Success)</p>
+</li>
+<li>
+<p><a href="#answer">[answer]</a> (User Interface Clarity)</p>
+</li>
+<li>
+<p><a href="#hint">[hint]</a> (User Interface Clarity)</p>
+</li>
+<li>
+<p><a href="#stats">[stats]</a> (User Interface Clarity)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Maintainability</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#email-add">[email-add]</a> (Modularity)</p>
+</li>
+<li>
+<p><a href="#new-game">[new-game]</a> (Modularity)</p>
+</li>
+<li>
+<p><a href="#switch-LLM">[switch-LLM]</a> (Modularity)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -2543,6 +2748,68 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p><strong>Usage Scenarios</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Usage Scenario</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System Reaction</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="login"></a> <strong>User Login:</strong> A user opens the web application, enters valid credentials (username and password), and clicks the "Login" button.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system authenticates the user within 0.5 seconds and redirects them to the home interface. If the credentials are invalid, an error message is displayed to the user within 0.3 seconds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="start-game"></a> <strong>Start Game:</strong> A logged-in user clicks the "Play" button.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system retrieves the first question (including image and answer options) within 1 second and displays it to the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="answer"></a> <strong>Answer Question:</strong> The user selects an answer option and clicks the "Submit Answer" button.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system evaluates the answer within 0.3 seconds, provides immediate feedback (correct/incorrect), updates the user&#8217;s score, and presents the next question within 1.5 seconds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="hint"></a> <strong>Request Hint:</strong> The user writes a qeustion and clicks the "Hint" button for a question.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system sends a request to the LLM Service and displays a relevant hint to the user within 1 second.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="stats"></a> <strong>View Statistics:</strong> A logged-in user navigates to the "Statistics" section.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system retrieves and displays the user&#8217;s game statistics (games played, correct answers, etc.) within 1 second.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Change Scenarios</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Change Scenario</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System Reaction</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="email-add"></a> <strong>Adding Email Login:</strong> The requirement is to allow users to log in using their email address in addition to their username.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Authentication Service is modified and deployed without disrupting the existing username-based login functionality. New users can register with email, and existing users can optionally link their email to their account. Both login methods function correctly after the change, verified by automated tests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="new-game"></a> <strong>Integrating a New Game Mode:</strong> A new game mode (e.g., 1 text question, 4 image answers ) needs to be added to the application.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New components and logic for the new game mode are added primarily within the Game Service and WebApp. The existing game modes remain functional without modification. The new mode can be accessed through the user interface without altering the main navigation flow.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="switch-LLM"></a> <strong>Switching LLM Provider:</strong> The current LLM provider is replaced with a new one (requiring a different API).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The LLM Service is adapted to communicate with the new LLM provider through a new adapter. The interface exposed by the LLM Service to other microservices remains consistent, minimizing impact on the Game Service. Hint functionality remains operational after the change.</p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -2573,6 +2840,48 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>Considering the recent loss of a team member, the team&#8217;s tendency towards end-of-sprint workload accumulation, challenges with branch merging due to testing, and the adoption of new technologies, the following are key risks and potential areas of technical debt that require attention (Relevance from 1(low) to 3(high)):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Category &amp; Item</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Relevance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Considerations &amp; Potential Mitigation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Team Capacity Risk: Loss of a team member.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reduced team capacity directly impacts velocity and potentially deadlines. Mitigation: Re-evaluate current workload distribution, prioritize critical tasks, explore options for temporary or permanent replacement, and ensure thorough knowledge transfer from the departed member.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Workflow Risk &amp; Potential Debt: End-of-sprint workload spikes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accumulating work at the end of a sprint leads to rushed implementations, increasing the risk of bugs and impeding sustainable pace. It can also result in "quick fixes" that introduce technical debt. Mitigation: Implement stricter "work in progress" limits, encourage continuous integration and testing throughout the sprint, and focus on completing tasks earlier.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code Integration Risk &amp; Potential Debt: Branch merge conflicts due to testing issues.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Frequent merge conflicts disrupt development flow and signal potential issues with test coverage, quality, or understanding. This can lead to hastily resolved conflicts and hidden technical debt. Mitigation: Enhance team understanding and application of testing strategies, enforce stricter test requirements before merging, and consider more robust branching strategies. Investigate the root causes of test failures and conflicts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Technology Adoption Risk &amp; Potential Debt: Limited experience with React, MongoDB, Jest, and Puppeteer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1-2 (reducing over time)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">While the team is using these technologies, a lack of deep understanding can lead to suboptimal implementations, performance issues, or maintainability challenges (potential technical debt). Mitigation: Encourage ongoing learning through documentation, tutorials, and internal knowledge sharing. Implement thorough code reviews focusing on best practices for these technologies. Dedicate time for focused learning on testing frameworks.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Implicit Knowledge Risk: Reliance on individual team member knowledge.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Despite efforts towards knowledge sharing, some critical aspects or modules might still heavily rely on the understanding of specific team members. Proactive knowledge transfer and documentation of key functionalities and architectural decisions are crucial to ensure maintainability by the entire team.</p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -2628,12 +2937,44 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-1&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-1&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Question</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A set comprising: a textual question referring to an image, the image itself, and a series of options where one is correct while the others serve as distractors.</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-2&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-2&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Distractor</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A wrong answer to a question. The distractors are the options that are not correct, and they are used to mislead the user into selecting them instead of the correct answer.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>LLM (AI)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A large language model is a type of artificial intelligence that uses deep learning techniques to understand and generate human-like text. It is trained on vast amounts of text data and can perform various natural language processing tasks, such as text generation, translation, summarization, and more. In the context of this project, the LLM is used to generate hints based on questions.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Hint</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Textual clue or suggestion provided to the user (when requested) to help them answer a question correctly. These are generated by the LLM based on the question and the image associated with it.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Docker</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A platform for developing, shipping, and running applications in isolated environments called containers. Used in WiChat for service isolation and portability.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Docker-compose</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A tool for defining and managing multi-container Docker applications.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Microservices Approach</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The architectural style of building an application as a collection of small, independent services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>API Gateway</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The Gateway component that acts as a single entry point for all client interactions, simplifying access to backend services and enhancing security.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>HTTPS</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Hypertext Transfer Protocol Secure, a protocol for secure communication over a computer network, widely used on the Internet.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>SPARQL</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>SPARQL is a simple query language for data in RDF format (Resource Description Framework). It helps find specific information by describing patterns.</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -2659,6 +3000,26 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <ul>
 <li>
 <p>FR-REG-1.1.1: Username (mandatory and unique).</p>
+<div class="ulist">
+<ul>
+<li>
+<p>FR-REG-1.1.1.1: The username must be:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>FR-REG-1.1.1.1.1: Longer than or equal to 5 characters</p>
+</li>
+<li>
+<p>FR-REG-1.1.1.1.2: Shorter than or equal to 20 characters</p>
+</li>
+<li>
+<p>FR-REG-1.1.1.1.3: Alphanumeric (no special characters allowed)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 </li>
 <li>
 <p>FR-REG-1.1.2: Password (mandatory).</p>
@@ -2676,6 +3037,9 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </li>
 <li>
 <p>FR-REG-1.1.2.1.3: Number.</p>
+</li>
+<li>
+<p>FR-REG-1.1.2.1.4: Special character.</p>
 </li>
 </ul>
 </div>
@@ -2766,6 +3130,33 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <li>
 <p>FR-UPD-1.1.3: Number of questions answered incorrectly.</p>
 </li>
+<li>
+<p>FR-UPD-1.1.4: Total time played.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.5: Minimum time spent per game.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.6: Maximum time spent per game.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.7: Average time spent per game.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.8: Minimum time spent per question.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.9: Maximum time spent per question.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.10: Average time spent per question.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.11: Total number of questions answered.</p>
+</li>
+<li>
+<p>FR-UPD-1.1.12: Accuracy percentage (based on correct/total questions).</p>
+</li>
 </ul>
 </div>
 </li>
@@ -2777,18 +3168,15 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <div class="ulist">
 <ul>
 <li>
-<p>FR-UPD-2.1: Profile photo (from a preselected set of images).</p>
-</li>
-<li>
-<p>FR-UPD-2.2: Username.</p>
+<p>FR-UPD-2.1: Username.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>FR-UPD-2.2.1: The system shall check if the username already exists.</p>
+<p>FR-UPD-2.1.1: The system shall check if the username already exists.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>FR-UPD-2.2.1.1: If it already exists, the system shall prevent the change.</p>
+<p>FR-UPD-2.1.1.1: If it already exists, the system shall prevent the change.</p>
 </li>
 </ul>
 </div>
@@ -2797,11 +3185,11 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </li>
 <li>
-<p>FR-UPD-2.3: Password.</p>
+<p>FR-UPD-2.2: Password.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>FR-UPD-2.3.1: Password must be validated as in FR-REG-1.1.2.1.</p>
+<p>FR-UPD-2.2.1: Password must be validated as in FR-REG-1.1.2.1.</p>
 </li>
 </ul>
 </div>
@@ -2832,7 +3220,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <p>FR-GAME-1.1.1.1: A generated question from Wikidata using a template.</p>
 </li>
 <li>
-<p>FR-GAME-1.1.1.2: A set of possible answers (one correct, three distractors).</p>
+<p>FR-GAME-1.1.1.2: A set of possible answers (one correct, at least one distractor).</p>
 </li>
 <li>
 <p>FR-GAME-1.1.1.3: An image from Wikidata related to the question.</p>
@@ -2904,13 +3292,10 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <p>FR-HINT-1.1.1.4: The correct answer.</p>
 </li>
 <li>
-<p>FR-HINT-1.1.1.5: The three distractors.</p>
+<p>FR-HINT-1.1.1.5: The distractors.</p>
 </li>
 <li>
-<p>FR-HINT-1.1.1.6: The image of the question.</p>
-</li>
-<li>
-<p>FR-HINT-1.1.1.7: The previous hints given by the LLM for that question if possible.</p>
+<p>FR-HINT-1.1.1.6: The previous hints given by the LLM for that question if possible.</p>
 </li>
 </ul>
 </div>
