@@ -1,10 +1,9 @@
-jest.setTimeout(30000); // If I make 5 seconds, it is not enough to retrive data from wikidata api
+jest.setTimeout(60_000); // If I make 5 seconds, it is not enough to retrive data from wikidata api
 
 const request = require("supertest");
 const server = require("./question-service");
 
 describe("Question API", () => {
-
   afterAll(async () => {
     await new Promise((resolve) => server.close(resolve));
   });
@@ -19,7 +18,7 @@ describe("Question API", () => {
     expect(res.body).toHaveProperty("correctAnswer");
   });
 
-  const categories = ['musician', 'scientist', 'actor', 'painter', 'writer'];
+  const categories = ["musician", "scientist", "actor", "painter", "writer"];
 
   categories.forEach((category) => {
     test(`GET /question/${category} - should return a question from category ${category}`, async () => {
