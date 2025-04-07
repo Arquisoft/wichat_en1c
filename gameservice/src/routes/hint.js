@@ -38,10 +38,13 @@ module.exports = (app) => {
         Question: ${questionData.question}
         Options: ${questionData.options.join(", ")}
         Correct option: ${questionData.correctAnswer}
-        The user has asked for a hint: "${query}"
+        The user has made the following question: "${query}"
         ${hintsPromptText} 
-        Please, generate a hint to help the user without telling the answer directly.
+        Please, generate a response for the user's question to give the user a hint. Please respond in the same language as the question.
+        The hint must be a single word or a short sentence. Do not include any other information in your response
         `;
+
+        console.log(prompt)
 
         // Send prompt to LLM Service
         try {
@@ -59,7 +62,7 @@ module.exports = (app) => {
             const hint = serviceResponse.data.answer;
 
             try {
-                cache.useHint(username, answer.answer);
+                cache.useHint(username, hint);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
