@@ -50,6 +50,12 @@ describe("Game Page Tests", () => {
         return Promise.resolve({
           data: { isCorrect: true, correctAnswer: "Killa Kella" },
         });
+      } else if (url.includes("/game/quit")) {
+        return Promise.resolve({ data: { success: true } }); // Simulate a successful quit
+      } else if (url.includes("/game/save")) {
+        return Promise.resolve({ data: { success: true } }); // Simulate a successful save
+      } else if (url.includes("/game/hint")) {
+        return Promise.resolve({ data: { hint: "Good" } }); // Simulate a hint response
       }
       return Promise.reject(new Error("Unknown endpoint"));
     });
@@ -58,9 +64,11 @@ describe("Game Page Tests", () => {
   it("should render all components correctly", async () => {
     render(
       <BrowserRouter>
-        <GameProvider>
-          <Game />
-        </GameProvider>
+        <SessionProvider>
+         <GameProvider>
+            <Game />
+          </GameProvider>
+        </SessionProvider>
       </BrowserRouter>
     );
 
@@ -103,9 +111,11 @@ describe("Game Page Tests", () => {
   it("should increase hints used when the hint button is clicked", async () => {
     render(
       <BrowserRouter>
-        <GameProvider>
-          <Game />
-        </GameProvider>
+        <SessionProvider>
+         <GameProvider>
+            <Game />
+          </GameProvider>
+        </SessionProvider>
       </BrowserRouter>
     );
 
@@ -126,9 +136,11 @@ describe("Game Page Tests", () => {
   it('should show the "End of the Game" screen when game ends', async () => {
     render(
       <BrowserRouter>
-        <GameProvider>
-          <Game />
-        </GameProvider>
+        <SessionProvider>
+         <GameProvider>
+            <Game />
+          </GameProvider>
+        </SessionProvider>
       </BrowserRouter>
     );
 
