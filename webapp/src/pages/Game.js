@@ -79,6 +79,7 @@ const Game = () => {
   const { t } = useTranslation();
 
   const { username } = useContext(SessionContext);
+  const [isSaved, setIsSaved] = useState(false);
 
   // Fetch game configuration on component mount
   useEffect(() => {
@@ -94,11 +95,13 @@ const Game = () => {
     fetchGameConfig();
 
     return async () => {
+      if(isSaved){
       try {
         await axios.post(`${apiEndpoint}/game/quit`, {username: username,});
       } catch (error) {
         console.error("Error when trying to quit game:", error);
       }};
+    }
   }, []);
 
   // Fetch question data at the start of each round
@@ -180,6 +183,7 @@ const Game = () => {
     if (gameEnded) {
         try {
           await axios.post(`${apiEndpoint}/game/save`, {username: username,});
+          setIsSaved(true);
         } catch (error) {
           console.error("Error when trying to save game:", error);
         };
