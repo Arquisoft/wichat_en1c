@@ -48,7 +48,7 @@ const resources = {
       },
       noStatsYet: "Play some games to see your statistics here!",
       stats: "Stats",
-      errorHint: "An error has occurred trying to retrieve yuor hint"
+      errorHint: "An error has occurred trying to retrieve your hint"
     },
   },
   es: {

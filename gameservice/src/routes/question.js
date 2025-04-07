@@ -11,7 +11,7 @@ module.exports = (app) => {
         try {
 
             // Get the username
-            const { username } = req.body;
+            const { username } = req.query;
             if (!username)
                 return res.status(400).json({ error: 'Username must be sent' });
 
@@ -80,7 +80,7 @@ module.exports = (app) => {
     // Functions
     async function getQuestion() {
         try {
-            const serviceResponse = await axios.get(`${questionsServiceUrl}/musicians`);
+            const serviceResponse = await axios.get(`${questionsServiceUrl}/question`);
             const questionData = serviceResponse.data;
             return questionData;
         } catch (error) {

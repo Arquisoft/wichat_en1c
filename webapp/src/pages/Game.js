@@ -84,7 +84,7 @@ const Game = () => {
   useEffect(() => {
     const fetchGameConfig = async () => {
       try {
-        const response = await axios.get(`${apiEndpoint}/game/config`, {username: username,});
+        const response = await axios.get(`${apiEndpoint}/game/config`);
         setGameSettings(response.data);
         setTimeLeft(response.data.time); // Set initial time from config
       } catch (error) {
@@ -106,7 +106,7 @@ const Game = () => {
     const fetchQuestion = async () => {
       setIsLoading(true); // Start loading
       try {
-        const response = await axios.get(`${apiEndpoint}/game/question`, {username: username,});
+        const response = await axios.get(`${apiEndpoint}/game/question?username=${username}`);
         setQuestionData(response.data);
       } catch (error) {
         console.error("Error fetching question:", error);
@@ -221,7 +221,7 @@ const Game = () => {
         setReceivedHint(response.hint); // Store the received hint
         setHintsUsed(hintsUsed + 1);
       } catch (error) {
-        console.error("Error when trying to save game:", error);
+        console.error("Error when trying to get hint:", error);
         setReceivedHint(t("errorHint"));
       } finally {
         setHintMessage("");
