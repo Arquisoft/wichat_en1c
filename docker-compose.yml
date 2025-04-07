@@ -108,7 +108,7 @@ services:
       PORT: 8001
       QUESTIONS_SERVICE_URL: http://questionservice:8004
       STATS_SERVICE_URL: http://statservice:8003
-      LLM_SERVICE_URL: http://statservice:8005
+      LLM_SERVICE_URL: http://llmservice:8005
 
   questionservice:
     container_name: questionservice-wichat_en1c

@@ -116,10 +116,11 @@ module.exports = {
             throw new Error('Could not get current question data for the user');
         const currentQuestion = userGame.game.questions[userGame.game.questions.length - 1];
         const data = {
-            question: currentQuestion.question,
-            options: currentQuestion.answers.opts,
-            correctAnswer: currentQuestion.answers.correct,
-            hints: userGame.usedHints
+          question: currentQuestion.question,
+          options: currentQuestion.answers.opts,
+          correctAnswer:
+            currentQuestion.answers.opts[currentQuestion.answers.correct],
+          hints: userGame.usedHints,
         };
         return data;
     },

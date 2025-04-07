@@ -95,7 +95,7 @@ const Game = () => {
     fetchGameConfig();
 
     return async () => {
-      if(isSaved){
+      if(!isSaved){
       try {
         await axios.post(`${apiEndpoint}/game/quit`, {username: username,});
       } catch (error) {
@@ -179,16 +179,19 @@ const Game = () => {
     return "primary";
   };
 
-  useEffect(async () => {
-    if (gameEnded) {
+  useEffect(() => {
+    const saveGame = async () => {
+      if (gameEnded) {
         try {
-          await axios.post(`${apiEndpoint}/game/save`, {username: username,});
+          await axios.post(`${apiEndpoint}/game/save`, { username: username });
           setIsSaved(true);
         } catch (error) {
           console.error("Error when trying to save game:", error);
-        };
-      navigate("/end-game");
-    }
+        }
+        navigate("/end-game");
+      }
+    };
+    saveGame();
   }, [gameEnded]);
 
   const handleRoundEnd = () => {
@@ -222,7 +225,7 @@ const Game = () => {
             "Content-Type": "application/json",
           },
         });
-        setReceivedHint(response.hint); // Store the received hint
+        setReceivedHint(response.data.hint); // Store the received hint
         setHintsUsed(hintsUsed + 1);
       } catch (error) {
         console.error("Error when trying to get hint:", error);
