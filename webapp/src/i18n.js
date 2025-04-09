@@ -8,7 +8,11 @@ const resources = {
     translation: {
       home: "Home",
       login: "Login",
+      loginError: "Invalid username or password",
       register: "Register",
+      registerConflict:
+        "Username already exists. You have been redirected to login.",
+      registerError: "Invalid username or password",
       logout: "Logout",
       hello: "Hello",
       docs: "Docs",
@@ -16,7 +20,12 @@ const resources = {
       notFound2: "The page you're looking for doesn't exist or has been moved.",
       goHome: "Go Home",
       username: "Username",
+      usernameHint: "Must be between 5 and 20 characters and alphanumeric",
       password: "Password",
+      passwordHint:
+        "Must be at least 8 characters, including uppercase, lowercase, numbers, and symbols",
+      confirmPassword: "Password confirmation",
+      confirmPasswordHint: "Passwords must match",
       endGame: "End of the game",
       thanks: "Thanks for playing",
       loading: "Loading",
@@ -48,14 +57,19 @@ const resources = {
       },
       noStatsYet: "Play some games to see your statistics here!",
       stats: "Stats",
-      errorHint: "An error has occurred trying to retrieve your hint"
+      errorHint: "An error has occurred trying to retrieve your hint",
+      genericError: "Oops! Something went wrong.",
     },
   },
   es: {
     translation: {
       home: "Inicio",
       login: "Iniciar sesión",
+      loginError: "Usuario o contraseña incorrectos",
       register: "Registrarse",
+      registerConflict:
+        "El usuario ya existe. Has sido redirigido a iniciar sesión.",
+      registerError: "Usuario o contraseña inválidos",
       logout: "Cerrar sesión",
       hello: "Hola",
       docs: "Documentación",
@@ -63,7 +77,12 @@ const resources = {
       notFound2: "La página que buscas no existe o ha sido movida.",
       goHome: "Volver al inicio",
       username: "Usuario",
+      usernameHint: "Debe tener entre 5 y 20 caracteres y ser alfanumérico",
       password: "Contraseña",
+      passwordHint:
+        "Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos",
+      confirmPassword: "Confirmar contraseña",
+      confirmPasswordHint: "Las contraseñas deben coincidir",
       endGame: "Fin del juego",
       thanks: "¡Gracias por jugar",
       loading: "Cargando",
@@ -92,7 +111,8 @@ const resources = {
       },
       noStatsYet: "¡Juega algunas partidas para ver tus estadísticas aquí!",
       stats: "Estadísticas",
-      errorHint: "Ha ocurrido un error intentando obtener su pista"
+      errorHint: "Ha ocurrido un error intentando obtener su pista",
+      genericError: "¡Vaya! Algo salió mal.",
     },
   },
 };
