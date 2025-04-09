@@ -17,7 +17,6 @@ import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { GameContext } from "../GameContext";
-import { SessionContext } from "../SessionContext";
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
@@ -78,7 +77,6 @@ const Game = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { username } = useContext(SessionContext);
   const [isSaved, setIsSaved] = useState(false);
 
   // Fetch game configuration on component mount
@@ -97,7 +95,7 @@ const Game = () => {
     return async () => {
       if(!isSaved){
       try {
-        await axios.post(`${apiEndpoint}/game/quit`, {username: username,});
+        await axios.post(`${apiEndpoint}/game/quit`);
       } catch (error) {
         console.error("Error when trying to quit game:", error);
       }};
@@ -109,7 +107,7 @@ const Game = () => {
     const fetchQuestion = async () => {
       setIsLoading(true); // Start loading
       try {
-        const response = await axios.get(`${apiEndpoint}/game/question?username=${username}`);
+        const response = await axios.get(`${apiEndpoint}/game/question`);
         setQuestionData(response.data);
       } catch (error) {
         console.error("Error fetching question:", error);
@@ -154,7 +152,7 @@ const Game = () => {
     setIsPaused(true);
     try {
       const response = await axios.post(`${apiEndpoint}/game/answer`, {
-        username: username, selectedAnswer: option,
+        selectedAnswer: option,
       });
       const isCorrect = response.data.isCorrect;
       setAnswer(response.data.correctAnswer);
@@ -183,7 +181,7 @@ const Game = () => {
     const saveGame = async () => {
       if (gameEnded) {
         try {
-          await axios.post(`${apiEndpoint}/game/save`, { username: username });
+          await axios.post(`${apiEndpoint}/game/save`);
           setIsSaved(true);
         } catch (error) {
           console.error("Error when trying to save game:", error);
@@ -219,7 +217,7 @@ const Game = () => {
       try {
         const response = await axios.post(
         `${apiEndpoint}/game/hint`,
-        { username: username, query: hintMessage },
+        { query: hintMessage },
         {
           headers: {
             "Content-Type": "application/json",

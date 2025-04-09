@@ -11,7 +11,7 @@ module.exports = (app) => {
         try {
 
             // Get the username
-            const { username } = req.query;
+            const { username } = req.body;
             if (!username)
                 return res.status(400).json({ error: 'Username must be sent' });
 

@@ -18,7 +18,7 @@ tags:
     description: Endpoints related to game management.
   - name: Questions (/questions)
     description: Endpoints related to question retrieval.
-  - name: Statistics (/stats)
+  - name: 🔐 Statistics (/stats)
     description: Endpoints related to statistics retrieval.
 
 paths:
@@ -269,6 +269,8 @@ paths:
       summary: Get user statistics.
       description: Retrieves the statistics of a user by their username.
       operationId: statsUserStats
+      security:
+        - token: []
       parameters:
         - description: Username of the user whose stats to get.
           $ref: "#/components/parameters/username"
@@ -288,19 +290,23 @@ paths:
                     example: myusername
                   stats:
                     $ref: "#/components/schemas/stats"
-        "404":
-          description: Not found. User not found.
-          $ref: "#/components/responses/404"
-
         "400":
           description: Bad request. Missing or invalid path variable.
           $ref: "#/components/responses/400"
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+        "404":
+          description: Not found. User not found.
+          $ref: "#/components/responses/404"
   /stats/users/{username}/games:
     get:
       tags: [Statistics (/stats)]
       summary: Get user games.
       description: Retrieves the games of a user by their username.
       operationId: statsUserGames
+      security:
+        - token: []
       parameters:
         - description: Username of the user whose games to get.
           $ref: "#/components/parameters/username"
@@ -325,20 +331,24 @@ paths:
                     description: List of games played by the user.
                     items:
                       $ref: "#/components/schemas/game"
-
+        "400":
+          description: Bad request. Missing or invalid path variable.
+          $ref: "#/components/responses/400"
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
         "404":
           description: Not found. User not found.
           $ref: "#/components/responses/404"
 
-        "400":
-          description: Bad request. Missing or invalid path variable.
-          $ref: "#/components/responses/400"
   /stats/games/{gameId}:
     get:
       tags: [Statistics (/stats)]
       summary: Get game.
       description: Retrieves a game by its id.
       operationId: statsGame
+      security:
+        - token: []
       parameters:
         - $ref: "#/components/parameters/gameId"
       responses:
@@ -353,14 +363,15 @@ paths:
                     $ref: "#/components/examples/success"
                   game:
                     $ref: "#/components/schemas/game"
-
-        "404":
-          description: Not found. User not found.
-          $ref: "#/components/responses/404"
-
         "400":
           description: Bad request. Missing or invalid path variable.
           $ref: "#/components/responses/400"
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+        "404":
+          description: Not found. User not found.
+          $ref: "#/components/responses/404"
 
 components:
   parameters:
