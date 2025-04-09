@@ -23,6 +23,7 @@ const config = {
   cors: {},
   /** @type {import("helmet").HelmetOptions} */
   helmet: {
+    crossOriginOpenerPolicy: false,
     contentSecurityPolicy: {
       directives: {
         upgradeInsecureRequests: null,
