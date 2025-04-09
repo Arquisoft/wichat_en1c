@@ -12,7 +12,6 @@ import {
   InputAdornment,
   IconButton,
   OutlinedInput,
-  FormHelperText,
   Alert,
 } from "@mui/material";
 import { SessionContext } from "../SessionContext"; // Import the context
@@ -123,11 +122,7 @@ const Login = () => {
             label={t("username")}
             autoFocus
             error={!usernameValid}
-            helperText={!usernameValid && t("usernameHint")}
             required
-            inputProps={{
-              pattern: "^[a-zA-Z0-9]{0,20}$",
-            }}
             fullWidth
             onChange={handleUsernameChange}
           />
@@ -158,9 +153,6 @@ const Login = () => {
               }
               label={t("password")}
             />
-            {!passwordValid && (
-              <FormHelperText>{t("passwordHint")}</FormHelperText>
-            )}
           </FormControl>
         </Box>
         <Button

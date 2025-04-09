@@ -23,7 +23,7 @@ const resources = {
       usernameHint: "Must be between 5 and 20 characters and alphanumeric",
       password: "Password",
       passwordHint:
-        "Must be at least 8 characters, including uppercase, lowercase, numbers, and symbols",
+        "Must be at least 8 characters long, including uppercase, lowercase, numbers, and symbols",
       confirmPassword: "Password confirmation",
       confirmPasswordHint: "Passwords must match",
       endGame: "End of the game",
