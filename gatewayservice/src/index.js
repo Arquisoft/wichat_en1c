@@ -13,8 +13,9 @@ const swagger = require("./swagger");
 
 // Create app
 const app = express();
-app.use(helmet.default());
-app.use(cors());
+// @ts-expect-error
+app.use(helmet.default(config.helmet));
+app.use(cors(config.cors));
 
 // Setup Metrics
 const metricsMiddleware = promBundle({ includeMethod: true });
