@@ -19,6 +19,18 @@ const config = {
     changeOrigin: true,
     logger: console,
   },
+  /** @type {import("cors").CorsOptions} */
+  cors: {},
+  /** @type {import("helmet").HelmetOptions} */
+  helmet: {
+    crossOriginOpenerPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        upgradeInsecureRequests: null,
+        connectSrc: "*",
+      },
+    },
+  },
 };
 
 module.exports = config;
