@@ -59,8 +59,17 @@ async function generateQuestion(category = 'musician') {
   // If we couldn't get enough unique options, return null
   if (options.size < 4) return null;
 
+  const categorySpanish = {
+    musician: 'músico',
+    scientist: 'científico',
+    actor: 'actor',
+    painter: 'pintor',
+    writer: 'escritor'
+  };
+
   return {
-    question: `Who is the ${category} born on ${formattedDate} in the image?`,
+    question_en: `Who is the ${category} born on ${formattedDate} in the image?`,
+    question_es: `¿Quién es el ${categorySpanish[category]} nacido el ${formattedDate} en la imagen?`,
     image: correctPerson.image.value,
     options: [...options].sort(() => Math.random() - 0.5),
     correctAnswer: correctPerson[`${category}Label`].value,
@@ -76,7 +85,6 @@ function formatWikidataDate(wikidataDate) {
     return `${day}/${month}/${year}`;
   } catch (e) {
     console.error('Date could not formatted correctly:', wikidataDate);
-    console.error(e);
     return wikidataDate; 
   }
 }
@@ -148,7 +156,6 @@ app.get("/question/:category", async (req, res) => {
       res.status(503).json({ error: "Could not generate question" });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
