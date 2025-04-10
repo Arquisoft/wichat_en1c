@@ -2,11 +2,11 @@
 const express = require("express");
 
 const mockServer = express();
-mockServer.set("x-powered-by", false);
 mockServer.use(express.json());
 
 mockServer.post("/auth/verify", (req, res) => {
-  res.json({ username: "test", success: true });
+  if (req.body.token === "valid") res.json({ username: "test", success: true });
+  else res.status(401).json({ success: false, message: "Unauthorized" });
 });
 
 mockServer.get("/questions/status/:status", (req, res) => {

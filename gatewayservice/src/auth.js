@@ -2,13 +2,14 @@
 
 const { default: axios } = require("axios");
 const config = require("./config");
+const express = require("express");
 const { STATUS_CODES } = require("http");
 
 /**
  * @param {import("express").Application} app
  */
 module.exports = (app) =>
-  app.use(config.auth.paths, async (req, res, next) => {
+  app.use(config.auth.paths, express.json(), async (req, res, next) => {
     const [type, token] = req.headers.authorization?.split(/\s+/) ?? [];
 
     // Perform verification
@@ -17,19 +18,14 @@ module.exports = (app) =>
       if (type?.toLowerCase() !== "bearer" || token == null || token === "")
         throw Error("Invalid token");
 
-      /* const verification =  */
-      await axios.post(
-        config.auth.url,
-        {
-          token,
-        },
-        { timeout: 1_000 }
-      );
+      const verification = await axios.post(config.auth.url, {
+        token,
+      });
 
-      // FIXME: This is not working nor tested with unit tests
       // Attach logged-in username
-      // req.body ??= {};
-      // req.body.username = verification.data.username;
+      req.headers["content-type"] = "application/json";
+      req.body ??= {};
+      req.body.username = verification.data.username;
 
       next();
     } catch (err) {

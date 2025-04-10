@@ -59,8 +59,8 @@ describe("/game/question", () => {
     cache.addQuestion.mockImplementationOnce(() => {});
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -88,8 +88,8 @@ describe("/game/question", () => {
     axios.get.mockRejectedValueOnce(new Error("Error obtaining question"));
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");
@@ -99,8 +99,8 @@ describe("/game/question", () => {
     axios.get.mockResolvedValueOnce({ data: null });
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");

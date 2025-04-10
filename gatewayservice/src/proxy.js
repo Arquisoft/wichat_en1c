@@ -1,7 +1,10 @@
 // @ts-check
-const { createProxyMiddleware } = require("http-proxy-middleware");
-const config = require("./config");
+const {
+  createProxyMiddleware,
+  fixRequestBody,
+} = require("http-proxy-middleware");
 const { STATUS_CODES } = require("http");
+const config = require("./config");
 
 /**
  * @param {import("express").Application} app
@@ -37,6 +40,7 @@ module.exports = (app) =>
               break;
           }
         },
+        proxyReq: fixRequestBody,
       },
       ...config.proxyOpts,
     })
