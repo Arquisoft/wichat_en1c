@@ -1,28 +1,29 @@
 // src/test/Register.test.js
 import React from "react";
-import {
-  render,
-  fireEvent,
-  screen,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import Register from "../pages/Register";
-import { BrowserRouter } from "react-router";
 import { SessionProvider } from "../SessionContext";
+
+const mockNavigate = jest.fn();
+
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useNavigate: () => mockNavigate,
+}));
+import { BrowserRouter } from "react-router";
 
 const mockAxios = new MockAdapter(axios);
 
 describe("Register component", () => {
-  const apiEndpoint = "http://localhost:8000/auth/signup";
+  const apiEndpoint = "http://localhost:8000";
 
   beforeEach(() => {
     mockAxios.reset();
   });
 
-  it("should register a new user successfully (201)", async () => {
+  it("should register a new user successfully", async () => {
     render(
       <BrowserRouter>
         <SessionProvider>
@@ -31,27 +32,42 @@ describe("Register component", () => {
       </BrowserRouter>
     );
 
-    const usernameInput = screen.getByTestId("reg-username").querySelector("input");
-    const passwordInput = screen.getByTestId("reg-password").querySelector("input");
+    const usernameInput = screen
+      .getByTestId("reg-username")
+      .querySelector("input");
+    const passwordInput = screen
+      .getByTestId("reg-password")
+      .querySelector("input");
+    const confirmInput = screen
+      .getByTestId("reg-confirm-password")
+      .querySelector("input");
     const registerButton = screen.getByTestId("reg-button");
 
     // Mock successful registration response
-    mockAxios.onPost(apiEndpoint).reply(201, { success: true });
+    mockAxios
+      .onPost(apiEndpoint + "/auth/signup")
+      .reply(201, { success: true });
+    mockAxios.onPost(apiEndpoint + "/auth/login").reply(200, {
+      success: true,
+      token: "fakeToken123",
+      username: "newUser",
+    });
 
     // Simulate user input
     fireEvent.input(usernameInput, { target: { value: "newUser" } });
     fireEvent.input(passwordInput, { target: { value: "StrongPass123!" } });
+    fireEvent.input(confirmInput, { target: { value: "StrongPass123!" } });
 
     // Trigger register button click
     fireEvent.click(registerButton);
 
     // Wait for success Snackbar to appear
     await waitFor(() => {
-      expect(screen.getByText(/User added successfully/i)).toBeInTheDocument();
+      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
 
-  it("should handle 400 error (Bad Request)", async () => {
+  it("should handle 401 error", async () => {
     render(
       <BrowserRouter>
         <SessionProvider>
@@ -60,34 +76,39 @@ describe("Register component", () => {
       </BrowserRouter>
     );
 
-    const usernameInput = screen.getByTestId("reg-username").querySelector("input");
-    const passwordInput = screen.getByTestId("reg-password").querySelector("input");
+    const usernameInput = screen
+      .getByTestId("reg-username")
+      .querySelector("input");
+    const passwordInput = screen
+      .getByTestId("reg-password")
+      .querySelector("input");
+    const confirmInput = screen
+      .getByTestId("reg-confirm-password")
+      .querySelector("input");
     const registerButton = screen.getByTestId("reg-button");
 
-    // Mock a 400 Bad Request response
-    mockAxios.onPost(apiEndpoint).reply(400, {
-      success: false,
-      message: "Bad Request",
-      errors: {
-        username: "Username is required",
-        password: "Password is too short",
-      },
-    });
+    // Mock registration response
+    mockAxios
+      .onPost(apiEndpoint + "/auth/signup")
+      .reply(401, { success: false });
 
-    // Simulate user input with bad data
-    fireEvent.input(usernameInput, { target: { value: "" } });
-    fireEvent.input(passwordInput, { target: { value: "short" } });
+    // Simulate user input
+    fireEvent.input(usernameInput, { target: { value: "newUser" } });
+    fireEvent.input(passwordInput, { target: { value: "StrongPass123!" } });
+    fireEvent.input(confirmInput, { target: { value: "StrongPass123!" } });
 
     // Trigger register button click
     fireEvent.click(registerButton);
 
-    // Wait for the error Snackbar to appear
+    // Wait for success Snackbar to appear
     await waitFor(() => {
-      expect(screen.getByText(/Error: Bad Request/i)).toBeInTheDocument();
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/login?error=registerConflict"
+      );
     });
   });
 
-  it("should handle 401 error (Unauthorized - user already exists)", async () => {
+  it("should handle 500s", async () => {
     render(
       <BrowserRouter>
         <SessionProvider>
@@ -96,26 +117,72 @@ describe("Register component", () => {
       </BrowserRouter>
     );
 
-    const usernameInput = screen.getByTestId("reg-username").querySelector("input");
-    const passwordInput = screen.getByTestId("reg-password").querySelector("input");
-    const registerButton = screen.getByRole("button", { name: /Register/i });
+    const usernameInput = screen
+      .getByTestId("reg-username")
+      .querySelector("input");
+    const passwordInput = screen
+      .getByTestId("reg-password")
+      .querySelector("input");
+    const confirmInput = screen
+      .getByTestId("reg-confirm-password")
+      .querySelector("input");
+    const registerButton = screen.getByTestId("reg-button");
 
-    // Mock a 401 Unauthorized response
-    mockAxios.onPost(apiEndpoint).reply(401, {
-      success: false,
-      message: "Unauthorized",
-    });
+    // Mock error registration response
+    mockAxios
+      .onPost(apiEndpoint + "/auth/signup")
+      .reply(500, { success: false });
 
-    // Simulate user input with an existing user
-    fireEvent.input(usernameInput, { target: { value: "existingUser" } });
-    fireEvent.input(passwordInput, { target: { value: "AnotherPass_1" } });
+    // Simulate user input
+    fireEvent.input(usernameInput, { target: { value: "newUser" } });
+    fireEvent.input(passwordInput, { target: { value: "StrongPass123!" } });
+    fireEvent.input(confirmInput, { target: { value: "StrongPass123!" } });
 
     // Trigger register button click
     fireEvent.click(registerButton);
 
-    // Wait for the error Snackbar to appear
+    // Wait for success Snackbar to appear
     await waitFor(() => {
-      expect(screen.getByText(/Error: Unauthorized/i)).toBeInTheDocument();
+      expect(screen.getByText(/genericError/i)).toBeInTheDocument();
+    });
+  });
+
+  it("should handle (impossible) 400s", async () => {
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+          <Register />
+        </SessionProvider>
+      </BrowserRouter>
+    );
+
+    const usernameInput = screen
+      .getByTestId("reg-username")
+      .querySelector("input");
+    const passwordInput = screen
+      .getByTestId("reg-password")
+      .querySelector("input");
+    const confirmInput = screen
+      .getByTestId("reg-confirm-password")
+      .querySelector("input");
+    const registerButton = screen.getByTestId("reg-button");
+
+    // Mock error registration response
+    mockAxios
+      .onPost(apiEndpoint + "/auth/signup")
+      .reply(400, { success: false });
+
+    // Simulate user input
+    fireEvent.input(usernameInput, { target: { value: "newUser" } });
+    fireEvent.input(passwordInput, { target: { value: "StrongPass123!" } });
+    fireEvent.input(confirmInput, { target: { value: "StrongPass123!" } });
+
+    // Trigger register button click
+    fireEvent.click(registerButton);
+
+    // Wait for success Snackbar to appear
+    await waitFor(() => {
+      expect(screen.getByText(/registerError/i)).toBeInTheDocument();
     });
   });
 });
