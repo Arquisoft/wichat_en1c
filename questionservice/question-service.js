@@ -59,9 +59,17 @@ async function generateQuestion(category = 'musician') {
   // If we couldn't get enough unique options, return null
   if (options.size < 4) return null;
 
+  const categorySpanish = {
+    musician: 'músico',
+    scientist: 'científico',
+    actor: 'actor',
+    painter: 'pintor',
+    writer: 'escritor'
+  };
+
   return {
     question_en: `Who is the ${category} born on ${formattedDate} in the image?`,
-    question_es: `¿Quién es el ${category} nacido el ${formattedDate} en la imagen?`,
+    question_es: `¿Quién es el ${categorySpanish[category]} nacido el ${formattedDate} en la imagen?`,
     image: correctPerson.image.value,
     options: [...options].sort(() => Math.random() - 0.5),
     correctAnswer: correctPerson[`${category}Label`].value,
