@@ -52,19 +52,6 @@ const Home = () => {
           {t("play")}
         </Button>
       </form>
-
-      {/* Stats Button */}
-      <form onSubmit={handleButton("/stats")}>
-        <Button
-          data-testid="stats-button"
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: 1 }}
-        >
-          {t("stats")}
-        </Button>
-      </form>
     </Container>
   );
 };
