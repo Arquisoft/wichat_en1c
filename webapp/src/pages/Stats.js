@@ -74,6 +74,37 @@ const Stats = () => {
     return Math.max(percentage, 20) // Ensure at least 20% width for visibility
   }
 
+  // Function for avoiding duplication
+  const maxBlock = (maxValue, testId)=> {
+    return <Box sx={{ mb: 2 }}>
+                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          {t("maximum")}:
+                        </Typography>
+                        <Typography variant="body2" data-testid={testId} fontWeight="medium">
+                          {formatTime(maxValue)}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: 8,
+                          bgcolor: alpha(theme.palette.primary.main, 0.1),
+                          borderRadius: 4,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            bgcolor: theme.palette.primary.main,
+                            borderRadius: 4,
+                          }}
+                        />
+                      </Box>
+                    </Box>
+  }
+
     
   if (loading) {
     return (
@@ -235,33 +266,7 @@ const Stats = () => {
                     </Box>
 
                     {/* Maximum */}
-                    <Box sx={{ mb: 2 }}>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          {t("maximum")}:
-                        </Typography>
-                        <Typography variant="body2" data-testid="max-game-time" fontWeight="medium">
-                          {formatTime(stats.time.game.max)}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          width: "100%",
-                          height: 8,
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            bgcolor: theme.palette.primary.main,
-                            borderRadius: 4,
-                          }}
-                        />
-                      </Box>
-                    </Box>
+                    {maxBlock(stats.time.game.max, "max-game-time")}
 
                     {/* Average */}
                     <Box>
@@ -330,33 +335,7 @@ const Stats = () => {
                     </Box>
 
                     {/* Maximum */}
-                    <Box sx={{ mb: 2 }}>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          {t("maximum")}:
-                        </Typography>
-                        <Typography variant="body2" data-testid="max-question-time" fontWeight="medium">
-                          {formatTime(stats.time.question.max)}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          width: "100%",
-                          height: 8,
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            bgcolor: theme.palette.primary.main,
-                            borderRadius: 4,
-                          }}
-                        />
-                      </Box>
-                    </Box>
+                    {maxBlock(stats.time.question.max, "max-question-time")}
 
                     {/* Average */}
                     <Box>
