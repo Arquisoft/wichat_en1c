@@ -10,6 +10,7 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
+  useTheme,
 } from "@mui/material";
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router";
@@ -76,6 +77,8 @@ const Game = () => {
   const wrongAudio = new Audio("/wrong.mp3");
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const theme = useTheme()
 
   const [isSaved, setIsSaved] = useState(false);
 
@@ -240,14 +243,33 @@ const Game = () => {
       <Container
         component="main"
         maxWidth="md"
-        sx={{ textAlign: "center", mt: 20 }}
+        sx={{
+          textAlign: "center",
+          mt: 20,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-        <CircularProgress />
-        <Typography data-testid="loading-text" variant="h6" sx={{ mt: 2 }}>
+        <CircularProgress
+          data-testid="loading-indicator"
+          size={60}
+          thickness={4}
+          sx={{ color: theme.palette.primary.main }}
+        />
+        <Typography
+          data-testid="loading-text"
+          variant="h6"
+          sx={{
+            mt: 2,
+            fontWeight: "medium",
+            color: theme.palette.text.secondary,
+          }}
+        >
           {t("loading")}...
         </Typography>
       </Container>
-    );
+    )
   }
   return (
     <Container

@@ -59,6 +59,14 @@ const NavBar = () => {
           >
             {t("home")}
           </Button>
+          <Button
+            data-testid="stats-nav"
+            color="inherit"
+            sx={{ marginLeft: 2 }}
+            onClick={() => navigate("/stats")}
+          >
+            {t("stats")}
+          </Button>
         </Box>
 
         {/* Session controls */}

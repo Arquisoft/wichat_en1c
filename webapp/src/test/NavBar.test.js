@@ -12,6 +12,7 @@ jest.mock("react-router", () => ({
 }));
 
 describe("NavBar Component", () => {
+
   const renderNavBar = (contextValue) => {
     render(
       <BrowserRouter>
@@ -22,14 +23,16 @@ describe("NavBar Component", () => {
     );
   };
 
-  test("renders logo and Home button", () => {
+  test("renders logo, Home button and stats button", () => {
     renderNavBar({ username: "", isLoggedIn: false });
 
     const logo = screen.getByAltText("WIChatLogo");
     const homeButton = screen.getByTestId("home-nav");
+    const statsButton = screen.getByTestId("stats-nav");
 
     expect(logo).toBeInTheDocument();
     expect(homeButton).toBeInTheDocument();
+    expect(statsButton).toBeInTheDocument();
   });
 
   test("shows Login and Register buttons when not logged in", () => {
@@ -83,4 +86,5 @@ describe("NavBar Component", () => {
     fireEvent.click(screen.getByTestId("register-nav"));
     expect(mockNavigate).toHaveBeenCalledWith("/register");
   });
+
 });

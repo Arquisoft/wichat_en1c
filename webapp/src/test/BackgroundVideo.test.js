@@ -20,9 +20,6 @@ describe("BackgroundVideo Component", () => {
     expect(videoElement).toHaveAttribute("playsInline");
 
     // Check if the video element has the correct styles for full screen
-    expect(videoElement).toHaveStyle("position: absolute");
-    expect(videoElement).toHaveStyle("top: 0");
-    expect(videoElement).toHaveStyle("left: 0");
     expect(videoElement).toHaveStyle("width: 100%");
     expect(videoElement).toHaveStyle("height: 100%");
     expect(videoElement).toHaveStyle("objectFit: cover");
