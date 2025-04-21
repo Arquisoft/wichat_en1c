@@ -73,22 +73,22 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [usernameValid, setUsernameValid] = useState(true);
 
+  const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordValid, setConfirmPasswordValid] = useState(true);
+
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
     setUsernameValid(e.target.validity.valid);
   };
 
-  const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
     setPasswordValid(e.target.validity.valid);
   };
-
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmPasswordValid, setConfirmPasswordValid] = useState(true);
 
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
