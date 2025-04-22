@@ -173,6 +173,8 @@ function computeStatsGames(games) {
     },
   };
 
+  let questionTotalTime = 0;
+
   for (const game of games) {
     const gameTime = game.time.finished.getTime() - game.time.started.getTime();
 
@@ -188,6 +190,8 @@ function computeStatsGames(games) {
       const questionTime =
         question.time.finished.getTime() - question.time.started.getTime();
 
+      questionTotalTime += questionTime;
+
       stats.time.question.min = Math.min(stats.time.question.min, questionTime);
       stats.time.question.max = Math.max(stats.time.question.max, questionTime);
 
@@ -202,7 +206,7 @@ function computeStatsGames(games) {
   stats.game.hints.avg = stats.game.hints.total / games.length;
 
   stats.time.game.avg = stats.time.total / games.length;
-  stats.time.question.avg = stats.time.total / stats.question.total;
+  stats.time.question.avg = questionTotalTime / stats.question.total;
 
   return stats;
 }
