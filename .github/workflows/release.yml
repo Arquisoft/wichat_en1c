@@ -52,6 +52,9 @@ jobs:
         env:
           DISABLE_ESLINT_PLUGIN: true
       # - run: npm --prefix webapp run test:e2e
+      #   env:
+      #     LLM_API_KEY=${{ secrets.LLM_API_KEY_GEMINI }}
+      
 
   docker-push-webapp:
     name: Push webapp Docker Image to GitHub Packages

@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute.js
 import NotFound from "./pages/NotFound"; // NotFound.js
 import EndGame from "./pages/EndGame"; // EndGame.js
 import Stats from "./pages/Stats"; // Stats.js
+import Custom from "./pages/CustomGame"; // CustomGame.js
 
 import "./i18n"; // Load internationalization
 
@@ -47,6 +48,7 @@ function App() {
           />
           {/* Game Page (protected) */}
           <Route path="/game" element={<PrivateRoute element={Game} />} />
+          <Route path="/game-ai" element={<PrivateRoute element={Game(true)} />} />
           {/* End Game Page (blocked) */}
           <Route
             path="/end-game"
@@ -54,6 +56,8 @@ function App() {
           />
           {/* Stats Page (protected) */}
           <Route path="/stats" element={<PrivateRoute element={Stats} />} />
+          {/* Custom Game Page (protected) */}
+          <Route path="/custom" element={<PrivateRoute element={Custom} />} />
           {/* Not Existing Path */}
           <Route path="*" element={<NotFound data-testid="not-found-page" />} />
         </Routes>

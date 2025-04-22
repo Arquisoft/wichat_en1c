@@ -57,7 +57,7 @@ const Stats = () => {
   // Calculate accuracy percentage safely
   const calculateAccuracy = (passed, total) => {
     if (total <= 0) return 0
-    return ((passed / total) * 100).toFixed(2)
+    return Math.round((passed / total) * 100 * 100) / 100
   }
  
   // Calculate bar width as percentage of maximum value with a minimum visible width
@@ -142,7 +142,7 @@ const Stats = () => {
 
   // Render the statistics view
   return (
-    <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }} data-testid="stats-container">
+    <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }} data-testid="stats-container">
       <Typography
         variant="h4"
         gutterBottom

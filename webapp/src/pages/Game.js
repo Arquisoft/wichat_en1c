@@ -18,37 +18,13 @@ import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { GameContext } from "../GameContext";
+import PropTypes from "prop-types";
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
-// Mock game data (to simulate a backend response)
-const mockGameData = {
-  question: "Who is the musician born on 1979-01-01T00:00:00Z in the image?",
-  image: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Killa_Kela.jpg",
-  options: [
-    "Phil Shoenfelt",
-    "Killa Kella",
-    "Kevin Rowland",
-    "Cristopher Guest",
-  ],
-  answer: "Killa Kella",
-  hints: [
-    "The musician is known for beatboxing.",
-    "He has performed with Gorillaz and Pharrell Williams.",
-    "His stage name starts with 'K.'",
-  ],
-  gameSettings: {
-    time: 20,
-    rounds: 3,
-    hints: 3,
-  },
-};
-
 // Main game component
-const Game = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    mockGameData.gameSettings.timePerQuestion
-  );
+const Game = ( AImode = false ) => {
+  const [timeLeft, setTimeLeft] = useState(20);
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentRound, setCurrentRound] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
@@ -58,7 +34,7 @@ const Game = () => {
   const [hintCooldown, setHintCooldown] = useState(false);
 
   const [gameSettings, setGameSettings] = useState({
-    rounds: 3,
+    rounds: 10,
     time: 20,
     hints: 3,
   }); // Default, will be fetched
@@ -96,12 +72,13 @@ const Game = () => {
     fetchGameConfig();
 
     return async () => {
-      if(!isSaved){
-      try {
-        await axios.post(`${apiEndpoint}/game/quit`);
-      } catch (error) {
-        console.error("Error when trying to quit game:", error);
-      }};
+      if(!isSaved) {
+        try {
+          await axios.post(`${apiEndpoint}/game/quit`);
+        } catch (error) {
+          console.error("Error when trying to quit game:", error);
+        }
+      };
     }
   }, []);
 
@@ -290,6 +267,7 @@ const Game = () => {
           flexDirection: "column", // Stack elements vertically
           gap: 2, // Space between elements
           alignItems: "center", // Center align the elements horizontally
+          mt: 10,
         }}
       >
         {/* Progress bar & Round info */}
@@ -407,6 +385,7 @@ const Game = () => {
           borderRadius: "8px", // Rounded corners for the hint box
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)", // Shadow for the hint box
           marginLeft: 3, // Left margin with question box
+          mt: 10,
         }}
       >
         <Tooltip title="Hints remaining">
@@ -490,6 +469,11 @@ const Game = () => {
       </Box>
     </Container>
   );
+};
+
+// PropTypes validation
+Game.propTypes = {
+  AImode: PropTypes.bool,
 };
 
 export default Game;
