@@ -40,7 +40,7 @@ import {
   ArrowBack as ArrowLeftIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material"
-import axios from "axios"
+//import axios from "axios" //TODO uncomment when backend is ready
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000"
 
@@ -451,7 +451,7 @@ const CustomGame = () => {
                             bgcolor: alpha(theme.palette.background.paper, 0.7),
                           }}
                         >
-                          <List dense component="div" role="list" data-testid="available-categories">
+                          <List dense component="ul" role="list" data-testid="available-categories">
                             {availableCategories.length === 0 ? (
                               <ListItem>
                                 <ListItemText primary={t("noAvailableCategories")} />
@@ -518,7 +518,7 @@ const CustomGame = () => {
                             bgcolor: alpha(theme.palette.background.paper, 0.7),
                           }}
                         >
-                          <List dense component="div" role="list" data-testid="selected-categories">
+                          <List dense component="ul" role="list" data-testid="selected-categories">
                             {selectedCategoryIds.length === 0 ? (
                               <ListItem>
                                 <ListItemText primary={t("noSelectedCategories")} />

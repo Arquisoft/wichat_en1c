@@ -18,7 +18,7 @@ import { Typewriter } from "react-simple-typewriter";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { GameContext } from "../GameContext";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
 
@@ -470,10 +470,10 @@ const Game = ( AImode = false ) => {
     </Container>
   );
 };
-
+/*
 // PropTypes validation
 Game.propTypes = {
   AImode: PropTypes.bool,
 };
-
+*/ //TODO uncomment when AImode is used
 export default Game;

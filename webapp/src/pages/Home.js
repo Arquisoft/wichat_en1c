@@ -128,7 +128,7 @@ const Home = () => {
 
             <Grid container spacing={4} sx={{ mt: 2 }}>
               {gameModes.map((mode, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index} data-testid={`game-mode-${index}`}>
+                <Grid item xs={12} sm={6} md={4} key={`grid-mode-${index}`} data-testid={`game-mode-${index}`}>
                   <motion.div
                     initial={{ opacity: 0, y: -50 }}
                     animate={{ opacity: 1, y: 0 }}
