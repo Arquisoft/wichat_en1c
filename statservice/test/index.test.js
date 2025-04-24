@@ -35,7 +35,9 @@ beforeAll(async () => {
   app = require("../src");
 
   // Create test user
-  userId = await User.insertOne({ username }).then((u) => u._id);
+  userId = await User.insertOne({ username, password: "TESTING" }).then(
+    (u) => u._id
+  );
 });
 
 beforeEach(async () => {
