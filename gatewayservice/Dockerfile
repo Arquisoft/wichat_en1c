@@ -2,23 +2,26 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /usr/src/gatewayservice
+WORKDIR /home/node/service
+
+# Copy common
+COPY ./common/*.js* ../common/
+
+# Install common dependencies
+RUN npm install --prefix ../common --ignore-scripts --omit=dev
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY ./gatewayservice/package*.json ./
 
 # Install app dependencies
 RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY ./src ./src
-COPY ./openapi.yaml ./
-
-# Expose the port the app runs on
-EXPOSE 8000
+COPY ./gatewayservice/src ./src
+COPY ./gatewayservice/openapi.yaml ./
 
 # Run the app as a non-root user
 USER node
 
 # Define the command to run your app
-CMD ["npm", "start"]
+CMD ["node", "."]

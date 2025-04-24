@@ -4,7 +4,7 @@ const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const data = require("./data");
 const config = require("../src/config");
-const { User, Game, Question } = require("../src/model");
+const { User, Game, Question } = require("@wichat_en1c/common/model");
 const {
   beforeAll,
   afterAll,

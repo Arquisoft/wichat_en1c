@@ -1,0 +1,27 @@
+{
+  "name": "@wichat_en1c/common",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/arquisoft/wichat_en1c#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arquisoft/wichat_en1c.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arquisoft/wichat_en1c/issues"
+  },
+  "dependencies": {
+    "pino-http": "^10.4.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "peerDependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2"
+  }
+}

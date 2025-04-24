@@ -2,8 +2,7 @@
 const { checkExact, body } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const validation = require("../validation");
-const { User, Game, Question } = require("../model");
-const { default: mongoose } = require("mongoose");
+const { User, Game, Question } = require("@wichat_en1c/common/model");
 
 /**
  * @param {import("express").Router} app
