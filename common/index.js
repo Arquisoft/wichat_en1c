@@ -24,6 +24,14 @@ function setupLogger(app, name) {
     base: {
       pid: undefined,
     },
+    redact: {
+      paths: [
+        "req.headers.authorization",
+        'req.headers["proxy-authorization"]',
+        "req.headers.referer",
+        "req.headers.cookie",
+      ],
+    },
     transport: {
       targets: [
         {
