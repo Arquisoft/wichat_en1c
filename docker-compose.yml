@@ -2,6 +2,7 @@ services:
   mongodb:
     container_name: mongodb-wichat_en1c
     image: mongo
+    attach: false
     profiles: ["dev", "prod"]
     volumes:
       - mongodb_data:/data/db
