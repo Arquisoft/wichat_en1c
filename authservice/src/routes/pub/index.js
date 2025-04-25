@@ -1,7 +1,7 @@
 // @ts-check
 
-const login = require("./login");
 const express = require("express");
+const login = require("./login");
 const signup = require("./signup");
 
 /**
