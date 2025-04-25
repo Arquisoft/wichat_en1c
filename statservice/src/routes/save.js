@@ -3,6 +3,7 @@ const { checkExact, body } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const validation = require("../validation");
 const { User, Game, Question } = require("@wichat_en1c/common/model");
+const { sanitizeFilter } = require("mongoose");
 
 /**
  * @param {import("express").Router} app
@@ -16,7 +17,8 @@ module.exports = (app) => {
       checkExact()
     ),
     async (req, res) => {
-      const { username, game } = req.body;
+      const { username, game: rawGame } = req.body;
+      const game = sanitizeFilter(rawGame); // Sanitize user input
 
       //* Check user and append id
       const user = await User.findOne({ username: username.toString() });
@@ -40,7 +42,6 @@ module.exports = (app) => {
           delete question.answers.selected;
           delete question.time;
 
-          Question.validate(question); // SAFE: Sanitized by express-mongo-sanitize
           return {
             question: await Question.create(question).then((q) => q._id),
             time,
@@ -50,7 +51,7 @@ module.exports = (app) => {
       );
 
       //* Save game
-      await Game.create(game); // SAFE: Sanitized by express-mongo-sanitize
+      await Game.create(game); // SAFE: Sanitized
 
       res.status(201).json({
         success: true,

@@ -11,8 +11,9 @@ const config = require("./config");
 // Configure Express
 const app = express();
 app.set("trust proxy", true);
-app.use(express.json());
+
 setupLogger(app, config.name);
+app.use(express.json());
 
 // Routes
 require("./routes/pub")(app);

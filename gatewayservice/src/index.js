@@ -15,11 +15,10 @@ const config = require("./config");
 // Create app
 const app = express();
 
-// Middleware
+setupLogger(app, config.name);
 // @ts-expect-error
 app.use(helmet.default(config.helmet));
 app.use(cors(config.cors));
-setupLogger(app, config.name);
 
 const metricsMiddleware = promBundle({ includeMethod: true });
 app.use(metricsMiddleware);

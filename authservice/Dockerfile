@@ -2,13 +2,16 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /home/node/service
+WORKDIR /home/node/common
 
 # Copy common
-COPY ./common/*.js* ../common/
+COPY ./common/*.js* ./
 
 # Install common dependencies
-RUN npm install --prefix ../common --ignore-scripts --omit=dev
+RUN npm install --ignore-scripts --omit=dev
+
+# Set the working directory in the container
+WORKDIR /home/node/service
 
 # Copy package.json and package-lock.json to the working directory
 COPY ./authservice/package*.json ./
