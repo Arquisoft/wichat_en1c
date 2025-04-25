@@ -160,6 +160,7 @@ function computeStatsGames(games) {
     question: {
       passed: 0,
       failed: 0,
+      unanswered: 0,
       total: -1,
     },
     game: {
@@ -195,18 +196,22 @@ function computeStatsGames(games) {
       stats.time.question.min = Math.min(stats.time.question.min, questionTime);
       stats.time.question.max = Math.max(stats.time.question.max, questionTime);
 
+      if (question.selected == null) stats.question.unanswered++;
       // @ts-expect-error
-      if (question.selected === question.question.answers.correct)
+      else if (question.selected === question.question.answers.correct)
         stats.question.passed++;
       else stats.question.failed++;
     }
   }
 
-  stats.question.total = stats.question.passed + stats.question.failed;
-  stats.game.hints.avg = stats.game.hints.total / games.length;
+  stats.question.total =
+    stats.question.passed + stats.question.failed + stats.question.unanswered;
+  stats.game.hints.avg = Math.round(stats.game.hints.total / games.length);
 
-  stats.time.game.avg = stats.time.total / games.length;
-  stats.time.question.avg = questionTotalTime / stats.question.total;
+  stats.time.game.avg = Math.round(stats.time.total / games.length);
+  stats.time.question.avg = Math.round(
+    questionTotalTime / stats.question.total
+  );
 
   return stats;
 }
