@@ -53,8 +53,6 @@ function setupLogger(app, name) {
  * @param {import("express").Application} app Express application
  */
 function setupDefaultHandlers(app) {
-  if (log == null) throw new Error("Not setup! Call 'setup' first");
-
   // Default Handler
   app.use("*star", (_req, res) => {
     res.status(404).json({
@@ -65,7 +63,7 @@ function setupDefaultHandlers(app) {
 
   // Error Handler
   app.use((err, req, res, _next) => {
-    req.log.error(err, "unhandled error");
+    req.log?.error(err, "unhandled error");
     if (!res.writableEnded) {
       const status = (err.expose ? err.status : undefined) ?? 500;
       res
@@ -80,17 +78,15 @@ function setupDefaultHandlers(app) {
  * @param {string} uri MongoDB URI
  */
 async function connectDB(uri) {
-  if (log == null) throw new Error("Not setup! Call 'setup' first");
-
-  log.debug("connecting to db");
+  log?.debug("connecting to db");
   try {
     // Dynamic import
     mongoose = require("mongoose");
 
     await mongoose.connect(uri);
-    log.debug("connected to db");
+    log?.debug("connected to db");
   } catch (err) {
-    log.fatal(err, "unable to connect to db");
+    log?.fatal(err, "unable to connect to db");
     process.exit(1);
   }
 }
@@ -102,13 +98,12 @@ async function connectDB(uri) {
  * @returns Server instance
  */
 function startServer(app, port) {
-  if (log == null) throw new Error("Not setup! Call 'setup' first");
-
-  log.debug("starting server");
+  log?.debug("starting server");
   server = app.listen(port, (err) => {
-    if (err == null) log.info(`started! listening at http://localhost:${port}`);
+    if (err == null)
+      log?.info(`started! listening at http://localhost:${port}`);
     else {
-      log.fatal(err, "unable to start server");
+      log?.fatal(err, "unable to start server");
       server.close();
     }
   });
