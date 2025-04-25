@@ -7,8 +7,6 @@ const { STATUS_CODES } = require("http");
 let log;
 /** @type {import("mongoose")} */
 let mongoose;
-/** @type {import("http").Server} */
-let server;
 
 /**
  * Sets up the logger for the application.
@@ -99,7 +97,7 @@ async function connectDB(uri) {
  */
 function startServer(app, port) {
   log?.debug("starting server");
-  server = app.listen(port, (err) => {
+  const server = app.listen(port, (err) => {
     if (err == null)
       log?.info(`started! listening at http://localhost:${port}`);
     else {
