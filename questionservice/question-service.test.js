@@ -1,4 +1,4 @@
-jest.setTimeout(30000); // If I make 5 seconds, it is not enough to retrive data from wikidata api
+jest.setTimeout(40000); // 30 seconds to 40 seconds update because sometimes retriving data takes longer
 
 const request = require("supertest");
 const server = require("./question-service");
@@ -12,7 +12,8 @@ describe("Question API", () => {
   test("GET /question - should return a question", async () => {
     const res = await request(server).get("/question");
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("question");
+    expect(res.body).toHaveProperty("question_en");
+    expect(res.body).toHaveProperty("question_es");
     expect(res.body).toHaveProperty("image");
     expect(res.body).toHaveProperty("options");
     expect(res.body.options.length).toBe(4);
@@ -25,14 +26,15 @@ describe("Question API", () => {
     test(`GET /question/${category} - should return a question from category ${category}`, async () => {
       const res = await request(server).get(`/question/${category}`);
       if (res.statusCode === 200) {
-        expect(res.body).toHaveProperty("question");
+        expect(res.body).toHaveProperty("question_en");
+        expect(res.body).toHaveProperty("question_es");
         expect(res.body).toHaveProperty("image");
         expect(res.body).toHaveProperty("options");
         expect(res.body.options.length).toBe(4);
         expect(res.body).toHaveProperty("correctAnswer");
         expect(res.body.category).toBe(category);
       } else {
-        // Eğer veri Wikidata'dan gelmiyorsa geçici olarak 503 olabilir
+       
         expect(res.statusCode).toBe(503);
         expect(res.body).toHaveProperty("error");
       }
