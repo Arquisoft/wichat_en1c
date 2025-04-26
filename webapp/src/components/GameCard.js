@@ -23,6 +23,13 @@ const GameCard = ({ image, description, link, title = "game", alt = "Game image"
   return (
     <Card
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          handleClick()
+        }
+      }}
+      tabIndex={0}
       data-testid={`game-mode-${testId}`}
       sx={{
         cursor: "pointer",

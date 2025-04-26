@@ -2,7 +2,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router";
 import EndGame from "../pages/EndGame";
-import { GameProvider } from "../GameContext";
+import { GameProvider, GameContext } from "../GameContext";
 
 describe("EndGame Page", () => {
   test("renders end of game and thanks text, Go Home button, and navigates to home page on button click", () => {
@@ -31,5 +31,39 @@ describe("EndGame Page", () => {
 
     // Check if the URL has changed to '/'
     expect(window.location.pathname).toBe("/");
+  });
+
+  test("displays correct/incorrect answers and calculates accuracy", () => {
+    render(
+      <BrowserRouter>
+        <GameContext.Provider
+          value={{
+            gameEnded: true,
+            setGameEnded: jest.fn(),
+            correctAnswers: 2,
+            setCorrectAnswers: jest.fn(),
+            incorrectAnswers: 1,
+            setIncorrectAnswers: jest.fn(),
+            hintHistory: [],
+            addHintToHistory: jest.fn(),
+            setHintHistory: jest.fn(),
+            resetGameStats: jest.fn(),
+          }}
+        >
+          <EndGame />
+        </GameContext.Provider>
+      </BrowserRouter>
+    );
+
+    const correct = screen.getByTestId("correct-answers");
+    expect(correct).toHaveTextContent(/correct/i);
+    expect(screen.getByText("2")).toBeInTheDocument();
+
+    const incorrect = screen.getByTestId("incorrect-answers");
+    expect(incorrect).toHaveTextContent(/incorrect/i);
+    expect(screen.getByText("1")).toBeInTheDocument();
+
+    const accuracy = screen.getByTestId("accuracy");
+    expect(accuracy).toHaveTextContent("67%");
   });
 });

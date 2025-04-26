@@ -95,6 +95,7 @@ const resources = {
       customSelection: "Custom selection",
       hintsCustom: "Hints",
       genericError: "Oops! Something went wrong.",
+      gameResults: "Game Results",
     },
   },
   es: {
@@ -185,6 +186,7 @@ const resources = {
       customSelection: "Selección personalizada",
       hintsCustom: "Pistas",
       genericError: "¡Vaya! Algo salió mal.",
+      gameResults: "Resultados del Juego",
     },
   },
 };

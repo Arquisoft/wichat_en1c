@@ -127,11 +127,18 @@ describe("Game Page Tests", () => {
     // Initial hints used should be 0
     expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 0/5");
 
-    // Click on the hint button
+    const input = screen.getByTestId("hint-input").querySelector("input")
+
+    // Type into the input
+    fireEvent.change(input, { target: { value: "Give me a hint" } })
+
+    // Click hint button
     fireEvent.click(screen.getByTestId("hint-button"));
 
+    await waitFor(() => expect(screen.getByText("Good")).toBeInTheDocument());
+
     // Check if hints used increases
-    await waitFor(() =>expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5"));
+    await waitFor(() => expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5"));
   });
 
   it('should show the "End of the Game" screen when game ends', async () => {
