@@ -54,7 +54,7 @@ const gameSchema = new mongoose.Schema({
           },
           required: true,
         },
-        selected: { type: Number, required: true },
+        selected: { type: Number },
       },
     ],
     required: true,

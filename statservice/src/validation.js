@@ -121,6 +121,7 @@ module.exports = {
         })
         .withMessage(messages.notValidNumber),
       body("game.questions.*.answers.selected", messages.missing)
+        .optional({ values: "null" })
         .isInt({
           min: 0,
         })
