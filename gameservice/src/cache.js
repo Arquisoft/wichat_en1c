@@ -151,6 +151,15 @@ module.exports = {
         const userModes = userGame.game.config.modes;
         const randomMode = userModes[Math.floor(Math.random() * userModes.length)];
         return randomMode;
+    },
+
+    isAIEnabledForUser(username){
+        // Get current game for user
+        const userGame = cache.get(username);
+        if (!userGame)
+            throw new Error('Could not get AI enabled from the user');
+        const isAIEnabledUser = userGame.game.isAIGame;
+        return isAIEnabledUser;
     }
 
 };
