@@ -9,14 +9,16 @@ module.exports = (app) => {
     // Endpoints
     app.get('/game/question', async (req, res) => {
         try {
-
             // Get the username
             const { username } = req.body;
             if (!username)
                 return res.status(400).json({ error: 'Username must be sent' });
 
+            // Get random mode for the question
+            const questionMode = cache.getRandomMode(username);
+
             // Get a question
-            const questionData = await getQuestion();
+            const questionData = await getQuestion(questionMode);
             if (!questionData)
                 return res.status(500).json({ error: 'Could not obtain question from service' });
 
@@ -77,9 +79,9 @@ module.exports = (app) => {
 
 
     // Functions
-    async function getQuestion() {
+    async function getQuestion(questionMode) {
         try {
-            const serviceResponse = await axios.get(`${questionsServiceUrl}/question`);
+            const serviceResponse = await axios.get(`${questionsServiceUrl}/question/${questionMode}`);
             const questionData = serviceResponse.data;
             return questionData;
         } catch (error) {

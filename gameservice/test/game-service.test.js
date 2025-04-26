@@ -23,19 +23,25 @@ describe("config.js", () => {
       time: config.time,
       rounds: config.rounds,
       hints: config.hints,
+      modes: config.modes
     });
   });
 });
 
 describe("/game/config", () => {
-  test("should return game configuration values", async () => {
-    const response = await request(app).get("/game/config");
+  test("should return 200 if values can be set for user", async () => {
+    const response = await request(app)
+      .post("/game/config")
+      .send({
+        rounds: 3,
+        time: 600,
+        hints: 2,
+        isAIGame: true,
+        categories: ["music", "science"],
+        username: "user"
+      });
 
     expect(response.status).toBe(200);
-    expect(response.body.port).toBe(8001);
-    expect(response.body.time).toBe(config.time);
-    expect(response.body.rounds).toBe(config.rounds);
-    expect(response.body.hints).toBe(config.hints);
   });
 });
 
@@ -56,7 +62,7 @@ describe("/game/question", () => {
 
     axios.get.mockResolvedValueOnce({ data: mockQuestion });
 
-    cache.addQuestion.mockImplementationOnce(() => {});
+    cache.addQuestion.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .get("/game/question")
@@ -134,7 +140,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is correct if selected answer is equal to correct answer", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
@@ -151,7 +157,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is not equal to correct answer", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
