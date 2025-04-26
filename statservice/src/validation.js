@@ -10,10 +10,6 @@ const config = require("./config");
 const setup = (...vals) => {
   vals.push((req, res, next) => {
     const errors = validationResult(req);
-
-    console.log(req.body);
-    console.log(errors.mapped());
-
     if (!errors.isEmpty())
       res.status(400).json({
         success: false,
@@ -119,6 +115,7 @@ module.exports = {
         })
         .withMessage(messages.notValidArray),
       body("game.questions.*.answers.correct", messages.missing)
+        .optional({ values: "null" })
         .isInt({
           min: 0,
         })
