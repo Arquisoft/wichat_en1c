@@ -43,8 +43,6 @@ module.exports = (app) => {
 
             // Get the selected answer
             const { selectedAnswer } = req.body;
-            if (!selectedAnswer)
-                return res.status(400).json({ error: 'Selected answer must be sent' });
 
             // Check if answer is correct
             let correctAnswer;
@@ -62,7 +60,10 @@ module.exports = (app) => {
 
             // Save answered question data for user
             try {
-                cache.answer(username, selectedAnswer);
+                if (!selectedAnswer)
+                    cache.answer(username, null);
+                else
+                    cache.answer(username, selectedAnswer);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }

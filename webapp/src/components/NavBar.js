@@ -30,7 +30,7 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Toolbar
         sx={{
           display: "flex",
@@ -58,6 +58,14 @@ const NavBar = () => {
             onClick={() => navigate("/")}
           >
             {t("home")}
+          </Button>
+          <Button
+            data-testid="stats-nav"
+            color="inherit"
+            sx={{ marginLeft: 2 }}
+            onClick={() => navigate("/stats")}
+          >
+            {t("stats")}
           </Button>
         </Box>
 

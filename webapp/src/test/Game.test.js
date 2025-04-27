@@ -51,8 +51,6 @@ describe("Game Page Tests", () => {
         return Promise.resolve({
           data: { isCorrect: true, correctAnswer: "Killa Kella" },
         });
-      } else if (url.includes("/game/quit")) {
-        return Promise.resolve({ data: { success: true } }); // Simulate a successful quit
       } else if (url.includes("/game/save")) {
         return Promise.resolve({ data: { success: true } }); // Simulate a successful save
       } else if (url.includes("/game/hint")) {
@@ -127,11 +125,18 @@ describe("Game Page Tests", () => {
     // Initial hints used should be 0
     expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 0/5");
 
-    // Click on the hint button
+    const input = screen.getByTestId("hint-input").querySelector("input")
+
+    // Type into the input
+    fireEvent.change(input, { target: { value: "Give me a hint" } })
+
+    // Click hint button
     fireEvent.click(screen.getByTestId("hint-button"));
 
+    await waitFor(() => expect(screen.getByText("Good")).toBeInTheDocument());
+
     // Check if hints used increases
-    await waitFor(() =>expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5"));
+    await waitFor(() => expect(screen.getByTestId("hints-used")).toHaveTextContent("hints: 1/5"));
   });
 
   it('should show the "End of the Game" screen when game ends', async () => {
@@ -160,5 +165,46 @@ describe("Game Page Tests", () => {
     await delay(3000);
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/end-game"));
+  });
+
+  it('should show the hint chat ', async () => {
+    render(
+      <BrowserRouter>
+        <SessionProvider>
+         <GameProvider>
+            <Game />
+          </GameProvider>
+        </SessionProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("loading-text")).not.toBeInTheDocument()
+    );
+
+    // Function to delay
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const input = screen.getByTestId("hint-input").querySelector("input")
+
+    // Type into the input
+    fireEvent.change(input, { target: { value: "Give me a hint" } })
+
+    // Click hint button
+    fireEvent.click(screen.getByTestId("hint-button"));
+
+    await delay(3300);
+
+    // Type into the input
+    fireEvent.change(input, { target: { value: "Give me a hint" } })
+
+    // Click hint button
+    fireEvent.click(screen.getByTestId("hint-button"));
+
+    await waitFor(() => expect(screen.getByTestId("question-0")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId("question-1")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId("answer-0")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId("answer-1")).toBeInTheDocument());
+
   });
 });
