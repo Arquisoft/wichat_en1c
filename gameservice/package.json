@@ -19,7 +19,8 @@
     "homepage": "https://github.com/arquisoft/wichat_en1c#readme",
     "dependencies": {
         "axios": "^1.7.9",
-        "express": "^4.21.2"
+        "express": "^4.21.2",
+        "@wichat_en1c/common": "file:../common"
     },
     "devDependencies": {
         "jest": "^29.7.0",

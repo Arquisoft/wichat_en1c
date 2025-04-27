@@ -45,8 +45,6 @@ module.exports = (app) => {
         The hint must be a single word or a short sentence, without any other information.
         `;
 
-        console.log(prompt)
-
         // Send prompt to LLM Service
         try {
             // Ask LLM
@@ -69,7 +67,7 @@ module.exports = (app) => {
 
             res.json({ hint });
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "hint obtaining error");
             return res.status(500).json({ error: "There was an error when obtaining a hint" });
         }
     })

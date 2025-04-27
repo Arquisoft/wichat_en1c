@@ -53,7 +53,7 @@ module.exports = (app) => {
             // Send question data for the frontend
             res.json(questionToSend);
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "question obtaining error");
             res.status(500).json({ error: 'There was an error when obtaining the question' });
         }
     });
@@ -94,7 +94,7 @@ module.exports = (app) => {
             // Send answer result data for the frontend
             res.json(result);
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "question answering error");
             res.status(500).json({ error: 'There was an error when checking the answer' });
         }
     });
@@ -107,7 +107,7 @@ module.exports = (app) => {
             const questionData = serviceResponse.data;
             return questionData;
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "question service request error");
             return null;
         }
     }
@@ -139,7 +139,7 @@ module.exports = (app) => {
             const answerAI = serviceResponse.data.answer;
             return answerAI;
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "AI mode question answering error");
             return null;
         }
     }
