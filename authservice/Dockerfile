@@ -2,28 +2,22 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /home/node/common
-
-# Copy common
-COPY ./common/*.js* ./
-
-# Install common dependencies
-RUN npm install --ignore-scripts --omit=dev
-
-# Set the working directory in the container
-WORKDIR /home/node/service
+WORKDIR /usr/src/authservice
 
 # Copy package.json and package-lock.json to the working directory
-COPY ./authservice/package*.json ./
+COPY package*.json ./
 
 # Install app dependencies
 RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY ./authservice/src ./src
+COPY ./src ./src
+
+# Expose the port the app runs on
+EXPOSE 8002
 
 # Run the app as a non-root user
 USER node
 
 # Define the command to run your app
-CMD ["node", "."]
+CMD ["npm", "start"]

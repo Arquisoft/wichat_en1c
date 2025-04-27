@@ -4,7 +4,7 @@ const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const data = require("./data");
 const config = require("../src/config");
-const { User, Game, Question } = require("@wichat_en1c/common/model");
+const { User, Game, Question } = require("../src/model");
 const {
   beforeAll,
   afterAll,
@@ -35,9 +35,7 @@ beforeAll(async () => {
   app = require("../src");
 
   // Create test user
-  userId = await User.insertOne({ username, password: "TESTING" }).then(
-    (u) => u._id
-  );
+  userId = await User.insertOne({ username }).then((u) => u._id);
 });
 
 beforeEach(async () => {

@@ -1,25 +1,49 @@
 // @ts-check
 const express = require("express");
-const {
-  setupDefaultHandlers,
-  startServer,
-  connectDB,
-  setupLogger,
-} = require("@wichat_en1c/common");
+const mongoose = require("mongoose");
+const { STATUS_CODES } = require("http");
+const mongoSanitize = require("express-mongo-sanitize");
+
 const config = require("./config");
+const save = require("./routes/save");
+const pub = require("./routes/pub");
 
 // Configure Express
 const app = express();
-app.set("trust proxy", true);
 
-setupLogger(app, config.name);
+app.set("trust proxy", true);
 app.use(express.json());
+app.use(mongoSanitize());
+
+// Connect to MongoDB
+mongoose.connect(config.mongoUri);
 
 // Routes
-require("./routes/pub")(app);
-require("./routes/save")(app);
+pub(app);
+save(app);
 
-setupDefaultHandlers(app);
+// Default Handler
+app.use("*", (_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: STATUS_CODES[404],
+  });
+});
 
-connectDB(config.mongoUri);
-module.exports = startServer(app, config.port);
+// Error Handler
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  if (!res.writableEnded) {
+    const status = (err.expose ? err.status : undefined) ?? 500;
+    res.status(status).json({ success: false, message: STATUS_CODES[status] });
+  }
+});
+
+// Server start/stop
+module.exports = app
+  .listen(config.port, () => {
+    console.log(
+      `Statistics Service listening at http://localhost:${config.port}`
+    );
+  })
+  .on("close", async () => await mongoose.connection.close());

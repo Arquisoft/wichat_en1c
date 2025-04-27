@@ -265,7 +265,7 @@ paths:
   # Statistics
   /stats/users/{username}:
     get:
-      tags: [🔐 Statistics (/stats)]
+      tags: [Statistics (/stats)]
       summary: Get user statistics.
       description: Retrieves the statistics of a user by their username.
       operationId: statsUserStats
@@ -301,7 +301,7 @@ paths:
           $ref: "#/components/responses/404"
   /stats/users/{username}/games:
     get:
-      tags: [🔐 Statistics (/stats)]
+      tags: [Statistics (/stats)]
       summary: Get user games.
       description: Retrieves the games of a user by their username.
       operationId: statsUserGames
@@ -343,7 +343,7 @@ paths:
 
   /stats/games/{gameId}:
     get:
-      tags: [🔐 Statistics (/stats)]
+      tags: [Statistics (/stats)]
       summary: Get game.
       description: Retrieves a game by its id.
       operationId: statsGame
@@ -577,11 +577,7 @@ components:
             failed:
               type: integer
               description: Number of questions failed by the user.
-              example: 2
-            unanswered:
-              type: integer
-              description: Number of questions that were not answered by the user.
-              example: 1
+              example: 3
             total:
               type: integer
               description: Total number of questions attempted by the user.
@@ -740,7 +736,6 @@ components:
 
               selected:
                 type: integer
-                nullable: true
                 description: Index of the selected answer option.
                 example: 0
     gameQuestion:

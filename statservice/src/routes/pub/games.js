@@ -3,7 +3,7 @@
 const { checkExact } = require("express-validator");
 const { STATUS_CODES } = require("http");
 const validation = require("../../validation");
-const { Game } = require("@wichat_en1c/common/model");
+const { Game } = require("../../model");
 const { removeMongoDBFields } = require("../../utils");
 
 /**

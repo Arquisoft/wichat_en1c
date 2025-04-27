@@ -3,9 +3,9 @@
 const { checkExact } = require("express-validator");
 const argon2 = require("argon2");
 const { STATUS_CODES } = require("http");
-const { User } = require("@wichat_en1c/common/model");
 
 const validation = require("../../validation");
+const { User } = require("../../model");
 const config = require("../../config");
 
 /**
@@ -20,11 +20,11 @@ module.exports = (app) => {
       validation.fields.password,
       checkExact()
     ),
-    async (req, res) => {
+    async (req, res, next) => {
       const username = req.body.username.toString();
       const password = req.body.password.toString();
 
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username }).catch(next);
       if (user != null)
         res.status(401).json({ success: false, message: STATUS_CODES[401] });
       else
