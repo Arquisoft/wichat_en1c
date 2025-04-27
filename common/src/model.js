@@ -54,7 +54,7 @@ const gameSchema = new mongoose.Schema({
           },
           required: true,
         },
-        selected: { type: Number, required: true },
+        selected: { type: Number },
       },
     ],
     required: true,
@@ -63,6 +63,7 @@ const gameSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, index: true },
+  password: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -17,20 +17,17 @@ COPY ./common/src ./src
 WORKDIR /home/node/service
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY ./gatewayservice/package*.json ./
 
 # Install app dependencies
 RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY ./src ./src
-COPY ./openapi.yaml ./
-
-# Expose the port the app runs on
-EXPOSE 8000
+COPY ./gatewayservice/src ./src
+COPY ./gatewayservice/openapi.yaml ./
 
 # Run the app as a non-root user
 USER node
 
 # Define the command to run your app
-CMD ["npm", "start"]
+CMD ["node", "."]
