@@ -31,4 +31,4 @@ hint(app);
 setupDefaultHandlers(app);
 
 // Server
-module.exports = startServer(app, PORT);
+module.exports = startServer(app, config.port);

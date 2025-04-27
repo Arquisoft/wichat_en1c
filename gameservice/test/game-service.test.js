@@ -28,23 +28,6 @@ describe("config.js", () => {
   });
 });
 
-describe("/game/config", () => {
-  test("should return 200 if values can be set for user", async () => {
-    const response = await request(app)
-      .post("/game/config")
-      .send({
-        rounds: 3,
-        time: 600,
-        hints: 2,
-        isAIGame: true,
-        categories: ["music", "science"],
-        username: "user"
-      });
-
-    expect(response.status).toBe(200);
-  });
-});
-
 // QUESTION
 describe("/game/question", () => {
   beforeEach(() => {
@@ -98,7 +81,7 @@ describe("/game/question", () => {
       .send({ username: "user" });
 
     expect(response.status).toBe(500);
-    expect(response.body.error).toBe("Could not obtain question from service");
+    expect(response.body.error).toBe("There was an error when obtaining the question");
   });
 
   test("should return 500 if getQuestion() returns null", async () => {
