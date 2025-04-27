@@ -439,7 +439,7 @@ const Stats = () => {
                       }}
                     >
                       <QuestionIcon sx={{ color: theme.palette.info.main, mr: 1 }} />
-                      <Typography variant="body1" data-testid="questions">
+                      <Typography variant="body1" data-testid="unanswered-questions">
                         {t("unanswered")}: {stats.question.unanswered}
                       </Typography>
                     </Box>

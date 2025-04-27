@@ -27,8 +27,8 @@ const mockStatsData = {
         game: { min: 60000, max: 120000, avg: 90000 },
         question: { min: 5000, max: 15000, avg: 10000 },
     },
-    question: { passed: 50, failed: 10, total: 60 },
-    game: { total: 40 },
+    question: { passed: 50, failed: 7, unanswered: 3, total: 60 },
+    game: { total: 6 },
 };
 
 const mockStatsDataZero = {
@@ -37,7 +37,7 @@ const mockStatsDataZero = {
         game: { min: 0, max: 0, avg: 0 },
         question: { min: 0, max: 0, avg: 0 },
     },
-    question: { passed: 0, failed: 0, total: 0 },
+    question: { passed: 0, failed: 0, unanswered: 0, total: 0 },
     game: { total: 0 },
 };
 
@@ -89,9 +89,10 @@ describe("Stats Component Tests", () => {
             expect(screen.getByTestId("max-game-time")).toHaveTextContent("2time.minutesShort 1time.secondsShort");
             expect(screen.getByTestId("avg-game-time")).toHaveTextContent("1time.minutesShort 30time.secondsShort");
             expect(screen.getByTestId("correct-questions")).toHaveTextContent("correct: 50");
-            expect(screen.getByTestId("incorrect-questions")).toHaveTextContent("incorrect: 10");
+            expect(screen.getByTestId("incorrect-questions")).toHaveTextContent("incorrect: 7");
+            expect(screen.getByTestId("unanswered-questions")).toHaveTextContent("unanswered: 3");
             expect(screen.getByTestId("total-questions")).toHaveTextContent("60");
-            expect(screen.getByTestId("total-games")).toHaveTextContent("40");
+            expect(screen.getByTestId("total-games")).toHaveTextContent("6");
             expect(screen.getByTestId("accuracy")).toHaveTextContent("accuracy");
         });
     });
