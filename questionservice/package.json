@@ -1,13 +1,14 @@
 {
   "name": "questionservice",
   "version": "1.0.0",
+  "description": " Question service, in charge of managing the question obtaining from WikiData",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node question-service.js",
+    "start": "node src/index.js",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "homepage": "https://github.com/arquisoft/wichat_en1c#readme",
   "dependencies": {
     "axios": "^1.8.4",

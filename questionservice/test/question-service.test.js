@@ -1,7 +1,7 @@
 jest.setTimeout(60_000); // If I make 5 seconds, it is not enough to retrive data from wikidata api
 
 const request = require("supertest");
-const server = require("./question-service");
+const server = require("../src");
 
 describe("Question API", () => {
   afterAll(async () => {
