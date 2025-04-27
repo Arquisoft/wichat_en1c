@@ -2,7 +2,19 @@
 FROM node:22
 
 # Set the working directory in the container
-WORKDIR /usr/src/statservice
+WORKDIR /home/node/common
+
+# Copy package.json and package-lock.json to the working directory
+COPY ./common/package*.json ./
+
+# Install common dependencies
+RUN npm install --ignore-scripts --omit=dev
+
+# Copy common
+COPY ./common/src ./src
+
+# Set the working directory in the container
+WORKDIR /home/node/service
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
