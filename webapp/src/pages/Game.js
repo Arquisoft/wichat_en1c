@@ -473,7 +473,7 @@ const Game = ({ AImode = false }) => {
           </IconButton>
         </form>
 
-        {/* Chat history container - sin altura fija ni scroll interno */}
+        {/* Chat history container */}
         <Box
           sx={{
             width: "100%",
@@ -498,7 +498,7 @@ const Game = ({ AImode = false }) => {
                     borderRadius: "12px 12px 12px 0",
                   }}
                 >
-                  <Typography variant="body2">{hint.question}</Typography>
+                  <Typography data-testid={`question-${index}`} variant="body2">{hint.question}</Typography>
                 </Paper>
               </Box>
 
@@ -513,7 +513,7 @@ const Game = ({ AImode = false }) => {
                     borderRadius: "12px 12px 0 12px",
                   }}
                 >
-                  <Typography variant="body2">{hint.answer}</Typography>
+                  <Typography data-testid={`answer-${index}`} variant="body2">{hint.answer}</Typography>
                 </Paper>
               </Box>
             </Box>
