@@ -60,7 +60,10 @@ module.exports = (app) => {
 
             // Save answered question data for user
             try {
-                cache.answer(username, selectedAnswer);
+                if (!selectedAnswer)
+                    cache.answer(username, null);
+                else
+                    cache.answer(username, selectedAnswer);
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
