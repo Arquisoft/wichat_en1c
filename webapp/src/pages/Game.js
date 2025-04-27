@@ -32,7 +32,6 @@ const Game = ({ AImode = false }) => {
   const [isPaused, setIsPaused] = useState(false)
   const [hintsUsed, setHintsUsed] = useState(0)
   const [hintMessage, setHintMessage] = useState("") // What the user writes in the hint input
-  const [receivedHint, setReceivedHint] = useState("") // The hint message that is returned
   const [hintCooldown, setHintCooldown] = useState(false)
 
   const [gameSettings, setGameSettings] = useState({
@@ -217,7 +216,6 @@ const Game = ({ AImode = false }) => {
         setHintsUsed(0)
         setHintHistory([])
         setHintMessage("") // Reset input field
-        setReceivedHint("") // Reset hint message
         setHintHistory([])
         setIsPaused(false)
       }
@@ -228,7 +226,6 @@ const Game = ({ AImode = false }) => {
   const handleHintRequest = async () => {
     if (hintsUsed < gameSettings.hints && !hintCooldown && hintMessage.trim() !== "") {
       const userQuestion = hintMessage.trim()
-      setReceivedHint("")
       setHintCooldown(true)
       try {
         const response = await axios.post(
@@ -241,7 +238,6 @@ const Game = ({ AImode = false }) => {
           },
         )
         const aiAnswer = response.data.hint
-        setReceivedHint(aiAnswer) // Store the received hint
 
         // Add to hint history
         addHintToHistory(userQuestion, aiAnswer)
@@ -250,7 +246,6 @@ const Game = ({ AImode = false }) => {
       } catch (error) {
         console.error("Error when trying to get hint:", error)
         const errorMessage = t("errorHint")
-        setReceivedHint(errorMessage)
         addHintToHistory(userQuestion, errorMessage)
       } finally {
         setHintMessage("")
@@ -517,32 +512,6 @@ const Game = ({ AImode = false }) => {
               </Box>
             </Box>
           ))}
-
-          {/* Show current hint message with Typewriter effect */}
-          {receivedHint && !hintHistory.some((h) => h.answer === receivedHint) && (
-            <Box sx={{ alignSelf: "flex-end", maxWidth: "80%" }}>
-              <Paper
-                elevation={1}
-                sx={{
-                  p: 1,
-                  bgcolor: theme.palette.secondary.light,
-                  color: theme.palette.secondary.contrastText,
-                  borderRadius: "12px 12px 0 12px",
-                }}
-              >
-                <Typography variant="body2" data-testid="hint-message">
-                  <Typewriter
-                    key={receivedHint} // Force typewriter to reset
-                    words={[receivedHint]}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={20}
-                    deleteSpeed={20}
-                  />
-                </Typography>
-              </Paper>
-            </Box>
-          )}
         </Box>
       </Box>
     </Container>

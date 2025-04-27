@@ -108,7 +108,7 @@ const resources = {
         "El usuario ya existe. Has sido redirigido a iniciar sesión.",
       registerError: "Usuario o contraseña inválidos",
       logout: "Cerrar sesión",
-      hello: "Hola",
+      hello: "¡Hola",
       docs: "Documentación",
       notFound1: "¡Vaya! Página no encontrada.",
       notFound2: "La página que buscas no existe o ha sido movida.",

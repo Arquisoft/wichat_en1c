@@ -54,7 +54,8 @@ jobs:
       # - run: npm --prefix webapp run test:e2e
       #   env:
       #     LLM_API_KEY=${{ secrets.LLM_API_KEY_GEMINI }}
-      
+      #     CRYPT_SECRET=${{ secrets.CRYPT_SECRET }}
+      #     JWT_SECRET=${{ secrets.JWT_SECRET }}
 
   docker-push-webapp:
     name: Push webapp Docker Image to GitHub Packages
