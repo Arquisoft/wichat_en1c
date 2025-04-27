@@ -85,6 +85,7 @@ function formatWikidataDate(wikidataDate) {
     return `${day}/${month}/${year}`;
   } catch (error) {
     console.error('Date could not formatted correctly:', error);
+    return null;
   }
 }
 
@@ -156,6 +157,7 @@ app.get("/question/:category", async (req, res) => {
     }
   } catch (error) {
     console.error("Internal server error:", error);
+    return null;
   }
 });
 
