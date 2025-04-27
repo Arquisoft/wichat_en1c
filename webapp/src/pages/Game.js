@@ -123,13 +123,9 @@ const Game = ({ AImode = false }) => {
         setIsPaused(true)
         // Count timeout as incorrect answer
         setIncorrectAnswers((prev) => prev + 1)
-        try {
-          axios.post(`${apiEndpoint}/game/answer`, {
-            selectedAnswer: null,
-          })
-        } catch (error) {
-          console.error("Error checking answer:", error)
-        }
+        axios.post(`${apiEndpoint}/game/answer`, {
+          selectedAnswer: null,
+        }).catch(error => console.error("Error checking answer:", error)) 
         handleRoundEnd()
       }
     }

@@ -47,8 +47,8 @@ function App() {
             element={<Register data-testid="register-page" />}
           />
           {/* Game Page (protected) */}
-          <Route path="/game" element={<PrivateRoute element={Game} />} />
-          <Route path="/game-ai" element={<PrivateRoute element={Game(true)} />} />
+          <Route path="/game" element={<PrivateRoute element={<Game/>} />} />
+          <Route path="/game-ai" element={<PrivateRoute element={<Game AImode/>  } />} />
           {/* End Game Page (blocked) */}
           <Route
             path="/end-game"
