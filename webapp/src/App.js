@@ -47,17 +47,25 @@ function App() {
             element={<Register data-testid="register-page" />}
           />
           {/* Game Page (protected) */}
-          <Route path="/game" element={<PrivateRoute element={<Game/>} />} />
-          <Route path="/game-ai" element={<PrivateRoute element={<Game AImode/>  } />} />
+          <Route path="/game" element={<PrivateRoute element={<Game />} />} />
+          <Route
+            path="/game-ai"
+            element={<PrivateRoute element={<Game AImode />} />}
+          />
           {/* End Game Page (blocked) */}
           <Route
             path="/end-game"
-            element={<PrivateRoute element={EndGame} requireGameEnd={true} />}
+            element={
+              <PrivateRoute element={<EndGame />} requireGameEnd={true} />
+            }
           />
           {/* Stats Page (protected) */}
-          <Route path="/stats" element={<PrivateRoute element={Stats} />} />
+          <Route path="/stats" element={<PrivateRoute element={<Stats />} />} />
           {/* Custom Game Page (protected) */}
-          <Route path="/custom" element={<PrivateRoute element={Custom} />} />
+          <Route
+            path="/custom"
+            element={<PrivateRoute element={<Custom />} />}
+          />
           {/* Not Existing Path */}
           <Route path="*" element={<NotFound data-testid="not-found-page" />} />
         </Routes>
