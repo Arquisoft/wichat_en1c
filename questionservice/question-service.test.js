@@ -1,12 +1,28 @@
-jest.setTimeout(40000); // 30 seconds to 40 seconds update because sometimes retriving data takes longer
+jest.setTimeout(80000); // 40 seconds to 80 seconds update because sometimes retriving data takes longer due to new test scenerios
 
 const request = require("supertest");
-const server = require("./question-service");
-
+const { server, formatWikidataDate, app } = require("./question-service");
 describe("Question API", () => {
 
   afterAll(async () => {
     await new Promise((resolve) => server.close(resolve));
+  });
+
+  test("should return a correctly formatted date (DD/MM/YYYY)", async () => {
+    const testDate = "2023-05-15T00:00:00Z";
+    const result = formatWikidataDate(testDate);
+    
+    expect(result).toBe("15/05/2023"); 
+  });
+
+
+  test('should return a error 400 when wrong category', async () => {
+    
+    const res = await request(app)
+      .get('/question/error-category') 
+      .expect(400);
+    
+    expect(res.body).toHaveProperty('error');
   });
 
   test("GET /question - should return a question", async () => {

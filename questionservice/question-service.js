@@ -84,8 +84,8 @@ function formatWikidataDate(wikidataDate) {
     const [year, month, day] = datePart.split('-');
     return `${day}/${month}/${year}`;
   } catch (error) {
-    console.error('Date could not formatted correctly:', error);
-    return null;
+    console.error('Date could not formatted correctly:', wikidataDate);
+    return wikidataDate;
   }
 }
 
@@ -153,11 +153,10 @@ app.get("/question/:category", async (req, res) => {
     if (question) {
       res.json(question);
     } else {
-      res.status(503).json({ error: "Could not generate question" });
+      res.status(400).json({ error: "Could not generate question" });
     }
   } catch (error) {
-    console.error("Internal server error:", error);
-    return null;
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -173,4 +172,8 @@ process.on("SIGINT", () => {
   server.close();
 });
 
-module.exports = server;
+module.exports = {
+  server,
+  formatWikidataDate,
+  app
+};
