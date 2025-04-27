@@ -15,7 +15,6 @@ import {
 } from "@mui/material"
 import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material"
 import { useNavigate } from "react-router"
-import { Typewriter } from "react-simple-typewriter"
 import axios from "axios"
 import { useTranslation } from "react-i18next"
 import { GameContext } from "../GameContext"
@@ -124,6 +123,13 @@ const Game = ({ AImode = false }) => {
         setIsPaused(true)
         // Count timeout as incorrect answer
         setIncorrectAnswers((prev) => prev + 1)
+        try {
+          axios.post(`${apiEndpoint}/game/answer`, {
+            selectedAnswer: null,
+          })
+        } catch (error) {
+          console.error("Error checking answer:", error)
+        }
         handleRoundEnd()
       }
     }

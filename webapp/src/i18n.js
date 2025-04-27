@@ -96,6 +96,7 @@ const resources = {
       hintsCustom: "Hints",
       genericError: "Oops! Something went wrong.",
       gameResults: "Game Results",
+      unanswered: "Unanswered",
     },
   },
   es: {
@@ -187,6 +188,7 @@ const resources = {
       hintsCustom: "Pistas",
       genericError: "¡Vaya! Algo salió mal.",
       gameResults: "Resultados del Juego",
+      unanswered: "Sin contestar",
     },
   },
 };
