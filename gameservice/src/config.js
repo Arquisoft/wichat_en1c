@@ -4,5 +4,5 @@ module.exports = {
     time: 20,
     rounds: 3,
     hints: 3,
-    modes: ["music", "science", "actors", "writers", "painters"]
+    modes: ["musician", "scientist", "actor", "painter", "writer"]
 };

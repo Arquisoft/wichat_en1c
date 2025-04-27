@@ -115,11 +115,15 @@ module.exports = (app) => {
     async function askAIAnswer(questionForAI) {
         const prompt =
             `
-        You are playing against a person in a test question game. This is the current question details:
-        Question: ${questionForAI.question}
-        Options: ${questionForAI.options.join(", ")}
-        Please, try to answer only the selected option like an average person, take into account that you can fail or not. Answer based
-        on the difficulty the question has and decide if you say it right or not.
+        You are playing against a person in a test question game. Please, try to answer only the selected option. 
+        This is the current question details: 
+        Question: ${questionForAI.question}. 
+        Options: ${questionForAI.options.join(", ")}. 
+        Consider the difficulty of the question. If it seems hard for an average person, you are more likely to guess or choose an option 
+        you are not entirely sure about. Evaluate your confidence in knowing the correct aswer, you are an average person. 
+        If your simulated confidence is low, there's a higher chance you might be wrong. Don't try to access external information, 
+        just choose one option based on your simulated understanding and level of confidence. You must answer the correct one with a 40% of 
+        probability and 60% of guessing wrong.
         `;
         try {
             // Ask LLM
