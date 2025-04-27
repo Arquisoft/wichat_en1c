@@ -51,8 +51,6 @@ describe("Game Page Tests", () => {
         return Promise.resolve({
           data: { isCorrect: true, correctAnswer: "Killa Kella" },
         });
-      } else if (url.includes("/game/quit")) {
-        return Promise.resolve({ data: { success: true } }); // Simulate a successful quit
       } else if (url.includes("/game/save")) {
         return Promise.resolve({ data: { success: true } }); // Simulate a successful save
       } else if (url.includes("/game/hint")) {

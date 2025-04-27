@@ -65,8 +65,6 @@ const Game = ({ AImode = false }) => {
 
   const theme = useTheme()
 
-  const [isSaved, setIsSaved] = useState(false)
-
   // Fetch game configuration on component mount
   useEffect(() => {
     const fetchGameConfig = async () => {
@@ -82,16 +80,6 @@ const Game = ({ AImode = false }) => {
 
     // Reset game statistics when starting a new game
     resetGameStats()
-
-    return async () => {
-      if (!isSaved) {
-        try {
-          await axios.post(`${apiEndpoint}/game/quit`)
-        } catch (error) {
-          console.error("Error when trying to quit game:", error)
-        }
-      }
-    }
   }, [])
 
   // Fetch question data at the start of each round
@@ -196,7 +184,6 @@ const Game = ({ AImode = false }) => {
       if (gameEnded) {
         try {
           await axios.post(`${apiEndpoint}/game/save`)
-          setIsSaved(true)
         } catch (error) {
           console.error("Error when trying to save game:", error)
         }

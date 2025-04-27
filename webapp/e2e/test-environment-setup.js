@@ -13,8 +13,10 @@ async function startServer() {
     mongoserver = await MongoMemoryServer.create();
     const mongoUri = mongoserver.getUri();
     process.env.MONGODB_URI = mongoUri;
-    process.env.JWT_SECRET="testSecret";
-    process.env.CRYPT_SECRET="testSecret";
+
+    if (!process.env.CI)
+        require("dotenv").config({path: "../.env" });
+
     authservice = await require("../../authservice/src/index");
     llmservice = await require("../../llmservice/llm-service");
     gatewayservice = await require("../../gatewayservice/src/index");

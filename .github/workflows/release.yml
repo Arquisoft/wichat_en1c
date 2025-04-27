@@ -41,6 +41,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - run: npm --prefix common ci
       - run: npm --prefix authservice ci
       - run: npm --prefix llmservice ci
       - run: npm --prefix gatewayservice ci
@@ -52,11 +54,11 @@ jobs:
       - run: npm --prefix webapp run build
         env:
           DISABLE_ESLINT_PLUGIN: true
-      # - run: npm --prefix webapp run test:e2e
-      #   env:
-      #     LLM_API_KEY=${{ secrets.LLM_API_KEY_GEMINI }}
-      #     CRYPT_SECRET=${{ secrets.CRYPT_SECRET }}
-      #     JWT_SECRET=${{ secrets.JWT_SECRET }}
+      - run: npm --prefix webapp run test:e2e
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY_GEMINI }}
+          CRYPT_SECRET: ${{ secrets.CRYPT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
   docker-push-webapp:
     name: Push webapp Docker Image to GitHub Packages

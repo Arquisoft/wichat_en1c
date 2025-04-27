@@ -103,11 +103,6 @@ module.exports = {
     },
 
     quitGame(username) {
-        // Get current game for user
-        const userGame = cache.get(username);
-        if (!userGame)
-            throw new Error('Could not quit game for the user');
-
         // Delete data from cache
         cache.delete(username);
     },

@@ -259,28 +259,6 @@ describe("/game/save", () => {
   });
 });
 
-// QUIT
-describe("/game/quit", () => {
-  test("should return 400 if username is not sent", async () => {
-    const response = await request(app).post("/game/quit").send({});
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe("Username must be sent");
-  });
-
-  test("should return 500 if cache.quitGame() throws an error", async () => {
-    cache.quitGame.mockImplementationOnce(() => {
-      throw new Error("Could not quit game for the user");
-    });
-
-    const response = await request(app)
-      .post("/game/quit")
-      .send({ username: "user" });
-
-    expect(response.status).toBe(500);
-    expect(response.body.error).toBe("Could not quit game for the user");
-  });
-});
-
 // HINT
 describe("/game/hint", () => {
   test("should return 400 if username is not sent", async () => {
