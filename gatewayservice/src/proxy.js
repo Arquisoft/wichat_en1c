@@ -19,21 +19,23 @@ module.exports = (app) =>
         /**
          * Error handler
          * @param {NodeJS.ErrnoException} err
-         * @param {import('express').Request} _req
+         * @param {import('express').Request} req
          * @param {import('express').Response} res
          */
         // @ts-expect-error
-        error: (err, _req, res) => {
+        error: (err, req, res) => {
           switch (err.code) {
             case "ECONNRESET":
             case "ENOTFOUND":
             case "ECONNREFUSED":
             case "ETIMEDOUT":
+              req.log.warn(err, "proxied service error");
               res
                 .status(504)
                 .json({ success: false, message: STATUS_CODES[504] });
               break;
             default:
+              req.log.error(err, "proxy error");
               res
                 .status(500)
                 .json({ success: false, message: STATUS_CODES[500] });
