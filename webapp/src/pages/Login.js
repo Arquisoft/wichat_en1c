@@ -1,5 +1,5 @@
 // src/components/Login.js
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import {
   Container,
@@ -26,10 +26,11 @@ const apiEndpoint =
 const Login = () => {
   const { createSession } = useContext(SessionContext); // Get createSession from context
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const queryParams = new URLSearchParams(window.location.search);
   const [error, setError] = useState(queryParams.get("error"));
+  const [response, setResponse] = useState(0);
   const loginUser = async (e) => {
     e.preventDefault();
     if (!usernameValid || !passwordValid) return;
@@ -48,8 +49,16 @@ const Login = () => {
         console.error(`Error ${error.response.data}`);
         setError(t("genericError"));
       }
+      setResponse(error.response.status)
     }
   };
+
+  useEffect(() => {
+      if (error != null) {
+        if (response === 400 || response === 401) setError(t("loginError")); 
+        else setError(t("genericError"));
+      }
+  }, [i18n.resolvedLanguage])
 
   const [username, setUsername] = useState("");
   const [usernameValid, setUsernameValid] = useState(true);

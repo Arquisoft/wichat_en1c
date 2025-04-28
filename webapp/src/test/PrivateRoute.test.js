@@ -14,7 +14,7 @@ describe("PrivateRoute Component", () => {
       <BrowserRouter>
         <SessionContext.Provider value={contextValue}>
           <GameContext.Provider value={contextGame}>
-            <PrivateRoute element={MockComponent} requireGameEnd={gameEnd}/>
+            <PrivateRoute element={<MockComponent/ >} requireGameEnd={gameEnd}/>
           </GameContext.Provider>
         </SessionContext.Provider>
       </BrowserRouter>

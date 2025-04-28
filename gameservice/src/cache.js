@@ -71,7 +71,10 @@ module.exports = {
         const questionOptions = currentQuestion.answers.opts;
 
         // Save answer data
-        currentQuestion.answers.selected = questionOptions.indexOf(selectedAnswer);
+        if (selectedAnswer != null)
+            currentQuestion.answers.selected = questionOptions.indexOf(selectedAnswer);
+        else
+            currentQuestion.answers.selected = null;
         currentQuestion.time.finished = new Date().toISOString();
     },
 
@@ -107,11 +110,6 @@ module.exports = {
     },
 
     quitGame(username) {
-        // Get current game for user
-        const userGame = cache.get(username);
-        if (!userGame)
-            throw new Error('Could not quit game for the user');
-
         // Delete data from cache
         cache.delete(username);
     },

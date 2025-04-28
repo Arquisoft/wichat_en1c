@@ -27,6 +27,7 @@ module.exports = (app) => {
         if (!username)
             return res.status(400).json({ error: 'Username must be sent' });
 
+        cache.quitGame(req.body.username); // KEEP THIS
         const gameConfig = {
             time: config.time,
             rounds: config.rounds,

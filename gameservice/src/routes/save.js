@@ -32,20 +32,4 @@ module.exports = (app) => {
 
         return res.status(200).send();
     })
-
-    app.post('/game/quit', async (req, res) => {
-        // Get the username
-        const { username } = req.body;
-        if (!username)
-            return res.status(400).json({ error: 'Username must be sent' });
-
-        // Finish user's game
-        try {
-            cache.quitGame(username);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-
-        return res.status(200).send();
-    })
 };  

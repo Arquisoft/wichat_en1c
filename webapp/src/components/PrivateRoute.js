@@ -7,18 +7,19 @@ import { SessionContext } from "../SessionContext";
 import { GameContext } from "../GameContext";
 
 // Private route component to restrict access
-const PrivateRoute = ({ element: Element, requireGameEnd = false }) => {
+const PrivateRoute = ({ element, requireGameEnd = false }) => {
   const { isLoggedIn } = useContext(SessionContext); // Check if user has an active session
   const { gameEnded } = useContext(GameContext);
 
-  if (!isLoggedIn) return <Navigate to="/login" replace />; // Redirect to login if no session
-  if (requireGameEnd && !gameEnded) return <Navigate to="/" replace />; // Blocks if game has not ended
-  return <Element />;
+  if (!isLoggedIn)
+    return <Navigate to="/login" />; // Redirect to login if no session
+  else if (requireGameEnd && !gameEnded) return <Navigate to="/" />; // Blocks if game has not ended
+  return element;
 };
 
 // PropTypes validation
 PrivateRoute.propTypes = {
-  element: PropTypes.elementType.isRequired,
+  element: PropTypes.node.isRequired,
   requireGameEnd: PropTypes.bool,
 };
 

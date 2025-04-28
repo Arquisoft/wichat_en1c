@@ -1,52 +1,69 @@
 // src/test/Home.test.js
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router";
 import { SessionProvider } from "../SessionContext";
+import { GameProvider } from "../GameContext";
 import Home from "../pages/Home";
 
+const mockNavigate = jest.fn()
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useNavigate: () => mockNavigate,
+}))
+
 describe("Home Page", () => {
-  test("renders the title of the app, button and navigation to game", () => {
+  test("renders title and play button, then shows game cards on click", async () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <Home />
+          <GameProvider>
+            <Home />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
-    );
+    )
 
-    // Check if the title image is rendered
-    expect(screen.getByTestId("wichat-title")).toBeInTheDocument();
+    // Initial screen
+    expect(screen.getByTestId("wichat-title")).toBeInTheDocument()
+    const playButton = screen.getByTestId("play-button")
+    expect(playButton).toBeInTheDocument()
 
-    const playButton = screen.getByTestId("play-button");
+    // Click play and expect the 3 game mode cards
+    fireEvent.click(playButton)
 
-    // Check if the Play button is rendered
-    expect(playButton).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId("select-mode")).toBeInTheDocument())
+    expect(screen.getByTestId("game-mode-0")).toBeInTheDocument()
+    expect(screen.getByTestId("game-mode-1")).toBeInTheDocument()
+    expect(screen.getByTestId("game-mode-2")).toBeInTheDocument()
+  })
 
-    // Find the button and simulate a click
-    fireEvent.click(playButton);
-
-    // Check if the URL has changed to '/game'
-    expect(window.location.pathname).toBe("/game");
-  });
-
-  test("renders button and navigation to stats", () => {
+  test("navigates correctly when a GameCard is clicked", async () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <Home />
+          <GameProvider>
+            <Home />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
-    );
+    )
 
-    const statsButton = screen.getByTestId("stats-button");
+    const playButton = screen.getByTestId("play-button")
+    expect(playButton).toBeInTheDocument()
+    fireEvent.click(playButton)
 
-    // Check if the Stats button is rendered
-    expect(statsButton).toBeInTheDocument();
+    const cards = [
+      { testId: "game-mode-normal", expectedPath: "/game" },
+      { testId: "game-mode-ai", expectedPath: "/game-ai" },
+      { testId: "game-mode-custom", expectedPath: "/custom" },
+    ]
 
-    // Find the button and simulate a click
-    fireEvent.click(statsButton);
+    await waitFor(() => expect(screen.getByTestId("select-mode")).toBeInTheDocument())
 
-    // Check if the URL has changed to '/stats'
-    expect(window.location.pathname).toBe("/stats");
-  });
+    cards.forEach(({ testId, expectedPath }) => {
+      const card = screen.getByTestId(testId)
+      fireEvent.click(card)
+      expect(mockNavigate).toHaveBeenCalledWith(expectedPath)
+    })
+  })
 });
