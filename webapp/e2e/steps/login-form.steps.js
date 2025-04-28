@@ -6,10 +6,11 @@ const feature = loadFeature("./features/login-form.feature");
 let page;
 let browser;
 
-const expectSnackbarToContain = async (text) => {
-  await page.waitForSelector('div[role="alert"]');
-  const snackbarMessage = await page.$eval('div[role="alert"]', (el) => el.textContent);
-  expect(snackbarMessage).toContain(text);
+jest.setTimeout(300000);
+
+const expectPageToContain = async (text) => {
+  await page.waitForTimeout(2000);
+  return (await page.content()).includes(text);
 };
 
 defineFeature(feature, (test) => {
@@ -17,9 +18,9 @@ defineFeature(feature, (test) => {
     browser = process.env.GITHUB_ACTIONS
       ? await puppeteer.launch({
           headless: "new",
-          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          args: ["--lang=es-ES,es", "--no-sandbox", "--disable-setuid-sandbox"],
         })
-      : await puppeteer.launch({ headless: false, slowMo: 30 });
+      : await puppeteer.launch({ headless: false, slowMo: 20, args: ["--lang=es-ES,es"] });
 
     page = await browser.newPage();
     setDefaultOptions({ timeout: 10000 });
@@ -28,6 +29,16 @@ defineFeature(feature, (test) => {
       waitUntil: "networkidle0",
     });
 
+    // Wait for the language selector to be available
+    await page.waitForSelector('div.MuiSelect-select'); 
+
+    // Open the language dropdown
+    await page.click('div.MuiSelect-select');
+
+    // Select Spanish (ES)
+    await page.waitForSelector('li[data-value="es"]');
+    await page.click('li[data-value="es"]');
+
     // Go to Register page to create user
     await page.waitForSelector('button[data-testid="register-nav"]');
     await page.click('button[data-testid="register-nav"]');
@@ -35,14 +46,19 @@ defineFeature(feature, (test) => {
     // Register a new user for login
     const usernameInput = await page.$('[data-testid="reg-username"] input');
     const passwordInput = await page.$('[data-testid="reg-password"] input');
+    const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
     await usernameInput.type("testlogin");
     await passwordInput.type("StrongPass123!");
+    await confPasswordInput.type("StrongPass123!");
     await expect(page).toClick('button[type="submit"]');
 
-    await expectSnackbarToContain("User added successfully");
+    await page.waitForSelector('button[data-testid="play-button"]');
 
-    // Should automatically redirect to login after registration
-    await page.waitForSelector('[data-testid="log-username"] input');
+    await page.waitForSelector('button[data-testid="logout-nav"]');
+    await page.click('button[data-testid="logout-nav"]');
+
+    await page.waitForSelector('button[data-testid="login-nav"]');
+    await page.click('button[data-testid="login-nav"]');
   });
 
   afterAll(async () => {
@@ -74,8 +90,10 @@ defineFeature(feature, (test) => {
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a success message", async () => {
-      await expectSnackbarToContain("Login successful");
+    then("I should be redirected to home", async () => {
+      await page.waitForSelector('[data-testid="wichat-title"]');
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/");
 
       // Logout
       await page.waitForSelector('button[data-testid="logout-nav"]');
@@ -96,8 +114,9 @@ defineFeature(feature, (test) => {
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see an unauthorized error message", async () => {
-      await expectSnackbarToContain("Unauthorized");
+    then("I shouldn't be able to login", async () => { // Empty fields are not counted as errors themselves, so I just check if we have not been redirected
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/login");
     });
   });
 
@@ -114,8 +133,9 @@ defineFeature(feature, (test) => {
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see an unauthorized error message", async () => {
-      await expectSnackbarToContain("Unauthorized");
+    then("I shouldn't be able to login", async () => {
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/login");
     });
   });
 
@@ -136,8 +156,8 @@ defineFeature(feature, (test) => {
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see an unauthorized error message", async () => {
-      await expectSnackbarToContain("Unauthorized");
+    then("I should see a login error message", async () => {
+      await expect(await expectPageToContain("Usuario o contraseña incorrectos")).toBe(true);
     });
   });
 
@@ -158,8 +178,8 @@ defineFeature(feature, (test) => {
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see an unauthorized error message", async () => {
-      await expectSnackbarToContain("Unauthorized");
+    then("I should see a login error message", async () => {
+      await expect(await expectPageToContain("Usuario o contraseña incorrectos")).toBe(true);
     });
   });
 });

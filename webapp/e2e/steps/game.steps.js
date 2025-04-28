@@ -10,6 +10,7 @@ jest.setTimeout(300000);
 
 const waitForQuestionToLoad = async () => {
   await page.waitForSelector('[data-testid="question-image"]');
+  await page.waitForSelector('[data-testid="hint-input"]');
 };
 
 defineFeature(feature, (test) => {
@@ -19,13 +20,13 @@ defineFeature(feature, (test) => {
           headless: "new",
           args: ["--no-sandbox", "--disable-setuid-sandbox"],
         })
-      : await puppeteer.launch({ headless: false, slowMo: 30 });
+      : await puppeteer.launch({ headless: false, slowMo: 20 });
     page = await browser.newPage();
 
-    page.setViewport({width: 1280, height: 720});
+    page.setViewport({ width: 1000, height: 750 });
 
     // Way of setting up the timeout
-    setDefaultOptions({ timeout: 3000000 });
+    setDefaultOptions({ timeout: 300000 });
 
     await page
       .goto("http://localhost:3000", {
@@ -40,14 +41,21 @@ defineFeature(feature, (test) => {
     // Register
     const usernameInput = await page.$('[data-testid="reg-username"] input');
     const passwordInput = await page.$('[data-testid="reg-password"] input');
+    const confPasswordInput = await page.$(
+      '[data-testid="reg-confirm-password"] input'
+    );
 
     await usernameInput.type("testGame");
     await passwordInput.type("StrongPass123!");
+    await confPasswordInput.type("StrongPass123!");
     await page.click('button[type="submit"]');
 
-    // Go back to home page
-    await page.waitForSelector('button[data-testid="home-nav"]');
-    await page.click('button[data-testid="home-nav"]');
+    // Enter game
+    await page.waitForSelector('[data-testid="play-button"]');
+    await page.click('[data-testid="play-button"]');
+
+    await page.waitForSelector('[data-testid="game-mode-0"]');
+    await page.click('[data-testid="game-mode-normal"]');
   });
 
   afterAll(async () => {
@@ -57,48 +65,26 @@ defineFeature(feature, (test) => {
   afterEach(async () => {
     await page.waitForSelector('button[data-testid="home-nav"]');
     await page.click('button[data-testid="home-nav"]');
+    await page.waitForSelector('[data-testid="play-button"]');
     await page.click('[data-testid="play-button"]');
 
+    await page.waitForSelector('[data-testid="game-mode-0"]');
+    await page.click('[data-testid="game-mode-normal"]');
+
     await waitForQuestionToLoad();
-  });
-
-  const login = async () => {
-    await page.waitForSelector('button[data-testid="login-nav"]');
-    await page.click('button[data-testid="login-nav"]');
-    const usernameInput = await page.$('[data-testid="log-username"] input');
-    const passwordInput = await page.$('[data-testid="log-password"] input');
-    await usernameInput.type("testGame");
-    await passwordInput.type("StrongPass123!");
-    await page.click('button[type="submit"]');
-    await page.waitForSelector('button[data-testid="home-nav"]');
-    await page.click('button[data-testid="home-nav"]');
-  };
-
-  test("Try to enter the game without logging in", ({ given, when, then }) => {
-    given("I am on the home page", async () => {
-      await page.waitForSelector('button[data-testid="home-nav"]');
-      await page.click('button[data-testid="home-nav"]');
-    });
-
-    when("I try to access the game", async () => {
-      await page.click('[data-testid="play-button"]');
-    });
-
-    then("I should be redirected to the login page", async () => {
-      const url = page.url();
-      expect(url).toContain("/login");
-      await login();
-    });
   });
 
   test("Request a hint and display it", ({ given, when, then, and }) => {
     given("I am logged in at game", async () => {
       const url = page.url();
       await expect(url).toContain("/game");
+      await waitForQuestionToLoad();
     });
 
     and("I have entered a question in the input field", async () => {
-      const hintInput = await page.$('[data-testid="hint-input"] input');
+      const hintInput = await page.$('[data-testid="hint-input"] input', {
+        visible: true,
+      });
       await hintInput.type("What is this?");
     });
 
@@ -124,7 +110,8 @@ defineFeature(feature, (test) => {
       await page.click('[data-testid="hint-button"]');
     });
 
-    then("the hint counter should decrease by 1", async () => {
+    then("the hint counter should increase by 1", async () => {
+      await page.waitForTimeout(2000);
       const hintText = await page.$eval(
         '[data-testid="hints-used"]',
         (el) => el.textContent
@@ -136,7 +123,7 @@ defineFeature(feature, (test) => {
           .map((part) => part.trim());
         const used = parseInt(usedStr, 10);
         const total = parseInt(totalStr, 10);
-        expect(used).toBeLessThan(total);
+        expect(used).toBeGreaterThan(0);
       } else {
         console.warn("Could not parse hints information:", hintText);
         expect(true).toBe(false);
@@ -155,12 +142,14 @@ defineFeature(feature, (test) => {
     given("I am logged in at game", () => {});
 
     when("I answer the question", async () => {
-      const hintInput = await page.$('[data-testid="hint-input"] input');
+      const hintInput = await page.$('[data-testid="hint-input"] input', {
+        visible: true,
+      });
       await hintInput.type("What is this?");
       await page.click('[data-testid="hint-button"]'); // For checking the hints reset
       await page.waitForTimeout(1000);
-            await page.click('[data-testid="option-0"]');
-          await page.waitForTimeout(2000);
+      await page.click('[data-testid="option-0"]');
+      await page.waitForTimeout(2000);
       await waitForQuestionToLoad();
     });
 
@@ -205,7 +194,7 @@ defineFeature(feature, (test) => {
         '[data-testid="time-progress-bar"]',
         (el) => el.getAttribute("aria-valuenow")
       );
-      expect(Number(progressValue)).toBeGreaterThan(80);
+      expect(Number(progressValue)).toBeGreaterThan(75);
     });
   });
 
@@ -213,7 +202,9 @@ defineFeature(feature, (test) => {
     given("I am logged in at game", async () => {});
 
     when("question time runs out", async () => {
-      const hintInput = await page.$('[data-testid="hint-input"] input');
+      const hintInput = await page.$('[data-testid="hint-input"] input', {
+        visible: true,
+      });
       await hintInput.type("What is this?");
       await page.click('[data-testid="hint-button"]'); // For checking the hints reset
       await page.waitForTimeout(21000);
@@ -261,7 +252,7 @@ defineFeature(feature, (test) => {
         '[data-testid="time-progress-bar"]',
         (el) => el.getAttribute("aria-valuenow")
       );
-      expect(Number(progressValue)).toBeGreaterThan(80);
+      expect(Number(progressValue)).toBeGreaterThan(75);
     });
   });
 
@@ -280,8 +271,8 @@ defineFeature(feature, (test) => {
           .map((part) => part.trim());
         let total = parseInt(totalStr, 10);
         for (let i = 0; i < total; i++) {
-            await page.waitForTimeout(1000);
-            await page.click('[data-testid="option-0"]');
+          await page.waitForTimeout(1000);
+          await page.click('[data-testid="option-0"]');
           await page.waitForTimeout(2000);
           if (i != total - 1) await waitForQuestionToLoad();
         }

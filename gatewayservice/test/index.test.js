@@ -37,11 +37,11 @@ describe("Gateway Service", () => {
         agent.get("/questions/path?ok").send({ ok: true }),
         agent
           .get("/game/path?ok")
-          .set({ Authorization: "Bearer test" })
+          .set({ Authorization: "Bearer valid" })
           .send({ ok: true }),
         agent
           .get("/stats/path?ok")
-          .set({ Authorization: "Bearer test" })
+          .set({ Authorization: "Bearer valid" })
           .send({ ok: true }),
       ]);
 
@@ -89,6 +89,22 @@ describe("Gateway Service", () => {
         expect(response.body.success).toBe(false);
         expect(response.body.message).toBe("Unauthorized");
         expect(response.headers["www-authenticate"]).toBe("Bearer");
+      }
+    });
+
+    test("Should inject username for authenticated routes", async () => {
+      const responses = await Promise.all([
+        request(server)
+          .get("/game/protected")
+          .set({ Authorization: "Bearer valid" }),
+        request(server)
+          .get("/stats/protected")
+          .set({ Authorization: "Bearer valid" }),
+      ]);
+
+      for (const response of responses) {
+        expect(response.statusCode).toBe(200);
+        expect(response.body.body.username).toBe("test");
       }
     });
 

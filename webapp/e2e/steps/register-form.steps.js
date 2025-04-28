@@ -6,10 +6,11 @@ const feature = loadFeature("./features/register-form.feature");
 let page;
 let browser;
 
-const expectSnackbarToContain = async (text) => {
-  await page.waitForSelector('div[role="alert"]');
-  const snackbarMessage = await page.$eval('div[role="alert"]', (el) => el.textContent);
-  expect(snackbarMessage).toContain(text);
+jest.setTimeout(300000);
+
+const expectPageToContain = async (text) => {
+  await page.waitForTimeout(2000);
+  return (await page.content()).includes(text);
 };
 
 defineFeature(feature, (test) => {
@@ -17,9 +18,9 @@ defineFeature(feature, (test) => {
     browser = process.env.GITHUB_ACTIONS
       ? await puppeteer.launch({
           headless: "new",
-          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          args: ["--lang=es-ES,es", "--no-sandbox", "--disable-setuid-sandbox"],
         })
-      : await puppeteer.launch({ headless: false, slowMo: 30 });
+      : await puppeteer.launch({ headless: false, slowMo: 20, args: ["--lang=es-ES,es"] });
     page = await browser.newPage();
     // Way of setting up the timeout
     setDefaultOptions({ timeout: 10000 });
@@ -30,10 +31,19 @@ defineFeature(feature, (test) => {
       })
       .catch(() => {});
 
+    // Wait for the language selector to be available
+    await page.waitForSelector('div.MuiSelect-select'); 
+
+    // Open the language dropdown
+    await page.click('div.MuiSelect-select');
+
+    // Select Spanish (ES)
+    await page.waitForSelector('li[data-value="es"]');
+    await page.click('li[data-value="es"]');
+
     // Wait for the navbar and click the "Register" button
     await page.waitForSelector('button[data-testid="register-nav"]');
     await page.click('button[data-testid="register-nav"]');
-
   });
 
   afterAll(async () => {
@@ -49,7 +59,7 @@ defineFeature(feature, (test) => {
     await page.click('button[data-testid="register-nav"]');
   });
 
-  test("Register with valid, new credentials", ({ given, when, then }) => {
+  test("Register with valid, new credentials", ({ given, when, then, and }) => {
     let username;
     let password;
 
@@ -61,18 +71,29 @@ defineFeature(feature, (test) => {
     when("I fill in the register form and submit", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(username);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a success message", async () => {
-      expectSnackbarToContain("User added successfully");
+    then("I should be redirected to home", async () => {
+      await page.waitForSelector('[data-testid="wichat-title"]');
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/");
+    });
+
+    and("I should be logged in", async () => {
+      await expect(await expectPageToContain("¡Hola, testuser!")).toBe(true);
+
+      await page.waitForSelector('button[data-testid="logout-nav"]');
+      await page.click('button[data-testid="logout-nav"]');
     });
   });
 
-  test("Registering an existing user", ({ given, when, then }) => {
+  test("Registering an existing user", ({ given, when, then, and }) => {
     let existingUsername;
     let password;
 
@@ -84,16 +105,24 @@ defineFeature(feature, (test) => {
     when("I try to register again with the same username", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(existingUsername);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see an unauthorized error message", async () => {
-      expectSnackbarToContain("Unauthorized");
+    then("I should be redirected to login", async () => {
+      await page.waitForSelector('[data-testid="log-title"]');
+      const currentUrl = page.url();
+      expect(currentUrl).toContain("/login");
     });
-  });
+
+    and("I should see an error message", async () => {
+      await expect(await expectPageToContain("¡Vaya! Algo salió mal.")).toBe(true);
+    });
+  }, 300000);
 
   test("Registering with invalid data - Short username", ({ given, when, then }) => {
     let shortUsername;
@@ -107,14 +136,21 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(shortUsername);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
+  
+      await expect(await expectPageToContain("Debe tener entre 5 y 20 caracteres y ser alfanumérico")).toBe(true);
+
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => {
+      const usernameInput = await page.$('[data-testid="reg-username"] input');
+      const ariaInvalid = await usernameInput.evaluate(el => el.getAttribute('aria-invalid'));
+      await expect(ariaInvalid).toBe('true')
     });
   });
 
@@ -130,14 +166,21 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(longUsername);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
+
+      await expect(await expectPageToContain("Debe tener entre 5 y 20 caracteres y ser alfanumérico")).toBe(true);
+
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => {
+      const usernameInput = await page.$('[data-testid="reg-username"] input');
+      const ariaInvalid = await usernameInput.evaluate(el => el.getAttribute('aria-invalid'));
+      await expect(ariaInvalid).toBe('true')
     });
   });
 
@@ -153,14 +196,21 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(invalidUsername);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
+
+      await expect(await expectPageToContain("Debe tener entre 5 y 20 caracteres y ser alfanumérico")).toBe(true);
+
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => {
+      const usernameInput = await page.$('[data-testid="reg-username"] input');
+      const ariaInvalid = await usernameInput.evaluate(el => el.getAttribute('aria-invalid'));
+      await expect(ariaInvalid).toBe('true')
     });
   });
 
@@ -176,14 +226,17 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(emptyUsername);
       await passwordInput.type(password);
+      await confPasswordInput.type(password);
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => { // With empty fields, the aria-inavalid is not marked as true
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/register");
     });
   });
 
@@ -199,14 +252,45 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(username);
       await passwordInput.type(emptyPassword);
+      await confPasswordInput.type(username);
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => {
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/register");
+    });
+  });
+
+  test("Registering with invalid data - Empty confirm password", ({ given, when, then }) => {
+    let username;
+    let emptyPassword;
+    let password;
+
+    given("A user with an empty confirm password", async () => {
+      username = "ValidUser";
+      emptyPassword = "";
+      password = "StrongPass123!";
+    });
+
+    when("I try to register", async () => {
+      const usernameInput = await page.$('[data-testid="reg-username"] input');
+      const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
+
+      await usernameInput.type(username);
+      await passwordInput.type(password);
+      await confPasswordInput.type(emptyPassword);
+      await expect(page).toClick('button[type="submit"]');
+    });
+
+    then("I shouldn't be able to register", async () => {
+      const currentUrl = page.url();
+      expect(currentUrl).toBe("http://localhost:3000/register");
     });
   });
 
@@ -222,14 +306,53 @@ defineFeature(feature, (test) => {
     when("I try to register", async () => {
       const usernameInput = await page.$('[data-testid="reg-username"] input');
       const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
 
       await usernameInput.type(username);
       await passwordInput.type(weakPassword);
+      await confPasswordInput.type(weakPassword);
+
+      await expect(await expectPageToContain("Debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos")).toBe(true);
+      
       await expect(page).toClick('button[type="submit"]');
     });
 
-    then("I should see a bad request error message", async () => {
-      expectSnackbarToContain("Bad Request");
+    then("I shouldn't be able to register", async () => {
+      const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const ariaInvalid = await passwordInput.evaluate(el => el.getAttribute('aria-invalid'));
+      await expect(ariaInvalid).toBe('true')
+    });
+  });
+
+  test("Registering with invalid data - Not matching confirm password", ({ given, when, then }) => {
+    let username;
+    let password;
+    let confPassword;
+
+    given("A user with passwords not matching", async () => {
+      username = "goodUsername";
+      password = "StrongPass123!";
+      confPassword = "notMatching-1";
+    });
+
+    when("I try to register", async () => {
+      const usernameInput = await page.$('[data-testid="reg-username"] input');
+      const passwordInput = await page.$('[data-testid="reg-password"] input');
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
+
+      await usernameInput.type(username);
+      await passwordInput.type(password);
+      await confPasswordInput.type(confPassword);
+
+      await expect(await expectPageToContain("Las contraseñas deben coincidir")).toBe(true);
+
+      await expect(page).toClick('button[type="submit"]');
+    });
+
+    then("I shouldn't be able to register", async () => {
+      const confPasswordInput = await page.$('[data-testid="reg-confirm-password"] input');
+      const ariaInvalid = await confPasswordInput.evaluate(el => el.getAttribute('aria-invalid'));
+      await expect(ariaInvalid).toBe('true')
     });
   });
 });

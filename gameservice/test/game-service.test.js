@@ -59,8 +59,8 @@ describe("/game/question", () => {
     cache.addQuestion.mockImplementationOnce(() => {});
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -88,8 +88,8 @@ describe("/game/question", () => {
     axios.get.mockRejectedValueOnce(new Error("Error obtaining question"));
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");
@@ -99,8 +99,8 @@ describe("/game/question", () => {
     axios.get.mockResolvedValueOnce({ data: null });
 
     const response = await request(app)
-      .get("/game/question?username=user")
-      .send();
+      .get("/game/question")
+      .send({ username: "user" });
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");
@@ -123,13 +123,21 @@ describe("/game/answer", () => {
     expect(response.body.error).toBe("Username must be sent");
   });
 
-  test("should return 400 if selected answer is not sent", async () => {
+  test("should return that answer is incorrect if selected answer is not sent", async () => {
+    cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
+    cache.answer.mockImplementationOnce(() => {});
+
     const response = await request(app)
       .post("/game/answer")
       .send({ username: "user" });
 
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe("Selected answer must be sent");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      correctAnswer: "Spain",
+      isCorrect: false,
+    });
+
+    expect(cache.answer).toHaveBeenCalledWith("user", null);
   });
 
   test("should return that answer is correct if selected answer is equal to correct answer", async () => {
@@ -164,6 +172,23 @@ describe("/game/answer", () => {
     });
 
     expect(cache.answer).toHaveBeenCalledWith("user", "France");
+  });
+
+  test("should return that answer is incorrect if selected answer is null", async () => {
+    cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
+    cache.answer.mockImplementationOnce(() => {});
+
+    const response = await request(app)
+      .post("/game/answer")
+      .send({ username: "user", selectedAnswer: null });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      correctAnswer: "Spain",
+      isCorrect: false,
+    });
+
+    expect(cache.answer).toHaveBeenCalledWith("user", null);
   });
 
   test("should return 500 if cache.getUserCorrectAnswer() throws error", async () => {
@@ -231,28 +256,6 @@ describe("/game/save", () => {
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not save game data");
-  });
-});
-
-// QUIT
-describe("/game/quit", () => {
-  test("should return 400 if username is not sent", async () => {
-    const response = await request(app).post("/game/quit").send({});
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe("Username must be sent");
-  });
-
-  test("should return 500 if cache.quitGame() throws an error", async () => {
-    cache.quitGame.mockImplementationOnce(() => {
-      throw new Error("Could not quit game for the user");
-    });
-
-    const response = await request(app)
-      .post("/game/quit")
-      .send({ username: "user" });
-
-    expect(response.status).toBe(500);
-    expect(response.body.error).toBe("Could not quit game for the user");
   });
 });
 

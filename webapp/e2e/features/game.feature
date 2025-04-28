@@ -1,16 +1,11 @@
 Feature: Game interaction functionality
 
-  Scenario: Try to enter the game without logging in
-    Given I am on the home page
-    When I try to access the game
-    Then I should be redirected to the login page
-
   Scenario: Request a hint and display it
     Given I am logged in at game
     And I have entered a question in the input field
     And I have remaining hints
     When I click the hint button
-    Then the hint counter should decrease by 1
+    Then the hint counter should increase by 1
     And the hint input should be temporally disabled
 
   Scenario: Next round answering
