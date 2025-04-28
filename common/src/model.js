@@ -32,10 +32,11 @@ const gameSchema = new mongoose.Schema({
   hints: { type: Number, required: true },
   config: {
     type: {
-      mode: { type: String, required: true },
+      modes: { type: [{ type: String, required: true }], required: true },
       rounds: { type: Number, required: true },
       time: { type: Number, required: true },
       hints: { type: Number, required: true },
+      isAIGame: { type: Boolean, required: true },
     },
     required: true,
   },
