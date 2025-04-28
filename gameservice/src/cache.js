@@ -101,6 +101,7 @@ module.exports = {
 
         // Remove used hints and AI option and get user game data to send
         const { usedHints, isAIGame, ...gameData } = userGame;
+        gameData.game.config.isAIGame=isAIGame;
 
         // Delete data from cache
         cache.delete(username);
