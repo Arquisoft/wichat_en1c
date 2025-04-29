@@ -1,5 +1,6 @@
 // Modules
-const config = require("./config");
+const config = require('./config');
+const crypto = require('crypto');
 
 // Cache with game data of all the current users playing
 const cache = new Map();
@@ -148,7 +149,13 @@ module.exports = {
         if (!userGame)
             throw new Error('Could not get modes from the user');
         const userModes = userGame.game.config.modes;
-        const randomMode = userModes[Math.floor(Math.random() * userModes.length)];
+
+        // Get secure random index
+        const randomBuffer = crypto.randomBytes(1);
+        const randomIndex = randomBuffer.readUInt8(0) % userModes.length;
+
+        // Get random mode
+        const randomMode = userModes[randomIndex];
         return randomMode;
     },
 
