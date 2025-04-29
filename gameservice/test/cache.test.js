@@ -30,6 +30,38 @@ describe("cache.js tests", () => {
     expect(userGame.game.config.modes).toEqual(gameConfig.modes);
   });
 
+  test("should not add existing user with correct game config", () => {
+    const gameConfig1 = {
+      modes: ["musician", "scientist", "actor", "painter", "writer"],
+      rounds: 5,
+      time: 30,
+      hints: 3,
+      isAIGame: false,
+    };
+    const gameConfig2 = {
+      modes: ["musician", "scientist", "actor"],
+      rounds: 6,
+      time: 60,
+      hints: 2,
+      isAIGame: false,
+    };
+    const username = "username";
+
+    cache.addUser(username, gameConfig1);
+
+    let userGame = cache.getCache().get(username);
+    expect(userGame).toBeTruthy();
+    expect(userGame.username).toBe(username);
+    expect(userGame.game.config.modes).toEqual(gameConfig1.modes);
+
+    cache.addUser(username, gameConfig2);
+
+    userGame = cache.getCache().get(username);
+    expect(userGame).toBeTruthy();
+    expect(userGame.username).toBe(username);
+    expect(userGame.game.config.modes).toEqual(gameConfig1.modes);
+  });
+
   test("should add question to the user game", () => {
     const username = "username";
     const gameConfig = {
@@ -77,7 +109,41 @@ describe("cache.js tests", () => {
     cache.answer(username, "France");
 
     const userGame = cache.getCache().get(username);
-    expect(userGame.game.questions[0].answers.selected).toBe(1); 
+    expect(userGame.game.questions[0].answers.selected).toBe(1);
+    expect(userGame.game.questions[0].time.finished).toBeTruthy();
+  });
+
+  test("should throw error if non stored user answers", () => {
+    const username = "username";
+
+    expect(() => {
+      cache.answer(username, "France");
+    }).toThrow("Could not save answer for user");
+  });
+
+  test("should store unanswered for the current question", () => {
+    const username = "username";
+    const gameConfig = {
+      modes: ["musician", "scientist", "actor", "painter", "writer"],
+      rounds: 5,
+      time: 30,
+      hints: 3,
+      isAIGame: false,
+    };
+    cache.addUser(username, gameConfig);
+
+    const questionData = {
+      question: "Where is Madrid?",
+      image: "image",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctAnswer: "Spain"
+    };
+    cache.addQuestion(username, questionData);
+
+    cache.answer(username, null);
+
+    const userGame = cache.getCache().get(username);
+    expect(userGame.game.questions[0].answers.selected).toBe(null);
     expect(userGame.game.questions[0].time.finished).toBeTruthy();
   });
 
@@ -125,7 +191,15 @@ describe("cache.js tests", () => {
 
     cache.finishGame(username);
 
-    expect(cache.getCache().has(username)).toBe(false); 
+    expect(cache.getCache().has(username)).toBe(false);
+  });
+
+  test("should throw error if non stored user finishes game", () => {
+    const username = "username";
+
+    expect(() => {
+      cache.finishGame(username);
+    }).toThrow("Could not finish game for the user");
   });
 
   test("should remove user game data from cache", () => {
@@ -168,6 +242,14 @@ describe("cache.js tests", () => {
     expect(currentQuestionData.correctAnswer).toBe(questionData.correctAnswer);
   });
 
+  test("should throw error if non stored user gets current data", () => {
+    const username = "username";
+
+    expect(() => {
+      cache.getCurrentQuestionData(username);
+    }).toThrow("Could not get current question data for the user");
+  });
+
   test("should add a hint to the user game", () => {
     const username = "username";
     const gameConfig = {
@@ -187,6 +269,14 @@ describe("cache.js tests", () => {
     expect(userGame.usedHints).toContain(hint);
   });
 
+  test("should throw error if non stored user uses hint", () => {
+    const username = "username";
+    const hint = "Hint";
+    expect(() => {
+      cache.useHint(username, hint);
+    }).toThrow("Could not save used hint for the user");
+  });
+
   test("should return a random mode for the user", () => {
     const username = "username";
     const gameConfig = {
@@ -201,6 +291,14 @@ describe("cache.js tests", () => {
     // Random value is mocked
     const randomMode = cache.getRandomMode(username);
     expect(randomMode).toBe("musician");
+  });
+
+  test("should throw error if non stored user gets random mode", () => {
+    const username = "username";
+
+    expect(() => {
+      cache.getRandomMode(username);
+    }).toThrow("Could not get modes from the user");
   });
 
   test("should return true isAIGame is true", () => {
@@ -231,5 +329,13 @@ describe("cache.js tests", () => {
 
     const isAIEnabled = cache.isAIEnabledForUser(username);
     expect(isAIEnabled).toBe(false);
+  });
+
+  test("should throw error if non stored user gets AI enabled option", () => {
+    const username = "username";
+
+    expect(() => {
+      cache.isAIEnabledForUser(username);
+    }).toThrow("Could not get AI enabled from the user");
   });
 });

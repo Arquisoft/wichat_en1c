@@ -44,7 +44,7 @@ describe("/game/custom", () => {
     expect(response.body.error).toBe("Username must be sent");
   });
 
-  test("should call cache.quitGame and cache.addUser if username is provided", async () => {
+  test("should call cache.quitGame and cache.addUser if username is provided, categories non-empty", async () => {
     cache.quitGame.mockImplementation(() => { });
     cache.addUser.mockImplementation(() => { });
     const username = "username";
@@ -52,7 +52,7 @@ describe("/game/custom", () => {
       time: 30,
       rounds: 5,
       hints: 3,
-      categories: ["Science", "Math"],
+      categories: ["musicians", "artists"],
       isAIGame: true
     };
 
@@ -74,6 +74,40 @@ describe("/game/custom", () => {
       rounds: gameConfig.rounds,
       hints: gameConfig.hints,
       modes: gameConfig.categories,
+      isAIGame: gameConfig.isAIGame
+    });
+  });
+
+  test("should call cache.quitGame and cache.addUser if username is provided categories empty", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+    const gameConfig = {
+      time: 30,
+      rounds: 5,
+      hints: 3,
+      categories: [],
+      isAIGame: true
+    };
+
+    const response = await request(app)
+      .post("/game/custom")
+      .send({
+        username: username,
+        time: gameConfig.time,
+        rounds: gameConfig.rounds,
+        hints: gameConfig.hints,
+        categories: gameConfig.categories,
+        isAIGame: gameConfig.isAIGame
+      });
+
+    expect(response.status).toBe(200);
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: gameConfig.time,
+      rounds: gameConfig.rounds,
+      hints: gameConfig.hints,
+      modes: config.modes,
       isAIGame: gameConfig.isAIGame
     });
   });
