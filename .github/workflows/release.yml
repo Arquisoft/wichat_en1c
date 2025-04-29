@@ -83,7 +83,7 @@ jobs:
           buildargs: API_URI
 
   docker-push-authservice:
-    name: Push auth service Docker Image to GitHub Packages
+    name: Push AuthService Docker Image to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -100,8 +100,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: authservice
-          platforms: linux/amd64,linux/arm64
+          dockerfile: authservice/Dockerfile
 
   docker-push-llmservice:
     name: Push llm service Docker Image to GitHub Packages
@@ -122,7 +121,7 @@ jobs:
           workdir: llmservice
 
   docker-push-gatewayservice:
-    name: Push gateway service Docker Image to GitHub Packages
+    name: Push GatewayService Docker Image to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -141,7 +140,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: gatewayservice
+          dockerfile: gatewayservice/Dockerfile
 
   docker-push-gameservice:
     name: Push GameService Docker Image to GitHub Packages
@@ -195,7 +194,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: statservice
+          dockerfile: statservice/Dockerfile
 
   deploy:
     name: Deploy over SSH
