@@ -19,7 +19,7 @@ module.exports = (app) => {
             isAIGame: isAIGame
         };
         cache.addUser(username, gameConfig);
-        return res.status(200);
+        return res.status(200).send();
     });
 
     app.get('/game/config', async (req, res) => {

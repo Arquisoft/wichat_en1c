@@ -28,6 +28,101 @@ describe("config.js", () => {
   });
 });
 
+// GAME CUSTOM
+describe("/game/custom", () => {
+  beforeEach(() => {
+    cache.quitGame.mockReset();
+    cache.addUser.mockReset();
+  });
+
+  test("should return 400 if username is not sent", async () => {
+    const response = await request(app)
+      .post("/game/custom")
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Username must be sent");
+  });
+
+  test("should call cache.quitGame and cache.addUser if username is provided", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+    const gameConfig = {
+      time: 30,
+      rounds: 5,
+      hints: 3,
+      categories: ["Science", "Math"],
+      isAIGame: true
+    };
+
+    const response = await request(app)
+      .post("/game/custom")
+      .send({
+        username: username,
+        time: gameConfig.time,
+        rounds: gameConfig.rounds,
+        hints: gameConfig.hints,
+        categories: gameConfig.categories,
+        isAIGame: gameConfig.isAIGame
+      });
+
+    expect(response.status).toBe(200);
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: gameConfig.time,
+      rounds: gameConfig.rounds,
+      hints: gameConfig.hints,
+      modes: gameConfig.categories,
+      isAIGame: gameConfig.isAIGame
+    });
+  });
+});
+
+// GAME CONFIG
+describe("/game/config", () => {
+  beforeEach(() => {
+    cache.quitGame.mockReset();
+    cache.addUser.mockReset();
+  });
+
+  test("should return 400 if username is not sent", async () => {
+    const response = await request(app)
+      .get("/game/config")
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Username must be sent");
+  });
+
+  test("should return game config and call cache.quitGame and cache.addUser", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+
+    const response = await request(app)
+      .get("/game/config")
+      .send({ username: username });
+
+    expect(response.status).toBe(200);
+
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: config.time,
+      rounds: config.rounds,
+      hints: config.hints,
+      modes: config.modes,
+      isAIGame: false
+    });
+
+    expect(response.body).toEqual({
+      time: config.time,
+      rounds: config.rounds,
+      hints: config.hints
+    });
+  });
+});
+
 // QUESTION
 describe("/game/question", () => {
   beforeEach(() => {
@@ -114,7 +209,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is not sent", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
@@ -165,7 +260,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is null", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")

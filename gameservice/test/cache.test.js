@@ -1,18 +1,18 @@
 const request = require("supertest");
 const cache = require("../src/cache");
-const crypto = require('crypto');
+const crypto = require("crypto");
 
-jest.mock('crypto', () => ({
+jest.mock("crypto", () => ({
   randomBytes: jest.fn().mockReturnValue(Buffer.from([0]))
 }));
 
-describe('cache.js tests', () => {
+describe("cache.js tests", () => {
 
   beforeEach(() => {
     cache.getCache().clear();
   });
 
-  test('should add new user with correct game config', () => {
+  test("should add new user with correct game config", () => {
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -20,7 +20,7 @@ describe('cache.js tests', () => {
       hints: 3,
       isAIGame: false,
     };
-    const username = 'username';
+    const username = "username";
 
     cache.addUser(username, gameConfig);
 
@@ -30,8 +30,8 @@ describe('cache.js tests', () => {
     expect(userGame.game.config.modes).toEqual(gameConfig.modes);
   });
 
-  test('should add question to the user game', () => {
-    const username = 'username';
+  test("should add question to the user game", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -55,8 +55,8 @@ describe('cache.js tests', () => {
     expect(userGame.game.questions[0].question).toBe(questionData.question);
   });
 
-  test('should store selected option for the current question', () => {
-    const username = 'username';
+  test("should store selected option for the current question", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -81,8 +81,8 @@ describe('cache.js tests', () => {
     expect(userGame.game.questions[0].time.finished).toBeTruthy();
   });
 
-  test('should return the correct answer for the current question', () => {
-    const username = 'username';
+  test("should return the correct answer for the current question", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -104,8 +104,8 @@ describe('cache.js tests', () => {
     expect(correctAnswer).toBe("Spain");
   });
 
-  test('should end the game and return game data', () => {
-    const username = 'username';
+  test("should end the game and return game data", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -128,8 +128,8 @@ describe('cache.js tests', () => {
     expect(cache.getCache().has(username)).toBe(false); 
   });
 
-  test('should remove user game data from cache', () => {
-    const username = 'username';
+  test("should remove user game data from cache", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -144,8 +144,8 @@ describe('cache.js tests', () => {
     expect(cache.getCache().has(username)).toBe(false);
   });
 
-  test('should return current question data for the user', () => {
-    const username = 'username';
+  test("should return current question data for the user", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -168,8 +168,8 @@ describe('cache.js tests', () => {
     expect(currentQuestionData.correctAnswer).toBe(questionData.correctAnswer);
   });
 
-  test('should add a hint to the user game', () => {
-    const username = 'username';
+  test("should add a hint to the user game", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -179,7 +179,7 @@ describe('cache.js tests', () => {
     };
     cache.addUser(username, gameConfig);
 
-    const hint = 'Hint';
+    const hint = "Hint";
     cache.useHint(username, hint);
 
     const userGame = cache.getCache().get(username);
@@ -187,8 +187,8 @@ describe('cache.js tests', () => {
     expect(userGame.usedHints).toContain(hint);
   });
 
-  test('should return a random mode for the user', () => {
-    const username = 'username';
+  test("should return a random mode for the user", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -203,8 +203,8 @@ describe('cache.js tests', () => {
     expect(randomMode).toBe("musician");
   });
 
-  test('should return true isAIGame is true', () => {
-    const username = 'username';
+  test("should return true isAIGame is true", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
@@ -218,8 +218,8 @@ describe('cache.js tests', () => {
     expect(isAIEnabled).toBe(true);
   });
 
-  test('should return false isAIGame is false', () => {
-    const username = 'username';
+  test("should return false isAIGame is false", () => {
+    const username = "username";
     const gameConfig = {
       modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: 5,
