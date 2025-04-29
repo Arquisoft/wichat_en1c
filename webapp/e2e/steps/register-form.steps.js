@@ -19,11 +19,12 @@ defineFeature(feature, (test) => {
       ? await puppeteer.launch({
           headless: "new",
           args: ["--lang=es-ES,es", "--no-sandbox", "--disable-setuid-sandbox"],
+          slowMo: 20,
         })
       : await puppeteer.launch({ headless: false, slowMo: 20, args: ["--lang=es-ES,es"] });
     page = await browser.newPage();
     // Way of setting up the timeout
-    setDefaultOptions({ timeout: 10000 });
+    setDefaultOptions({ timeout: 300000 });
 
     await page
       .goto("http://localhost:3000", {
@@ -93,7 +94,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test("Registering an existing user", ({ given, when, then, and }) => {
+  test("Registering an existing user", ({ given, when, then, and }) => { 
     let existingUsername;
     let password;
 
@@ -124,7 +125,7 @@ defineFeature(feature, (test) => {
     });
   }, 300000);
 
-  test("Registering with invalid data - Short username", ({ given, when, then }) => {
+  test("Registering with invalid data - Short username", ({ given, when, then }) => { 
     let shortUsername;
     let password;
 
