@@ -32,7 +32,7 @@ async function generateQuestion(category = 'musician') {
   // Filter: If name includes numeric, skip the name.
   const validResults = results.filter(person => {
     const label = person[`${category}Label`].value;
-    return !/\d/.test(label);
+    return !/\d/.test(label); 
   });
 
   if (validResults.length < 5) return null;
@@ -41,7 +41,7 @@ async function generateQuestion(category = 'musician') {
   const otherPeople = validResults.filter((m) => m !== correctPerson);
 
 
-
+  
   // Date Format (DD/MM/YYYY)
   const rawDate = correctPerson.birthDate.value;
   const formattedDate = formatWikidataDate(rawDate);
@@ -70,27 +70,27 @@ async function generateQuestion(category = 'musician') {
 
 function formatWikidataDate(wikidataDate) {
   try {
-
-    const datePart = wikidataDate.split('T')[0];
+    
+    const datePart = wikidataDate.split('T')[0]; 
     const [year, month, day] = datePart.split('-');
     return `${day}/${month}/${year}`;
   } catch (e) {
     console.error('Date could not formatted correctly:', wikidataDate);
     console.error(e);
-    return wikidataDate;
+    return wikidataDate; 
   }
 }
 
 async function refillCache() {
   if (isRefilling) return;
   isRefilling = true;
-
+  
   try {
     while (questionCache.length < CACHE_SIZE) {
-
+      
       const categories = ['musician', 'scientist', 'actor', 'painter', 'writer'];
       const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-
+      
       const question = await generateQuestion(randomCategory);
       if (question) {
         questionCache.push(question);
