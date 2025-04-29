@@ -127,7 +127,10 @@ describe("/game/config", () => {
 describe("/game/question", () => {
   beforeEach(() => {
     axios.get.mockReset();
+    axios.post.mockReset();
     cache.addQuestion.mockReset();
+    cache.isAIEnabledForUser.mockReset();
+    cache.getRandomMode.mockReset();
   });
 
   test("should return valid question", async () => {
@@ -188,6 +191,57 @@ describe("/game/question", () => {
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");
+  });
+
+  test("should return 500 if LLM service fails", async () => {
+    const mockQuestion = {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockQuestion });
+    cache.isAIEnabledForUser.mockResolvedValueOnce(true);
+    axios.post.mockRejectedValueOnce(new Error("LLM Service Error"));
+
+    const response = await request(app)
+      .get("/game/question")
+      .send({ username: "user" });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe("There was an error when obtaining the question");
+  });
+
+  test("should return the question without AI answer if AI mode is not enabled", async () => {
+    const mockQuestion = {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockQuestion });
+    cache.isAIEnabledForUser.mockResolvedValueOnce(false);
+    cache.addQuestion.mockImplementationOnce(() => { });
+
+    const response = await request(app)
+      .get("/game/question")
+      .send({ username: "user" });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      image: "image.png",
+    });
+
+    expect(cache.addQuestion).toHaveBeenCalledWith("user", {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    });
   });
 });
 
