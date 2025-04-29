@@ -1,14 +1,13 @@
 {
   "name": "llmservice",
   "version": "1.0.0",
-  "description": " LLM service, in charge of sending queries to the LLMs",
-  "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node llm-service.js",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
+  "description": "",
   "homepage": "https://github.com/arquisoft/wichat_en1c#readme",
   "dependencies": {
     "axios": "^1.7.9",

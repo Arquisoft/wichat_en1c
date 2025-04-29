@@ -3,22 +3,13 @@ process.env.LLM_API_KEY = 'test-api-key';
 
 const request = require('supertest');
 const axios = require('axios');
-const app = require('../src');
-const config = require("../src/config");
+const app = require('./llm-service'); 
 
 afterAll(async () => {
-  app.close();
-});
+    app.close();
+  });
 
 jest.mock('axios');
-
-describe("config.js", () => {
-  test("should have correct config values", () => {
-    expect(config).toEqual({
-      port: config.port,
-    });
-  });
-});
 
 describe('LLM Service', () => {
   // Mock responses from external services
@@ -26,7 +17,7 @@ describe('LLM Service', () => {
     if (url.startsWith('https://generativelanguage')) {
       return Promise.resolve({ data: { candidates: [{ content: { parts: [{ text: 'llmanswer' }] } }] } });
     } else if (url.startsWith('https://empathyai')) {
-      return Promise.resolve({ data: { choices: [{ message: { content: 'llmanswer' } }] } });
+      return Promise.resolve({ data: { choices: [ {message: { content: 'llmanswer' } } ] } });
     }
   });
 

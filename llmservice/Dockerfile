@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
-COPY ./src/index.js ./ 
+COPY ./llm-service.js ./ 
 # TODO: Maybe move the src files to a src folder
 
 # Expose the port the app runs on
