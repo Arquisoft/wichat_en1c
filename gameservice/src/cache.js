@@ -164,8 +164,11 @@ module.exports = {
         const userGame = cache.get(username);
         if (!userGame)
             throw new Error('Could not get AI enabled from the user');
-        const isAIEnabledUser = userGame.game.isAIGame;
+        const isAIEnabledUser = userGame.isAIGame;
         return isAIEnabledUser;
-    }
+    },
 
+    getCache(){
+        return cache;
+    }
 };
