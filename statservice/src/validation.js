@@ -84,6 +84,7 @@ module.exports = {
       body("game.config.modes.*", messages.missing)
         .isString()
         .withMessage(messages.notString)
+        .toLowerCase()
         .isIn(config.game.config.modes)
         .withMessage(messages.notValid),
       body("game.config.rounds", messages.missing)

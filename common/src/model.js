@@ -36,7 +36,7 @@ const gameSchema = new mongoose.Schema({
       rounds: { type: Number, required: true },
       time: { type: Number, required: true },
       hints: { type: Number, required: true },
-      isAIGame: { type: Boolean, required: true },
+      isAIGame: { type: Boolean, required: true, default: false },
     },
     required: true,
   },
