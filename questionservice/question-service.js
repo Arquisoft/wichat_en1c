@@ -175,5 +175,6 @@ process.on("SIGINT", () => {
 module.exports = {
   server,
   formatWikidataDate,
-  app
+  app,
+  generateQuestion
 };
