@@ -86,7 +86,7 @@ module.exports = {
         .withMessage(messages.notString)
         .toLowerCase()
         .isIn(config.game.config.modes)
-        .withMessage(messages.notValid),
+        .withMessage(`${messages.notValid}. Valid options are: ${config.game.config.modes.join(", ")}`),
       body("game.config.rounds", messages.missing)
         .isInt({ min: config.game.config.rounds.min })
         .withMessage(messages.notValidNumber),
