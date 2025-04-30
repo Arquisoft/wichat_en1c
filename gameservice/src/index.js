@@ -1,6 +1,14 @@
 // Modules
 const express = require('express');
 
+const {
+    setupDefaultHandlers,
+    startServer,
+    setupLogger,
+} = require("@wichat_en1c/common");
+
+const pkg = require("../package.json");
+
 const config = require("./config");
 const gameConfig = require("./routes/gameConfig");
 const question = require('./routes/question');
@@ -9,6 +17,9 @@ const hint = require('./routes/hint')
 
 // Express 
 const app = express();
+app.set("trust proxy", true);
+
+setupLogger(app, `${pkg.name}@${pkg.version}`);
 app.use(express.json());
 
 // Routes
@@ -17,9 +28,7 @@ question(app);
 save(app);
 hint(app);
 
-// Server
-const server = app.listen(config.port, () => {
-    console.log(`Server running on http://localhost:${config.port}`);
-});
+setupDefaultHandlers(app);
 
-module.exports = server;
+// Server
+module.exports = startServer(app, config.port);

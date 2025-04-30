@@ -27,7 +27,7 @@ module.exports = (app) => {
             if (serviceResponse.status !== 201 || serviceResponse.data.success !== true)
                 return res.status(500).json({ error: "Could not save game data" });
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "statistic service request error");
         }
 
         return res.status(200).send();

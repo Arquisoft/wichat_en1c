@@ -34,24 +34,22 @@ module.exports = (app) => {
         // Create prompt
         const prompt =
             `
-        You are helping a user in a test question game. This is the current question:
+        You are helping a user in a test question game. This is the current question details:
         Question: ${questionData.question}
         Options: ${questionData.options.join(", ")}
         Correct option: ${questionData.correctAnswer}
-        The user has made the following question: "${query}"
+        The user has made the following question in order to get a hint: "${query}"
         ${hintsPromptText} 
-        Please, generate a response for the user's question to give the user a hint. Please respond in the same language as the question.
-        The hint must be a single word or a short sentence. Do not include any other information in your response
+        Please, generate a response for the user's question to give the user a hint that is not the correct answer to the question directly. 
+        Please, answer in the same language as the question.
+        The hint must be a single word or a short sentence, without any other information.
         `;
-
-        console.log(prompt)
 
         // Send prompt to LLM Service
         try {
             // Ask LLM
             const serviceData = {
-                question: prompt,
-                model: "gemini"
+                question: prompt
             }
             const serviceResponse = await axios.post(`${llmServiceUrl}/ask`, serviceData);
             if (serviceResponse.status !== 200)
@@ -67,9 +65,9 @@ module.exports = (app) => {
                 return res.status(500).json({ error: error.message });
             }
 
-            res.json({hint});
+            res.json({ hint });
         } catch (error) {
-            console.error(error);
+            req.log.error(error, "hint obtaining error");
             return res.status(500).json({ error: "There was an error when obtaining a hint" });
         }
     })
