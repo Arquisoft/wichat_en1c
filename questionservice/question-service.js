@@ -78,14 +78,12 @@ async function generateQuestion(category = 'musician') {
 }
 
 function formatWikidataDate(wikidataDate) {
-  try {
+
     
-    const datePart = wikidataDate.split('T')[0]; 
-    const [year, month, day] = datePart.split('-');
-    return `${day}/${month}/${year}`;
-  } catch (error) {
-    console.error('Date could not formatted correctly:', wikidataDate);
-  }
+  const datePart = wikidataDate.split('T')[0]; 
+  const [year, month, day] = datePart.split('-');
+  return `${day}/${month}/${year}`;
+
 }
 
 async function refillCache() {

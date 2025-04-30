@@ -15,16 +15,6 @@ describe("Question API", () => {
     expect(result).toBe("15/05/2023"); 
   });
 
-  test("should return original value and log error when input is wrong", () => {
-    const wrongformedDate = null;
-    console.error = jest.fn(); 
-  
-    const result = formatWikidataDate(wrongformedDate);
-  
-    expect(console.error).toHaveBeenCalledWith(
-      'Date could not formatted correctly:',wrongformedDate);
-
-  });
 
   test('should return a error 400 when wrong category', async () => {
     
