@@ -144,17 +144,12 @@ app.get("/question/:category", async (req, res) => {
   if (!queries[category]) {
     return res.status(400).json({ error: "Invalid category" });
   }
-
-  try {
     const question = await generateQuestion(category);
     if (question) {
       res.json(question);
     } else {
       res.status(400).json({ error: "Could not generate question" });
     }
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
 });
 
 const server = app.listen(port, () => {
