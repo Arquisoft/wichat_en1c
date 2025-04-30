@@ -85,7 +85,6 @@ function formatWikidataDate(wikidataDate) {
     return `${day}/${month}/${year}`;
   } catch (error) {
     console.error('Date could not formatted correctly:', wikidataDate);
-    return wikidataDate;
   }
 }
 

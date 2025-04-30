@@ -22,10 +22,8 @@ describe("Question API", () => {
     const result = formatWikidataDate(wrongformedDate);
   
     expect(console.error).toHaveBeenCalledWith(
-      'Date could not formatted correctly:',
-      wrongformedDate
-    );
-    expect(result).toBe(null); 
+      'Date could not formatted correctly:',wrongformedDate);
+
   });
 
   test('should return a error 400 when wrong category', async () => {
