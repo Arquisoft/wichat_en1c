@@ -95,7 +95,7 @@ The machine for deployment can be created in services like Microsoft Azure or Am
 
 - Linux machine with Ubuntu > 20.04 (the recommended is 24.04).
 - Docker installed.
-- Open ports for the applications installed (in this case, ports 3000 for the webapp and 8000 for the gateway service).
+- Open ports for the applications installed (in this case, ports 80 for the webapp and 8000 for the gateway service).
 
 Once you have the virtual machine created, you can install **Docker** using the following instructions:
 
