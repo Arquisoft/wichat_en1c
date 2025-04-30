@@ -16,7 +16,7 @@ COPY ./common/src ./src
 # END
 
 # Set the working directory in the container
-WORKDIR /usr/src/gameservice
+WORKDIR /home/node/gameservice
 
 # Copy package.json and package-lock.json to the working directory
 COPY ./gameservice/package*.json ./
