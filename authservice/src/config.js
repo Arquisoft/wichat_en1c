@@ -1,9 +1,11 @@
 // @ts-check
 const argon2 = require("argon2");
+const pkg = require("../package.json");
 
 module.exports = {
-  port: process.env.PORT ?? 8002,
-  mongoUri: process.env.MONGODB_URI ?? "mongodb://localhost:27017/userdb",
+  name: `${pkg.name}@${pkg.version}`,
+  port: Number(process.env.PORT ?? 8002),
+  mongoUri: process.env.MONGODB_URI ?? "mongodb://localhost:27017/wichat",
   /**
    * @see https://www.npmjs.com/package/jsonwebtoken
    * @see https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html#jwt

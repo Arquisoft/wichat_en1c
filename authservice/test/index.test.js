@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const argon2 = require("argon2");
-const { User } = require("../src/model");
+const { User } = require("@wichat_en1c/common/model");
 const config = require("../src/config");
 const jwt = require("jsonwebtoken");
 

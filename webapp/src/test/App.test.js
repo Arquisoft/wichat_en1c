@@ -3,13 +3,16 @@ import { render, screen } from "@testing-library/react";
 import App from "../App";
 import { BrowserRouter } from "react-router";
 import { SessionProvider } from "../SessionContext";
+import { GameProvider } from "../GameContext";
 
 describe("App Component", () => {
   test("renders home page initially", () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <App />
+          <GameProvider>
+            <App />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
     );
@@ -35,7 +38,9 @@ describe("App Component", () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <App />
+          <GameProvider>
+            <App />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
     );
@@ -50,7 +55,9 @@ describe("App Component", () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <App />
+          <GameProvider>
+            <App />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
     );
@@ -65,7 +72,9 @@ describe("App Component", () => {
     render(
       <BrowserRouter>
         <SessionProvider>
-          <App />
+          <GameProvider>
+            <App />
+          </GameProvider>
         </SessionProvider>
       </BrowserRouter>
     );

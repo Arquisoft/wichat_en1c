@@ -25,6 +25,7 @@ module.exports = (app) => {
             jwt.verify(token, config.jwt.secret, config.jwt.opts).username,
         });
       } catch (err) {
+        req.log.debug(err, "received invalid token");
         res.status(401).json({ success: false, message: STATUS_CODES[401] });
       }
     }

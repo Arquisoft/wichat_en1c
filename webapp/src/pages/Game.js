@@ -1,5 +1,5 @@
 // src/pages/Game.js
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react"
 import {
   Container,
   Typography,
@@ -10,246 +10,281 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-} from "@mui/material";
-import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material";
-import { useNavigate } from "react-router";
-import { Typewriter } from "react-simple-typewriter";
-import axios from "axios";
-import { useTranslation } from "react-i18next";
-import { GameContext } from "../GameContext";
-import { SessionContext } from "../SessionContext";
+  useTheme,
+  Paper,
+} from "@mui/material"
+import { AccessTime, HelpOutline, ArrowForward } from "@mui/icons-material"
+import { useNavigate } from "react-router"
+import axios from "axios"
+import { useTranslation } from "react-i18next"
+import { GameContext } from "../GameContext"
+import PropTypes from "prop-types"
+import { alpha } from "@mui/material/styles"
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000";
-
-// Mock game data (to simulate a backend response)
-const mockGameData = {
-  question: "Who is the musician born on 1979-01-01T00:00:00Z in the image?",
-  image: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Killa_Kela.jpg",
-  options: [
-    "Phil Shoenfelt",
-    "Killa Kella",
-    "Kevin Rowland",
-    "Cristopher Guest",
-  ],
-  answer: "Killa Kella",
-  hints: [
-    "The musician is known for beatboxing.",
-    "He has performed with Gorillaz and Pharrell Williams.",
-    "His stage name starts with 'K.'",
-  ],
-  gameSettings: {
-    time: 20,
-    rounds: 3,
-    hints: 3,
-  },
-};
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000"
 
 // Main game component
-const Game = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    mockGameData.gameSettings.timePerQuestion
-  );
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [isPaused, setIsPaused] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [hintMessage, setHintMessage] = useState(""); // What the user writes in the hint input
-  const [receivedHint, setReceivedHint] = useState(""); // The hint message that is returned
-  const [hintCooldown, setHintCooldown] = useState(false);
+const Game = ({ AImode = false }) => {
+  const [timeLeft, setTimeLeft] = useState(20)
+  const [selectedOption, setSelectedOption] = useState(null)
+  const [currentRound, setCurrentRound] = useState(1)
+  const [isPaused, setIsPaused] = useState(false)
+  const [hintsUsed, setHintsUsed] = useState(0)
+  const [hintMessage, setHintMessage] = useState("") // What the user writes in the hint input
+  const [hintCooldown, setHintCooldown] = useState(false)
 
   const [gameSettings, setGameSettings] = useState({
-    rounds: 3,
+    rounds: 10,
     time: 20,
     hints: 3,
-  }); // Default, will be fetched
+  }) // Default, will be fetched
   const [questionData, setQuestionData] = useState({
     question: "",
     image: "",
     options: ["", "", "", ""],
-  }); // Store question data
+  }) // Store question data
 
-  const [answer, setAnswer] = useState("");
+  const [answer, setAnswer] = useState("")
 
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const { gameEnded, setGameEnded } = useContext(GameContext);
+  const [isLoading, setIsLoading] = useState(true) // Loading state
+  const {
+    gameEnded,
+    setGameEnded,
+    setCorrectAnswers,
+    setIncorrectAnswers,
+    hintHistory,
+    addHintToHistory,
+    resetGameStats,
+    setHintHistory,
+  } = useContext(GameContext)
 
-  const correctAudio = new Audio("/correct.mp3");
-  const wrongAudio = new Audio("/wrong.mp3");
-  const navigate = useNavigate();
-  const { t } = useTranslation();
+  const correctAudio = new Audio("/correct.mp3")
+  const wrongAudio = new Audio("/wrong.mp3")
+  const navigate = useNavigate()
+  const { t } = useTranslation()
 
-  const { username } = useContext(SessionContext);
-  const [isSaved, setIsSaved] = useState(false);
+  const theme = useTheme()
 
   // Fetch game configuration on component mount
   useEffect(() => {
     const fetchGameConfig = async () => {
       try {
-        const response = await axios.get(`${apiEndpoint}/game/config`);
-        setGameSettings(response.data);
-        setTimeLeft(response.data.time); // Set initial time from config
+        const response = await axios.get(`${apiEndpoint}/game/config`)
+        setGameSettings(response.data)
+        setTimeLeft(response.data.time) // Set initial time from config
       } catch (error) {
-        console.error("Error fetching game configuration:", error);
+        console.error("Error fetching game configuration:", error)
       }
-    };
-    fetchGameConfig();
-
-    return async () => {
-      if(!isSaved){
-      try {
-        await axios.post(`${apiEndpoint}/game/quit`, {username: username,});
-      } catch (error) {
-        console.error("Error when trying to quit game:", error);
-      }};
     }
-  }, []);
+    fetchGameConfig()
+
+    // Reset game statistics when starting a new game
+    resetGameStats()
+  }, [])
 
   // Fetch question data at the start of each round
   useEffect(() => {
     const fetchQuestion = async () => {
-      setIsLoading(true); // Start loading
+      setIsLoading(true) // Start loading
       try {
-        const response = await axios.get(`${apiEndpoint}/game/question?username=${username}`);
-        setQuestionData(response.data);
+        const response = await axios.get(`${apiEndpoint}/game/question`)
+        setQuestionData(response.data)
       } catch (error) {
-        console.error("Error fetching question:", error);
-        navigate("/");
+        console.error("Error fetching question:", error)
+        navigate("/")
       } finally {
-        setIsLoading(false); // End loading
+        setIsLoading(false) // End loading
       }
-    };
-    fetchQuestion();
-  }, [currentRound]);
+    }
+    fetchQuestion()
+  }, [currentRound])
 
   // Countdown timer logic
   useEffect(() => {
+    let timer
     if (timeLeft > 0 && !isPaused && !isLoading) {
-      const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-      return () => clearInterval(timer);
+      timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000)
     } else if (timeLeft === 0 && !isPaused && !isLoading) {
-      wrongAudio.play();
-      setIsPaused(true);
-      handleRoundEnd();
+      // Make sure game is visible
+      if (document.body.contains(document.querySelector('[data-testid="time-progress-bar"]'))) {
+        wrongAudio.play()
+        setIsPaused(true)
+        // Count timeout as incorrect answer
+        setIncorrectAnswers((prev) => prev + 1)
+        axios.post(`${apiEndpoint}/game/answer`, {
+          selectedAnswer: null,
+        }).catch(error => console.error("Error checking answer:", error)) 
+        handleRoundEnd()
+      }
     }
-  }, [timeLeft, isPaused, isLoading]);
+
+    // Clean interval when component unmounts
+    return () => {
+      if (timer) clearInterval(timer)
+    }
+  }, [timeLeft, isPaused, isLoading])
 
   // Format date inside the question string (e.g., converts "1979-01-01T00:00:00Z" to "January 1, 1979")
   const formatQuestionWithDate = (question) => {
-    const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/;
-    const match = question.match(dateRegex);
+    const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/
+    const match = question.match(dateRegex)
     if (match) {
       const formattedDate = new Date(match[0]).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
-      });
-      return question.replace(match[0], formattedDate);
+      })
+      return question.replace(match[0], formattedDate)
     }
-    return question;
-  };
+    return question
+  }
 
   const handleOptionClick = async (option) => {
-    if (isPaused || isLoading) return;
-    setSelectedOption(option);
-    setIsPaused(true);
+    if (isPaused || isLoading) return
+    setSelectedOption(option)
+    setIsPaused(true)
     try {
       const response = await axios.post(`${apiEndpoint}/game/answer`, {
-        username: username, selectedAnswer: option,
-      });
-      const isCorrect = response.data.isCorrect;
-      setAnswer(response.data.correctAnswer);
-      isCorrect ? correctAudio.play() : wrongAudio.play();
-      handleRoundEnd();
+        selectedAnswer: option,
+      })
+      const isCorrect = response.data.isCorrect
+      setAnswer(response.data.correctAnswer)
+
+      // Track correct/incorrect answers
+      if (isCorrect) {
+        correctAudio.play()
+        setCorrectAnswers((prev) => prev + 1)
+      } else {
+        wrongAudio.play()
+        setIncorrectAnswers((prev) => prev + 1)
+      }
+
+      handleRoundEnd()
     } catch (error) {
-      console.error("Error checking answer:", error);
-      setIsPaused(false);
+      console.error("Error checking answer:", error)
+      setIsPaused(false)
     }
-  };
+  }
 
   const getButtonColor = (selectedOption, option, answer) => {
     if (selectedOption === option) {
       if (option === answer) {
-        return "success";
+        return "success"
       }
-      return "error";
+      return "error"
     }
     if (selectedOption && selectedOption !== option) {
-      return "secondary";
+      return "secondary"
     }
-    return "primary";
-  };
+    return "primary"
+  }
 
   useEffect(() => {
     const saveGame = async () => {
       if (gameEnded) {
         try {
-          await axios.post(`${apiEndpoint}/game/save`, { username: username });
-          setIsSaved(true);
+          await axios.post(`${apiEndpoint}/game/save`)
         } catch (error) {
-          console.error("Error when trying to save game:", error);
+          console.error("Error when trying to save game:", error)
         }
-        navigate("/end-game");
+        navigate("/end-game")
       }
-    };
-    saveGame();
-  }, [gameEnded]);
+    }
+    saveGame()
+  }, [gameEnded])
 
   const handleRoundEnd = () => {
     setTimeout(() => {
       if (currentRound >= gameSettings.rounds) {
-        setGameEnded(true);
+        setGameEnded(true)
       } else {
-        setCurrentRound((prev) => prev + 1);
-        setSelectedOption(null);
-        setTimeLeft(gameSettings.time);
-        setHintCooldown(0);
-        setHintsUsed(0);
-        setHintMessage(""); // Reset input field
-        setReceivedHint(""); // Reset hint message
-        setIsPaused(false);
+        setCurrentRound((prev) => prev + 1)
+        setSelectedOption(null)
+        setTimeLeft(gameSettings.time)
+        setHintCooldown(0)
+        setHintsUsed(0)
+        setHintHistory([])
+        setHintMessage("") // Reset input field
+        setHintHistory([])
+        setIsPaused(false)
       }
-    }, 1000);
-  };
+    }, 1000)
+  }
 
   // Hint request logic
   const handleHintRequest = async () => {
-    if (hintsUsed < gameSettings.hints && !hintCooldown) {
-      setReceivedHint("");
-      setHintCooldown(true);
+    if (hintsUsed < gameSettings.hints && !hintCooldown && hintMessage.trim() !== "") {
+      const userQuestion = hintMessage.trim()
+      setHintCooldown(true)
       try {
         const response = await axios.post(
-        `${apiEndpoint}/game/hint`,
-        { username: username, query: hintMessage },
-        {
-          headers: {
-            "Content-Type": "application/json",
+          `${apiEndpoint}/game/hint`,
+          { query: userQuestion },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
-        setReceivedHint(response.data.hint); // Store the received hint
-        setHintsUsed(hintsUsed + 1);
+        )
+        const aiAnswer = response.data.hint
+
+        // Add to hint history
+        addHintToHistory(userQuestion, aiAnswer)
+
+        setHintsUsed(hintsUsed + 1)
       } catch (error) {
-        console.error("Error when trying to get hint:", error);
-        setReceivedHint(t("errorHint"));
+        console.error("Error when trying to get hint:", error)
+        const errorMessage = t("errorHint")
+        addHintToHistory(userQuestion, errorMessage)
       } finally {
-        setHintMessage("");
-        setTimeout(() => setHintCooldown(false), 3000);
+        setHintMessage("")
+        setTimeout(() => setHintCooldown(false), 3000)
       }
     }
-  };
+  }
+
+  // Cleanup audio objects when component unmounts
+  useEffect(() => {
+    return () => {
+      correctAudio.pause()
+      correctAudio.currentTime = 0
+      wrongAudio.pause()
+      wrongAudio.currentTime = 0
+    }
+  }, [])
 
   if (isLoading) {
     return (
       <Container
         component="main"
         maxWidth="md"
-        sx={{ textAlign: "center", mt: 20 }}
+        sx={{
+          textAlign: "center",
+          mt: 20,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-        <CircularProgress />
-        <Typography data-testid="loading-text" variant="h6" sx={{ mt: 2 }}>
+        <CircularProgress
+          data-testid="loading-indicator"
+          size={60}
+          thickness={4}
+          sx={{ color: theme.palette.primary.main }}
+        />
+        <Typography
+          data-testid="loading-text"
+          variant="h6"
+          sx={{
+            mt: 2,
+            fontWeight: "medium",
+            color: theme.palette.text.secondary,
+          }}
+        >
           {t("loading")}...
         </Typography>
       </Container>
-    );
+    )
   }
   return (
     <Container
@@ -270,16 +305,11 @@ const Game = () => {
           flexDirection: "column", // Stack elements vertically
           gap: 2, // Space between elements
           alignItems: "center", // Center align the elements horizontally
+          mt: 10,
         }}
       >
         {/* Progress bar & Round info */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-          mb={1}
-        >
+        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" mb={1}>
           <Box display="flex" alignItems="center" gap={1} sx={{ flexGrow: 1 }}>
             <AccessTime color="action" />
             <LinearProgress
@@ -298,22 +328,13 @@ const Game = () => {
             />
           </Box>
 
-          <Typography
-            variant="h6"
-            sx={{ marginLeft: 2 }}
-            data-testid="round-info"
-          >
+          <Typography variant="h6" sx={{ marginLeft: 2 }} data-testid="round-info">
             {t("round")}: {currentRound} / {gameSettings.rounds}
           </Typography>
         </Box>
 
         {/* Display the question */}
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ textAlign: "center", alignSelf: "center" }}
-          data-testid="question"
-        >
+        <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }} data-testid="question">
           {formatQuestionWithDate(questionData.question)}
         </Typography>
 
@@ -321,7 +342,7 @@ const Game = () => {
         <Box sx={{ mb: 2, display: "flex", justifyContent: "center" }}>
           <img
             data-testid="question-image"
-            src={questionData.image}
+            src={questionData.image || "/placeholder.svg"}
             alt="Question"
             style={{
               maxWidth: "265px", // Set max width of the image
@@ -387,6 +408,9 @@ const Game = () => {
           borderRadius: "8px", // Rounded corners for the hint box
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)", // Shadow for the hint box
           marginLeft: 3, // Left margin with question box
+          mt: 10,
+          maxHeight: "70vh", // Limitar altura máxima para evitar que ocupe toda la pantalla
+          overflowY: "auto", // Añadir scroll al contenedor principal si crece demasiado
         }}
       >
         <Tooltip title="Hints remaining">
@@ -401,8 +425,8 @@ const Game = () => {
         {/* Hint input form */}
         <form
           onSubmit={(e) => {
-            e.preventDefault();
-            handleHintRequest();
+            e.preventDefault()
+            handleHintRequest()
           }}
           style={{ width: "100%", display: "flex", gap: 1 }}
         >
@@ -411,11 +435,7 @@ const Game = () => {
             variant="outlined"
             size="small"
             placeholder={t("hintPlaceholder")}
-            disabled={
-              hintsUsed >= gameSettings.hints ||
-              hintCooldown ||
-              isPaused
-            }
+            disabled={hintsUsed >= gameSettings.hints || hintCooldown || isPaused}
             value={hintMessage}
             onChange={(e) => setHintMessage(e.target.value)}
             sx={{ flexGrow: 1, marginRight: 2 }}
@@ -423,11 +443,7 @@ const Game = () => {
           <IconButton
             data-testid="hint-button"
             type="submit"
-            disabled={
-              hintCooldown ||
-              hintsUsed >= gameSettings.hints ||
-              isPaused
-            }
+            disabled={hintCooldown || hintsUsed >= gameSettings.hints || isPaused || !hintMessage.trim()}
             sx={{
               backgroundColor: "#1976d2",
               color: "#fff",
@@ -440,36 +456,60 @@ const Game = () => {
           </IconButton>
         </form>
 
-        {/* Show hint message with Typewriter effect */}
-        {receivedHint && (
-          <Typography
-            variant="body1"
-            sx={{
-              mt: 1,
-              textAlign: "center",
-              fontStyle: "italic",
-              opacity: 0,
-              animation: "fadeIn 0.5s forwards",
-              "@keyframes fadeIn": {
-                from: { opacity: 0 },
-                to: { opacity: 1 },
-              },
-            }}
-          >
-            <Typewriter
-              data-testid="hint-message"
-              key={receivedHint} // Force tywriter to reset
-              words={[receivedHint]}
-              cursor
-              cursorStyle="_"
-              typeSpeed={20}
-              deleteSpeed={20} 
-            />
-          </Typography>
-        )}
+        {/* Chat history container */}
+        <Box
+          sx={{
+            width: "100%",
+            p: 1,
+            bgcolor: alpha(theme.palette.background.paper, 0.5),
+            borderRadius: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          {hintHistory.map((hint, index) => (
+            <Box key={index} sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
+              {/* User question */}
+              <Box sx={{ alignSelf: "flex-start", maxWidth: "80%" }}>
+                <Paper
+                  elevation={1}
+                  sx={{
+                    p: 1,
+                    bgcolor: theme.palette.primary.light,
+                    color: theme.palette.primary.contrastText,
+                    borderRadius: "12px 12px 12px 0",
+                  }}
+                >
+                  <Typography data-testid={`question-${index}`} variant="body2">{hint.question}</Typography>
+                </Paper>
+              </Box>
+
+              {/* AI answer */}
+              <Box sx={{ alignSelf: "flex-end", maxWidth: "80%" }}>
+                <Paper
+                  elevation={1}
+                  sx={{
+                    p: 1,
+                    bgcolor: theme.palette.secondary.light,
+                    color: theme.palette.secondary.contrastText,
+                    borderRadius: "12px 12px 0 12px",
+                  }}
+                >
+                  <Typography data-testid={`answer-${index}`} variant="body2">{hint.answer}</Typography>
+                </Paper>
+              </Box>
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default Game;
+// PropTypes validation
+Game.propTypes = {
+  AImode: PropTypes.bool,
+}
+
+export default Game

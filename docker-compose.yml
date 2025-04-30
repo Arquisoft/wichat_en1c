@@ -2,6 +2,7 @@ services:
   mongodb:
     container_name: mongodb-wichat_en1c
     image: mongo
+    attach: false
     profiles: ["dev", "prod"]
     volumes:
       - mongodb_data:/data/db
@@ -14,7 +15,9 @@ services:
     container_name: authservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/authservice:latest
     profiles: ["dev", "prod"]
-    build: ./authservice
+    build:
+      context: ./
+      dockerfile: authservice/Dockerfile
     depends_on:
       - mongodb
     ports:
@@ -26,13 +29,15 @@ services:
       CRYPT_SECRET: ${CRYPT_SECRET}
       JWT_SECRET: ${JWT_SECRET}
       PORT: 8002
-      MONGODB_URI: mongodb://mongodb:27017/userdb
+      MONGODB_URI: mongodb://mongodb:27017/wichat
 
   statservice:
     container_name: statservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/statservice:latest
     profiles: ["dev", "prod"]
-    build: ./statservice
+    build:
+      context: ./
+      dockerfile: statservice/Dockerfile
     depends_on:
       - mongodb
     ports:
@@ -42,7 +47,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8003
-      MONGODB_URI: mongodb://mongodb:27017/userdb
+      MONGODB_URI: mongodb://mongodb:27017/wichat
 
   llmservice:
     container_name: llmservice-wichat_en1c
@@ -62,7 +67,9 @@ services:
     container_name: gatewayservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/gatewayservice:latest
     profiles: ["dev", "prod"]
-    build: ./gatewayservice
+    build:
+      context: ./
+      dockerfile: gatewayservice/Dockerfile
     depends_on:
       - authservice
       - gameservice
