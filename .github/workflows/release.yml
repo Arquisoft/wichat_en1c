@@ -159,7 +159,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: gameservice
+          dockerfile: gameservice/Dockerfile
 
   docker-push-questionservice:
     name: Push QuestionService Docker Image to GitHub Packages
