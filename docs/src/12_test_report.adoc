@@ -24,3 +24,22 @@ Integration tests were written using the *Cucumber* framework, and *Jest* as the
 A total of *four sets of tests* were created to ensure each of the *main features* of the application are covered and tested.
 
 These tests allow verifying that the system behaves as expected when *all components interact together*.
+
+=== Load tests
+
+Load tests were written using the *Gatling* framework, which is a popular testing framework for load testing.
+
+A load test comprising *all the features except for custom games* was created and run by *20 active users* at a time. 
+Overall the test output was *positive*, as the system was able to handle the most of the load without issues.
+
+image::tests/load_test.png[Load Test Report]
+
+- We detected that the question service struggled with *getting the first question*, which took *>1200ms* almost half of the time. The question service should be improved to be able to handle more requests.
+
+image::tests/slow_questions.png[Slow Questions Issue]
+
+- Also, we detected that serving the background video stream was a bottleneck, so it should be moved to an external *CDN* to alliviate the load on the *WebApp*.
+
+image::tests/slow_video.png[Slow Video Issue]
+
+
