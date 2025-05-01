@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8000
     description: Development server
-  - url: http://4.251.8.219:8000
+  - url: http://wichaten1c.sytes.net:8000
     description: Production server
 
 tags:
@@ -112,6 +112,48 @@ paths:
           $ref: "#/components/responses/400"
 
   # Game
+  /game/config:
+    post:
+      tags: [🔐 Game (/game)]
+      summary: Configures a new game.
+      description: Starts a new game with a configuration or default configuration.
+      operationId: gameConfig
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      requestBody:
+        description: Custom game configuration.
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/gameConfig"
+      responses:
+        "200":
+          description: Successful game configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rounds:
+                    type: integer
+                    description: Number of rounds in the game.
+                    example: 3
+                    min: 1
+                  time:
+                    type: integer
+                    description: Time limit for each question in seconds.
+                    example: 100
+                    min: 1
+                  hints:
+                    type: integer
+                    description: Number of hints available for each question.
+                    example: 3
+                    min: 0
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
   /game/question:
     get:
       tags: [🔐 Game (/game)]
@@ -213,21 +255,6 @@ paths:
         "401":
           description: Unauthorized. Invalid token.
           $ref: "#/components/responses/401"
-  /game/quit:
-    post:
-      tags: [🔐 Game (/game)]
-      summary: Quits the game.
-      description: Quits the game.
-      operationId: gameQuit
-      security:
-        - token: []
-      # * Username is appended by the Gateway service to the request.
-      responses:
-        "200":
-          description: Successful quit.
-        "401":
-          description: Unauthorized. Invalid token.
-          $ref: "#/components/responses/401"
 
   # Questions
   /questions/question:
@@ -314,7 +341,7 @@ paths:
         - $ref: "#/components/parameters/size"
       responses:
         "200":
-          description: Successful retrieval of user statistics.
+          description: Successful retrieval of user games.
           content:
             application/json:
               schema:
@@ -444,7 +471,6 @@ components:
               message:
                 description: Error message.
                 const: Unauthorized
-
     "404":
       description: Not found.
       content:
@@ -457,7 +483,6 @@ components:
               message:
                 description: Error message.
                 const: Not Found
-
     "400":
       description: Bad request. Missing or invalid parameters.
       content:
@@ -655,11 +680,18 @@ components:
           type: object
           description: Game configuration.
           properties:
-            mode:
-              type: enum
-              description: Game mode.
-              example: musicians
-              enum:
+            modes:
+              type: array
+              description: Game modes.
+              items:
+                type: string
+                enum:
+                  - musician
+                  - scientist
+                  - actor
+                  - painter
+                  - writer
+              example:
                 - musicians
             rounds:
               type: integer
@@ -676,6 +708,10 @@ components:
               description: Number of hints available for each question.
               example: 3
               min: 0
+            isAIGame:
+              type: boolean
+              description: Indicates whether the game is an AI game.
+              example: false
         hints:
           type: integer
           description: Number of hints used in the game.
@@ -743,6 +779,42 @@ components:
                 nullable: true
                 description: Index of the selected answer option.
                 example: 0
+    gameConfig:
+      type: object
+      description: Game configuration.
+      properties:
+        modes:
+          type: array
+          description: Game modes.
+          items:
+            type: string
+            enum:
+              - musician
+              - scientist
+              - actor
+              - painter
+              - writer
+          example:
+            - musicians
+        rounds:
+          type: integer
+          description: Number of rounds in the game.
+          example: 3
+          min: 1
+        time:
+          type: integer
+          description: Time limit for each question in seconds.
+          example: 100
+          min: 1
+        hints:
+          type: integer
+          description: Number of hints available for each question.
+          example: 3
+          min: 0
+        isAIGame:
+          type: boolean
+          description: Indicates whether the game is an AI game.
+          example: false
     gameQuestion:
       type: object
       description: Question as sent by the Game Service.
@@ -764,7 +836,6 @@ components:
           example:
             - Answer 1
             - Answer 2
-
     question:
       type: object
       description: Complete question with answer.
