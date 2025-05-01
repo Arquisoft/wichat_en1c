@@ -22,11 +22,12 @@ module.exports = (app) => {
         return res.status(200).send();
     });
 
-    app.get('/game/config', async (req, res) => {
+    app.post('/game/config', async (req, res) => {
         // Get the username
-        const { username } = req.body;
+        const { username, isAIGame } = req.body;
         if (!username)
             return res.status(400).json({ error: 'Username must be sent' });
+
 
         cache.quitGame(username); // KEEP THIS
         const gameConfig = {
@@ -34,7 +35,7 @@ module.exports = (app) => {
             rounds: config.rounds,
             hints: config.hints,
             modes: config.modes,
-            isAIGame: false
+            isAIGame: isAIGame
         }
         cache.addUser(username, gameConfig);
         res.json({
@@ -42,5 +43,32 @@ module.exports = (app) => {
             rounds: gameConfig.rounds,
             hints: gameConfig.hints
         });
+
+        // Possible fix implementation:
+        /*
+        let userConfig;
+
+        try {
+            // Obtener la configuración previa del usuario
+            userConfig = cache.getUserConfig(username);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+
+        userConfig.time = userConfig.time ? userConfig.time : config.time;
+        userConfig.rounds = userConfig.rounds ? userConfig.rounds : config.rounds;
+        userConfig.hints = userConfig.hints ? userConfig.hints : config.hints;
+        userConfig.modes = userConfig.modes ? userConfig.modes : config.modes;
+
+        if (isAIGame && isAIGame !== undefined) {
+            userConfig.isAIGame = isAIGame;
+        }else{
+            userConfig.isAIGame = config.isAIGame;
+        }
+
+        cache.addUser(username, userConfig);
+
+        res.json({ userConfig});
+        */
     });
 };

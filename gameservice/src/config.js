@@ -4,5 +4,6 @@ module.exports = {
     time: 20,
     rounds: 3,
     hints: 3,
-    modes: ["musician", "scientist", "actor", "painter", "writer"]
+    modes: ["musician", "scientist", "actor", "painter", "writer"],
+    isAIGame: false
 };

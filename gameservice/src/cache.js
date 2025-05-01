@@ -11,31 +11,32 @@ module.exports = {
         // Get current time
         const now = new Date().toISOString();
 
-        // Get current game for user
-        let userGame = cache.get(username);
-
-        // If there`s no current game for user, create one
-        if (!userGame) {
-            cache.set(username, {
-                username,
-                game: {
-                    time: {
-                        started: now,
-                        finished: null,
-                    },
-                    config: {
-                        modes: gameConfig.modes,
-                        rounds: gameConfig.rounds,
-                        time: gameConfig.time,
-                        hints: gameConfig.hints
-                    },
-                    hints: 0,
-                    questions: []
-                },
-                usedHints: [],
-                isAIGame: gameConfig.isAIGame
-            });
+        // Delete existing user game if exists
+        if (cache.has(username)) {
+            cache.delete(username);
         }
+
+        // Set new user game values
+        cache.set(username, {
+            username,
+            game: {
+                time: {
+                    started: now,
+                    finished: null,
+                },
+                config: {
+                    modes: gameConfig.modes,
+                    rounds: gameConfig.rounds,
+                    time: gameConfig.time,
+                    hints: gameConfig.hints
+                },
+                hints: 0,
+                questions: []
+            },
+            usedHints: [],
+            isAIGame: gameConfig.isAIGame
+        });
+
     },
 
     addQuestion(username, questionData) {
@@ -102,7 +103,7 @@ module.exports = {
 
         // Remove used hints and AI option and get user game data to send
         const { usedHints, isAIGame, ...gameData } = userGame;
-        gameData.game.config.isAIGame=isAIGame;
+        gameData.game.config.isAIGame = isAIGame;
 
         // Delete data from cache
         cache.delete(username);
@@ -143,7 +144,7 @@ module.exports = {
         userGame.usedHints.push(hint);
     },
 
-    getRandomMode(username){
+    getRandomMode(username) {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
@@ -159,7 +160,7 @@ module.exports = {
         return randomMode;
     },
 
-    isAIEnabledForUser(username){
+    isAIEnabledForUser(username) {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
@@ -168,7 +169,24 @@ module.exports = {
         return isAIEnabledUser;
     },
 
-    getCache(){
+    getCache() {
         return cache;
+    },
+
+    getUserConfig(username) {
+        // Get current game for user
+        const userGame = cache.get(username);
+        if (!userGame)
+            throw new Error('Could not get config values from the user');
+
+        const config = {
+            time: userGame.game.config.time,
+            rounds: userGame.game.config.rounds,
+            hints: userGame.game.config.hints,
+            modes: userGame.game.config.modes,
+            isAIGame: userGame.isAIGame
+        };
+
+        return config;
     }
 };
