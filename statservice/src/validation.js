@@ -75,12 +75,18 @@ module.exports = {
       body("game.config", messages.missing)
         .isObject()
         .withMessage(messages.notObject),
-      body("game.config.mode", messages.missing)
+      body("game.config.isAIGame", messages.missing)
+        .isBoolean()
+        .withMessage(messages.notValid),
+      body("game.config.modes", messages.missing)
+        .isArray()
+        .withMessage(messages.notValidArray),
+      body("game.config.modes.*", messages.missing)
         .isString()
         .withMessage(messages.notString)
         .toLowerCase()
         .isIn(config.game.config.modes)
-        .withMessage(`Not a valid mode ${config.game.config.modes.toString()}`),
+        .withMessage(`${messages.notValid}. Valid options are: ${config.game.config.modes.join(", ")}`),
       body("game.config.rounds", messages.missing)
         .isInt({ min: config.game.config.rounds.min })
         .withMessage(messages.notValidNumber),

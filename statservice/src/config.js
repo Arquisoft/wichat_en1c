@@ -7,7 +7,7 @@ module.exports = {
   mongoUri: process.env.MONGODB_URI ?? "mongodb://localhost:27017/wichat",
   game: {
     config: {
-      modes: ["musicians"],
+      modes: ["musician", "scientist", "actor", "painter", "writer"],
       rounds: { min: 1 },
       time: { min: 10 },
       hints: { min: 0 },

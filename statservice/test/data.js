@@ -11,10 +11,11 @@ const game = {
     finished: date4,
   },
   config: {
-    mode: "musicians",
+    modes: ["musician"],
     rounds: 2,
     time: 100,
     hints: 3,
+    isAIGame: false,
   },
   hints: 2,
   questions: [
