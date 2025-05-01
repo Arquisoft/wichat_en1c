@@ -21,7 +21,7 @@ For a more detailed report about the coverage, refer to the following https://so
 
 Integration tests were written using the *Cucumber* framework, and *Jest* as the execution platform. 
 
-A total of *four sets of tests* were created to ensure each of the *main features* of the application are covered and tested.
+A total of *five sets of tests* were created to ensure *all features* of the application are covered and tested.
 
 These tests allow verifying that the system behaves as expected when *all components interact together*.
 
@@ -30,7 +30,7 @@ These tests allow verifying that the system behaves as expected when *all compon
 Load tests were written using the *Gatling* framework, which is a popular testing framework for load testing.
 
 A load test comprising *all the features except for custom games* was created and run by *20 active users* at a time. 
-Overall the test output was *positive*, as the system was able to handle the most of the load without issues.
+Overall the test output was *positive*, as the system was able to handle the most of the load without issues, thus proving the "performance" quality attribute.
 
 image::tests/load_test.png[Load Test Report]
 
