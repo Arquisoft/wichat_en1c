@@ -30,9 +30,15 @@ These tests allow verifying that the system behaves as expected when *all compon
 Load tests were written using the *Gatling* framework, which is a popular testing framework for load testing.
 
 A load test comprising *all the features except for custom games* was created and run by *20 active users* at a time. 
-Overall the test output was *positive*, as the system was able to handle the most of the load without issues, thus proving the "performance" quality attribute.
+Overall the test output was *positive*, as the system was able to handle the most of the load without issues, thus proving the *"performance" quality attribute*. 
+
+The last test report can be found in the https://github.com/Arquisoft/wichat_en1c/tree/master/tests/load/lastRun[repository].
 
 image::tests/load_test.png[Load Test Report]
+
+==== Issues found
+
+Some performance issues were detected during the load tests, and an https://github.com/Arquisoft/wichat_en1c/issues/137[issue] in the repository was created to track them:
 
 - We detected that the question service struggled with *getting the first question*, which took *>1200ms* almost half of the time. The question service should be improved to be able to handle more requests.
 
