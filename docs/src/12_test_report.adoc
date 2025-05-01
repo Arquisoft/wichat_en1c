@@ -1,0 +1,26 @@
+ifndef::imagesdir[:imagesdir: ../images]
+
+[[section-test-report]]
+== Test Report
+
+Our application has been tested using the following methods:
+
+=== Unit tests
+
+Unit tests were written to *test each microservice* independently, by mocking the dependent microservices and ensure each microservice works as expected.
+
+The unit tests were written using the *Jest* framework, which is a popular testing framework for JavaScript applications.
+
+==== Coverage
+
+These tests have a *minimum required coverage of >80%* of the codebase which, at the time of writing this report is, *86.8%*.
+
+For a more detailed report about the coverage, refer to the following https://sonarcloud.io/component_measures?metric=coverage&view=list&id=Arquisoft_wichat_en1c[link].
+
+=== Acceptance / integration tests (E2E tests)
+
+Integration tests were written using the *Cucumber* framework, and *Jest* as the execution platform. 
+
+A total of *four sets of tests* were created to ensure each of the *main features* of the application are covered and tested.
+
+These tests allow verifying that the system behaves as expected when *all components interact together*.
