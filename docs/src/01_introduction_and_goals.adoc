@@ -31,6 +31,7 @@ WiChat will expand the existing quiz system by:
 - Introducing an AI-powered hint system for interactive assistance.
 - Keeping automation of questions using Wikidata, minimizing manual effort.
 - Ensuring accessibility through a web-based platform.
+- Add additional features such as custom games and an AI vs user game mode.
 Additionally, the system should be designed with extensibility in mind, allowing for future improvements.
 
 **Driving Forces**

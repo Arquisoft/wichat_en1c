@@ -1,0 +1,113 @@
+@startuml
+box "Frontend" #D4F1F4
+actor User
+participant WebApp
+end box
+box "Backend" #CCE2F9
+participant Gateway
+participant GameService
+participant QuestionService
+participant StatsService
+participant LLMService
+end box
+box "External services" #FFE5D4
+participant WikiData
+participant LLM
+end box
+database Database
+
+== Start Game ==
+User -> WebApp: Select gamemode
+activate WebApp
+alt game is custom
+WebApp --> User: Request game configuration
+User -> WebApp: Configure game
+end
+WebApp -> Gateway: Request game config 
+activate Gateway
+Gateway -> GameService
+activate GameService
+GameService --> Gateway: Return configuration
+Gateway --> WebApp
+WebApp -> Gateway: Request question
+Gateway -> GameService
+GameService -> QuestionService
+activate QuestionService
+QuestionService -> WikiData: Retrieve data to build questions
+activate WikiData
+WikiData --> QuestionService: Data for questions
+deactivate WikiData
+QuestionService --> GameService: Generated question & answer
+deactivate QuestionService
+GameService --> Gateway: Stripped question
+deactivate GameService
+Gateway --> WebApp
+deactivate Gateway
+WebApp --> User: Display question and options
+
+deactivate WebApp
+
+== Ask for hint ==
+User -> WebApp: Request hint
+activate WebApp
+WebApp -> Gateway: Request hint from AI
+activate Gateway
+Gateway -> GameService
+activate GameService
+GameService -> LLMService: Craft and send prompt
+activate LLMService
+LLMService -> LLM
+activate LLM
+LLM --> LLMService: Generated hint
+deactivate LLM
+LLMService --> GameService
+deactivate LLMService
+GameService --> Gateway
+deactivate GameService
+Gateway --> WebApp
+deactivate Gateway
+WebApp --> User: Display hint
+deactivate WebApp
+
+== Selecting an answer ==
+User -> WebApp: Selects an answer
+activate WebApp
+WebApp -> Gateway: Sends selected answer
+activate Gateway
+Gateway -> GameService
+activate GameService
+GameService --> Gateway: Validation and correct answer
+deactivate GameService
+Gateway --> WebApp
+deactivate Gateway
+WebApp --> User: Shows results
+deactivate WebApp
+note left
+Another question 
+will be requested 
+as in "StartGame"
+end note
+
+== Finish game ==
+User -> WebApp: Answers last question
+activate WebApp
+WebApp -> Gateway: Request finish game
+activate Gateway
+Gateway -> GameService
+activate GameService
+GameService -> StatsService: Saves games data
+activate StatsService
+StatsService -> Database: Saves data
+activate Database
+Database --> StatsService: Data saved
+deactivate Database
+StatsService --> GameService: All ok!
+deactivate StatsService
+GameService --> Gateway: Finishes game
+deactivate GameService
+Gateway --> WebApp
+deactivate Gateway
+WebApp --> User: Shows results
+deactivate WebApp
+
+@enduml
