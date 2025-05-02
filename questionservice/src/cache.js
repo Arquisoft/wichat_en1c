@@ -21,7 +21,7 @@ async function refillCache(...categories) {
     const catCache = questionCache[category];
 
     if (catCache.blocked || catCache.questions.length >= config.refillThreshold)
-      return;
+      continue;
 
     catCache.blocked = true;
     for await (const question of generateQuestions(
