@@ -42,7 +42,11 @@ module.exports = (app) => {
         ${hintsPromptText} 
         Please, generate a response for the user's question to give the user a hint that is not the correct answer to the question directly. 
         Please, answer in the same language as the question.
-        The hint must be a single word or a short sentence, without any other information.
+        The hint must be a short sentence, and the main objective is to answer the question of the user.
+        Examples of things you should not do: 
+        Answer->"Lewis Clark", Question->"Name of the father?", Hint->"Paul Clark" (You are giving the user the answer because you included a part of the name)
+        When you give a hint, never include directly a key word from the answer like the surname in this case. You are prohibited to include the Correct Option.
+        In case the question is not understandable or you cannot answer it, give a normal hint.
         `;
 
         // Send prompt to LLM Service

@@ -5,17 +5,32 @@ import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { GameContext } from "../GameContext"
 import { CheckCircle as CorrectIcon, Cancel as IncorrectIcon } from "@mui/icons-material"
+import i18n from "../i18n"
 
 const EndGame = () => {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const buttonRef = useRef(null) // Create a reference to the button
 
-  const { setGameEnded, correctAnswers, incorrectAnswers, resetGameStats } = useContext(GameContext)
+  let AIResultText = null;
+
+  const { setGameEnded, correctAnswers, incorrectAnswers, AIcorrect, resetGameStats } = useContext(GameContext)
 
   const handleReturnHome = (e) => {
     e.preventDefault()
     navigate("/")
+  }
+
+  const translateAIResults = () => {
+    if (AIcorrect > -1) {
+      if (correctAnswers > AIcorrect) {
+        AIResultText = t("youWonAI", { AIcorrect: AIcorrect });
+      } else if (correctAnswers < AIcorrect) {
+        AIResultText = t("youLostAI", { AIcorrect: AIcorrect });
+      } else {
+        AIResultText = t("tiedWithAI", { AIcorrect: AIcorrect });
+      }
+    }
   }
 
   useEffect(() => {
@@ -23,14 +38,30 @@ const EndGame = () => {
       buttonRef.current.focus() // Focus on the button when the component mounts
     }
 
+    translateAIResults()
+
     return () => {
       setGameEnded(false) // Reset gameEnded when leaving the page
       resetGameStats() // Reset game statistics when leaving the page
     }
   }, [])
 
+  useEffect(() => {
+    translateAIResults()
+  }, [i18n.resolvedLanguage])
+
   const totalAnswers = correctAnswers + incorrectAnswers
   const accuracy = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0
+
+  if (AIcorrect > -1) {
+    if (correctAnswers > AIcorrect) {
+      AIResultText = t("youWonAI", { AIcorrect: AIcorrect });
+    } else if (correctAnswers < AIcorrect) {
+      AIResultText = t("youLostAI", { AIcorrect: AIcorrect });
+    } else {
+      AIResultText = t("tiedWithAI", { AIcorrect: AIcorrect });
+    }
+  }
 
   return (
     <Container component="main" maxWidth="md" sx={{ textAlign: "center", mt: 20 }}>
@@ -48,6 +79,11 @@ const EndGame = () => {
             <Typography variant="h6" gutterBottom>
               {t("gameResults")}
             </Typography>
+            {AIResultText && (
+              <Typography variant="body2" color={correctAnswers > AIcorrect ? "success.main" : correctAnswers < AIcorrect ? "error.main" : "text.secondary"} sx={{ mb: 1 }}>
+                {AIResultText}
+              </Typography>
+            )}
           </Grid>
 
           {/* Correct answers */}

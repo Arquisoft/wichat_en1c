@@ -16,7 +16,8 @@ const llmConfigs = {
     transformRequest: (question) => ({
       contents: [{ parts: [{ text: question }] }]
     }),
-    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text
+    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text,
+    apiKey: process.env.LLM_API_KEY,
   },
   empathy: {
     url: () => 'https://empathyai.prod.empathy.co/v1/chat/completions',
@@ -31,7 +32,8 @@ const llmConfigs = {
     headers: (apiKey) => ({
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
-    })
+    }),
+    apiKey: process.env.LLM_API_KEY_EMPATHY,
   }
 };
 
@@ -91,7 +93,7 @@ app.post('/ask', async (req, res) => {
 
     const { question, model } = req.body;
     //load the api key from an environment variable
-    const apiKey = process.env.LLM_API_KEY;
+    const apiKey = llmConfigs[model].apiKey;
     
     if (!apiKey) {
       return res.status(400).json({ error: 'API key is missing.' });

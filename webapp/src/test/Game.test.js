@@ -36,7 +36,7 @@ jest.setTimeout(20000);
 
 describe("Game Page Tests", () => {
   beforeEach(() => {
-    // Mockear axios para devolver los datos de la configuración del juego
+    // Mock axios
     axios.get.mockImplementation((url) => {
       if (url.includes("/game/question")) {
         return Promise.resolve({ data: mockQuestionData });

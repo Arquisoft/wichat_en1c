@@ -51,7 +51,7 @@ const mockCategories = {
     { id: "actor", name: "actor" },
     { id: "painter", name: "painter" },
     { id: "writer", name: "writer" },
-    { id: "scientist", name: "scientist" },
+    { id: "scientist", name: "scientist" }, 
   ],
   es: [
     { id: "musician", name: "músico" },
@@ -60,12 +60,6 @@ const mockCategories = {
     { id: "writer", name: "escritor" },
     { id: "scientist", name: "científico" },
   ],
-}
-
-// Helper function to translate category by ID
-const translateCategoryById = (id, language) => {
-  const category = mockCategories[language].find((cat) => cat.id === id)
-  return category ? category.name : id
 }
 
 const CustomGame = () => {
@@ -87,8 +81,13 @@ const CustomGame = () => {
   const [availableCategories, setAvailableCategories] = useState([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
 
-  // Initialize categories from mock data
+  // Initialize categories from mock data and translate error
   useEffect(() => {
+    // Error translation
+    if(error != "") {
+      setError(t("customErr"));
+    }
+
     // Get all category IDs
     const allCategoryIds = mockCategories.en.map((cat) => cat.id)
 
@@ -200,7 +199,7 @@ const CustomGame = () => {
       navigate(isAIGame ? "/game-ai" : "/game")
     } catch (error) {
       console.error("Error starting custom game:", error)
-      setError(error.response?.data?.message || "Failed to start custom game")
+      setError(t("customErr"))
     } finally {
       setIsSubmitting(false)
     }

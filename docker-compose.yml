@@ -62,6 +62,7 @@ services:
     environment:
       NODE_ENV: production
       LLM_API_KEY: ${LLM_API_KEY}
+      LLM_API_KEY_EMPATHY: ${LLM_API_KEY_EMPATHY}
 
   gatewayservice:
     container_name: gatewayservice-wichat_en1c

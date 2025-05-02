@@ -53,7 +53,9 @@ const Game = ({ AImode = false }) => {
     setGameEnded,
     setCorrectAnswers,
     setIncorrectAnswers,
+    setAIcorrect,
     hintHistory,
+    AIcorrect,
     addHintToHistory,
     resetGameStats,
     setHintHistory,
@@ -83,6 +85,9 @@ const Game = ({ AImode = false }) => {
 
     // Reset game statistics when starting a new game
     resetGameStats()
+
+    if(AImode)
+      setAIcorrect((prev) => prev + 1)
   }, [])
 
   // Fetch question data at the start of each round
@@ -92,6 +97,8 @@ const Game = ({ AImode = false }) => {
       try {
         const response = await axios.get(`${apiEndpoint}/game/question`)
         setQuestionData(response.data)
+        if(response.data.answerAI)
+          setAIcorrect((prev) => prev + 1)
       } catch (error) {
         console.error("Error fetching question:", error)
         navigate("/")
