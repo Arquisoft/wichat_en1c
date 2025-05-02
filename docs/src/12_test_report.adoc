@@ -44,8 +44,14 @@ Some performance issues were detected during the load tests, and an https://gith
 
 image::tests/slow_questions.png[Slow Questions Issue]
 
+To solve it the queries to *WikiData were optimized* which improved a lot the timings.
+
+image::tests/fast_question.png[Solved Question Issue]
+
 - Also, we detected that serving the background video stream was a bottleneck, so it should be moved to an external *CDN* to alliviate the load on the *WebApp*.
 
 image::tests/slow_video.png[Slow Video Issue]
+
+We currently *don't have means* for solving this issue, but we are aware of it and will try to solve it in the future.
 
 

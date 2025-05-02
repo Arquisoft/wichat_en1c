@@ -846,10 +846,14 @@ components:
       type: object
       description: Question as sent by the Game Service.
       properties:
-        question:
+        question_en:
           type: string
-          description: Question.
+          description: Question in English.
           example: Who is the musician shown in the picture?
+        question_es:
+          type: string
+          description: Question in Spanish.
+          example: ¿Quién es el músico que aparece en la imagen?
         image:
           type: string
           format: uri
@@ -867,10 +871,14 @@ components:
       type: object
       description: Complete question with answer.
       properties:
-        question:
+        question_en:
           type: string
-          description: Question.
+          description: Question in English.
           example: Who is the musician shown in the picture?
+        question_es:
+          type: string
+          description: Question in Spanish.
+          example: ¿Quién es el músico que aparece en la imagen?
         image:
           type: string
           format: uri
