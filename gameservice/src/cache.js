@@ -1,11 +1,13 @@
 // Modules
-const config = require("./config");
+const config = require('./config');
+const crypto = require('crypto');
 
 // Cache with game data of all the current users playing
 const cache = new Map();
 
+
 module.exports = {
-    addQuestion(username, questionData) {
+    addUser(username, gameConfig) {
         // Get current time
         const now = new Date().toISOString();
 
@@ -22,34 +24,40 @@ module.exports = {
                         finished: null,
                     },
                     config: {
-                        mode: "musicians",
-                        rounds: config.rounds,
-                        time: config.time,
-                        hints: config.hints
+                        modes: gameConfig.modes,
+                        rounds: gameConfig.rounds,
+                        time: gameConfig.time,
+                        hints: gameConfig.hints
                     },
                     hints: 0,
                     questions: []
                 },
-                usedHints: []
+                usedHints: [],
+                isAIGame: gameConfig.isAIGame
             });
-            userGame = cache.get(username);
         }
+    },
 
-        console.log(questionData)
+    addQuestion(username, questionData) {
+        // Get current time
+        const now = new Date().toISOString();
+
+        // Get current game for user
+        let userGame = cache.get(username);
 
         // Save new question data 
         userGame.game.questions.push({
-          time: {
-            started: now,
-            finished: null,
-          },
-          question: questionData.question,
-          image: questionData.image,
-          answers: {
-            opts: questionData.options,
-            selected: null,
-            correct: questionData.options.indexOf(questionData.correctAnswer),
-          },
+            time: {
+                started: now,
+                finished: null,
+            },
+            question: questionData.question,
+            image: questionData.image,
+            answers: {
+                opts: questionData.options,
+                selected: null,
+                correct: questionData.options.indexOf(questionData.correctAnswer),
+            },
         });
     },
 
@@ -92,14 +100,15 @@ module.exports = {
         // Save finished game time
         userGame.game.time.finished = new Date().toISOString();
 
-        // Remove used hints and get user game data to send
-        const { usedHints, ...gameWithoutHints } = userGame;
+        // Remove used hints and AI option and get user game data to send
+        const { usedHints, isAIGame, ...gameData } = userGame;
+        gameData.game.config.isAIGame=isAIGame;
 
         // Delete data from cache
         cache.delete(username);
 
         // Return the user game data
-        return gameWithoutHints;
+        return gameData;
     },
 
     quitGame(username) {
@@ -114,11 +123,11 @@ module.exports = {
             throw new Error('Could not get current question data for the user');
         const currentQuestion = userGame.game.questions[userGame.game.questions.length - 1];
         const data = {
-          question: currentQuestion.question,
-          options: currentQuestion.answers.opts,
-          correctAnswer:
-            currentQuestion.answers.opts[currentQuestion.answers.correct],
-          hints: userGame.usedHints,
+            question: currentQuestion.question,
+            options: currentQuestion.answers.opts,
+            correctAnswer:
+                currentQuestion.answers.opts[currentQuestion.answers.correct],
+            hints: userGame.usedHints,
         };
         return data;
     },
@@ -132,6 +141,34 @@ module.exports = {
         // Save hint in temporal cache
         userGame.game.hints++;
         userGame.usedHints.push(hint);
-    }
+    },
 
+    getRandomMode(username){
+        // Get current game for user
+        const userGame = cache.get(username);
+        if (!userGame)
+            throw new Error('Could not get modes from the user');
+        const userModes = userGame.game.config.modes;
+
+        // Get secure random index
+        const randomBuffer = crypto.randomBytes(1);
+        const randomIndex = randomBuffer.readUInt8(0) % userModes.length;
+
+        // Get random mode
+        const randomMode = userModes[randomIndex];
+        return randomMode;
+    },
+
+    isAIEnabledForUser(username){
+        // Get current game for user
+        const userGame = cache.get(username);
+        if (!userGame)
+            throw new Error('Could not get AI enabled from the user');
+        const isAIEnabledUser = userGame.isAIGame;
+        return isAIEnabledUser;
+    },
+
+    getCache(){
+        return cache;
+    }
 };

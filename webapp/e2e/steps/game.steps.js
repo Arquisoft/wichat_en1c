@@ -19,6 +19,7 @@ defineFeature(feature, (test) => {
       ? await puppeteer.launch({
           headless: "new",
           args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          slowMo: 30,
         })
       : await puppeteer.launch({ headless: false, slowMo: 20 });
     page = await browser.newPage();

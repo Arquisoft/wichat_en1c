@@ -23,19 +23,137 @@ describe("config.js", () => {
       time: config.time,
       rounds: config.rounds,
       hints: config.hints,
+      modes: config.modes
     });
   });
 });
 
-describe("/game/config", () => {
-  test("should return game configuration values", async () => {
-    const response = await request(app).get("/game/config");
+// GAME CUSTOM
+describe("/game/custom", () => {
+  beforeEach(() => {
+    cache.quitGame.mockReset();
+    cache.addUser.mockReset();
+  });
+
+  test("should return 400 if username is not sent", async () => {
+    const response = await request(app)
+      .post("/game/custom")
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Username must be sent");
+  });
+
+  test("should call cache.quitGame and cache.addUser if username is provided, categories non-empty", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+    const gameConfig = {
+      time: 30,
+      rounds: 5,
+      hints: 3,
+      categories: ["musicians", "artists"],
+      isAIGame: true
+    };
+
+    const response = await request(app)
+      .post("/game/custom")
+      .send({
+        username: username,
+        time: gameConfig.time,
+        rounds: gameConfig.rounds,
+        hints: gameConfig.hints,
+        categories: gameConfig.categories,
+        isAIGame: gameConfig.isAIGame
+      });
 
     expect(response.status).toBe(200);
-    expect(response.body.port).toBe(8001);
-    expect(response.body.time).toBe(config.time);
-    expect(response.body.rounds).toBe(config.rounds);
-    expect(response.body.hints).toBe(config.hints);
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: gameConfig.time,
+      rounds: gameConfig.rounds,
+      hints: gameConfig.hints,
+      modes: gameConfig.categories,
+      isAIGame: gameConfig.isAIGame
+    });
+  });
+
+  test("should call cache.quitGame and cache.addUser if username is provided categories empty", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+    const gameConfig = {
+      time: 30,
+      rounds: 5,
+      hints: 3,
+      categories: [],
+      isAIGame: true
+    };
+
+    const response = await request(app)
+      .post("/game/custom")
+      .send({
+        username: username,
+        time: gameConfig.time,
+        rounds: gameConfig.rounds,
+        hints: gameConfig.hints,
+        categories: gameConfig.categories,
+        isAIGame: gameConfig.isAIGame
+      });
+
+    expect(response.status).toBe(200);
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: gameConfig.time,
+      rounds: gameConfig.rounds,
+      hints: gameConfig.hints,
+      modes: config.modes,
+      isAIGame: gameConfig.isAIGame
+    });
+  });
+});
+
+// GAME CONFIG
+describe("/game/config", () => {
+  beforeEach(() => {
+    cache.quitGame.mockReset();
+    cache.addUser.mockReset();
+  });
+
+  test("should return 400 if username is not sent", async () => {
+    const response = await request(app)
+      .get("/game/config")
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Username must be sent");
+  });
+
+  test("should return game config and call cache.quitGame and cache.addUser", async () => {
+    cache.quitGame.mockImplementation(() => { });
+    cache.addUser.mockImplementation(() => { });
+    const username = "username";
+
+    const response = await request(app)
+      .get("/game/config")
+      .send({ username: username });
+
+    expect(response.status).toBe(200);
+
+    expect(cache.quitGame).toHaveBeenCalledWith(username);
+    expect(cache.addUser).toHaveBeenCalledWith(username, {
+      time: config.time,
+      rounds: config.rounds,
+      hints: config.hints,
+      modes: config.modes,
+      isAIGame: false
+    });
+
+    expect(response.body).toEqual({
+      time: config.time,
+      rounds: config.rounds,
+      hints: config.hints
+    });
   });
 });
 
@@ -43,7 +161,10 @@ describe("/game/config", () => {
 describe("/game/question", () => {
   beforeEach(() => {
     axios.get.mockReset();
+    axios.post.mockReset();
     cache.addQuestion.mockReset();
+    cache.isAIEnabledForUser.mockReset();
+    cache.getRandomMode.mockReset();
   });
 
   test("should return valid question", async () => {
@@ -56,7 +177,7 @@ describe("/game/question", () => {
 
     axios.get.mockResolvedValueOnce({ data: mockQuestion });
 
-    cache.addQuestion.mockImplementationOnce(() => {});
+    cache.addQuestion.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .get("/game/question")
@@ -92,7 +213,7 @@ describe("/game/question", () => {
       .send({ username: "user" });
 
     expect(response.status).toBe(500);
-    expect(response.body.error).toBe("Could not obtain question from service");
+    expect(response.body.error).toBe("There was an error when obtaining the question");
   });
 
   test("should return 500 if getQuestion() returns null", async () => {
@@ -104,6 +225,57 @@ describe("/game/question", () => {
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe("Could not obtain question from service");
+  });
+
+  test("should return 500 if LLM service fails", async () => {
+    const mockQuestion = {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockQuestion });
+    cache.isAIEnabledForUser.mockResolvedValueOnce(true);
+    axios.post.mockRejectedValueOnce(new Error("LLM Service Error"));
+
+    const response = await request(app)
+      .get("/game/question")
+      .send({ username: "user" });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe("There was an error when obtaining the question");
+  });
+
+  test("should return the question without AI answer if AI mode is not enabled", async () => {
+    const mockQuestion = {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockQuestion });
+    cache.isAIEnabledForUser.mockResolvedValueOnce(false);
+    cache.addQuestion.mockImplementationOnce(() => { });
+
+    const response = await request(app)
+      .get("/game/question")
+      .send({ username: "user" });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      image: "image.png",
+    });
+
+    expect(cache.addQuestion).toHaveBeenCalledWith("user", {
+      question: "Where is Madrid?",
+      options: ["Spain", "France", "Italy", "Belgium"],
+      correctOption: "Spain",
+      image: "image.png",
+    });
   });
 });
 
@@ -125,7 +297,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is not sent", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
@@ -142,7 +314,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is correct if selected answer is equal to correct answer", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
@@ -159,7 +331,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is not equal to correct answer", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
@@ -176,7 +348,7 @@ describe("/game/answer", () => {
 
   test("should return that answer is incorrect if selected answer is null", async () => {
     cache.getUserCorrectAnswer.mockResolvedValueOnce("Spain");
-    cache.answer.mockImplementationOnce(() => {});
+    cache.answer.mockImplementationOnce(() => { });
 
     const response = await request(app)
       .post("/game/answer")
