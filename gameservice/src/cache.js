@@ -11,6 +11,35 @@ module.exports = {
         // Get current time
         const now = new Date().toISOString();
 
+        // Get current game for user
+        let userGame = cache.get(username);
+
+        // If there`s no current game for user, create one
+        if (!userGame) {
+            cache.set(username, {
+                username,
+                game: {
+                    time: {
+                        started: now,
+                        finished: null,
+                    },
+                    config: {
+                        modes: gameConfig.modes,
+                        rounds: gameConfig.rounds,
+                        time: gameConfig.time,
+                        hints: gameConfig.hints
+                    },
+                    hints: 0,
+                    questions: []
+                },
+                usedHints: [],
+                isAIGame: gameConfig.isAIGame
+            });
+        }
+        /* 
+        // Get current time
+        const now = new Date().toISOString();
+
         // Delete existing user game if exists
         if (cache.has(username)) {
             cache.delete(username);
@@ -36,7 +65,7 @@ module.exports = {
             usedHints: [],
             isAIGame: gameConfig.isAIGame
         });
-
+        */
     },
 
     addQuestion(username, questionData) {
@@ -176,16 +205,25 @@ module.exports = {
     getUserConfig(username) {
         // Get current game for user
         const userGame = cache.get(username);
-        if (!userGame)
-            throw new Error('Could not get config values from the user');
-
-        const config = {
-            time: userGame.game.config.time,
-            rounds: userGame.game.config.rounds,
-            hints: userGame.game.config.hints,
-            modes: userGame.game.config.modes,
-            isAIGame: userGame.isAIGame
-        };
+        let config;
+        if (!userGame) {
+            //throw new Error('Could not get config values from the user');
+            config = {
+                time: undefined,
+                rounds: undefined,
+                hints: undefined,
+                modes: undefined,
+                isAIGame: undefined
+            };
+        } else {
+            config = {
+                time: userGame.game.config.time,
+                rounds: userGame.game.config.rounds,
+                hints: userGame.game.config.hints,
+                modes: userGame.game.config.modes,
+                isAIGame: userGame.isAIGame
+            };
+        }
 
         return config;
     }

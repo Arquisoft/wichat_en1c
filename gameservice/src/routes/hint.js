@@ -49,7 +49,8 @@ module.exports = (app) => {
         try {
             // Ask LLM
             const serviceData = {
-                question: prompt
+                question: prompt,
+                model: "gemini"
             }
             const serviceResponse = await axios.post(`${llmServiceUrl}/ask`, serviceData);
             if (serviceResponse.status !== 200)

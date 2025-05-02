@@ -97,6 +97,7 @@ const resources = {
       genericError: "Oops! Something went wrong.",
       gameResults: "Game Results",
       unanswered: "Unanswered",
+      infinite: "Infinite Mode",
     },
   },
   es: {
@@ -189,6 +190,7 @@ const resources = {
       genericError: "¡Vaya! Algo salió mal.",
       gameResults: "Resultados del Juego",
       unanswered: "Sin contestar",
+      infinite: "Modo Infinito",
     },
   },
 };

@@ -22,10 +22,11 @@ import PropTypes from "prop-types"
 import { alpha } from "@mui/material/styles"
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000"
+const INFINITE_MODE_VALUE = 999 // Special value that indicates infinite mode
 
 // Main game component
 const Game = ({ AImode = false }) => {
-  const [timeLeft, setTimeLeft] = useState(20)
+  const [timeLeft, setTimeLeft] = useState(-1)
   const [selectedOption, setSelectedOption] = useState(null)
   const [currentRound, setCurrentRound] = useState(1)
   const [isPaused, setIsPaused] = useState(false)
@@ -35,7 +36,7 @@ const Game = ({ AImode = false }) => {
 
   const [gameSettings, setGameSettings] = useState({
     rounds: 10,
-    time: 20,
+    time: -1,
     hints: 3,
   }) // Default, will be fetched
   const [questionData, setQuestionData] = useState({
@@ -69,7 +70,9 @@ const Game = ({ AImode = false }) => {
   useEffect(() => {
     const fetchGameConfig = async () => {
       try {
-        const response = await axios.get(`${apiEndpoint}/game/config`)
+        const response = await axios.post(`${apiEndpoint}/game/config`, {
+          isAIGame: AImode,
+        })
         setGameSettings(response.data)
         setTimeLeft(response.data.time) // Set initial time from config
       } catch (error) {
@@ -112,9 +115,15 @@ const Game = ({ AImode = false }) => {
         // Count timeout as incorrect answer
         setIncorrectAnswers((prev) => prev + 1)
         axios.post(`${apiEndpoint}/game/answer`, {
-          selectedAnswer: null,
-        }).catch(error => console.error("Error checking answer:", error)) 
-        handleRoundEnd()
+            selectedAnswer: null,
+          }).catch((error) => console.error("Error checking answer:", error))
+
+        // In infinite mode, end the game immediately on timeout
+        if (gameSettings.rounds === INFINITE_MODE_VALUE) {
+          setGameEnded(true)
+        } else {
+          handleRoundEnd()
+        }
       }
     }
 
@@ -157,6 +166,12 @@ const Game = ({ AImode = false }) => {
       } else {
         wrongAudio.play()
         setIncorrectAnswers((prev) => prev + 1)
+
+        // In infinite mode, end the game immediately on incorrect answer
+        if (gameSettings.rounds === INFINITE_MODE_VALUE) {
+          setGameEnded(true)
+          return // Skip the rest of the function
+        }
       }
 
       handleRoundEnd()
@@ -195,7 +210,8 @@ const Game = ({ AImode = false }) => {
 
   const handleRoundEnd = () => {
     setTimeout(() => {
-      if (currentRound >= gameSettings.rounds) {
+      // In infinite mode, never end the game based on round count
+      if (gameSettings.rounds !== INFINITE_MODE_VALUE && currentRound >= gameSettings.rounds) {
         setGameEnded(true)
       } else {
         setCurrentRound((prev) => prev + 1)
@@ -329,7 +345,9 @@ const Game = ({ AImode = false }) => {
           </Box>
 
           <Typography variant="h6" sx={{ marginLeft: 2 }} data-testid="round-info">
-            {t("round")}: {currentRound} / {gameSettings.rounds}
+            {gameSettings.rounds === INFINITE_MODE_VALUE
+              ? t("infinite")
+              : `${t("round")}: ${currentRound} / ${gameSettings.rounds}`}
           </Typography>
         </Box>
 
