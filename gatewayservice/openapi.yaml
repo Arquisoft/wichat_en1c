@@ -112,18 +112,18 @@ paths:
           $ref: "#/components/responses/400"
 
   # Game
-  /game/config:
+  /game/custom:
     post:
       tags: [🔐 Game (/game)]
-      summary: Configures a new game.
-      description: Starts a new game with a configuration or default configuration.
-      operationId: gameConfig
+      summary: Configures a new custom game.
+      description: Configures a new custom game.
+      operationId: gameCustomConfig
       security:
         - token: []
       # * Username is appended by the Gateway service to the request.
       requestBody:
         description: Custom game configuration.
-        required: false
+        required: true
         content:
           application/json:
             schema:
@@ -131,6 +131,33 @@ paths:
       responses:
         "200":
           description: Successful game configuration.
+        "401":
+          description: Unauthorized. Invalid token.
+          $ref: "#/components/responses/401"
+  /game/config:
+    post:
+      tags: [🔐 Game (/game)]
+      summary: Starts a new game.
+      description: Starts a new game with the custom or default configuration.
+      operationId: gameConfig
+      security:
+        - token: []
+      # * Username is appended by the Gateway service to the request.
+      requestBody:
+        description: Custom game configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isAIGame:
+                  type: boolean
+                  description: Indicates whether the game is an AI game.
+                  example: false
+      responses:
+        "200":
+          description: Game configuration.
           content:
             application/json:
               schema:
@@ -857,7 +884,7 @@ components:
           example:
             - Answer 1
             - Answer 2
-        answer:
+        correctAnswer:
           type: string
           description: Correct answer.
           example: Answer 1
