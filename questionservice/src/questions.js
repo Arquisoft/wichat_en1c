@@ -36,7 +36,7 @@ async function* generateQuestions(
       options: chunk
         .map((entity) => entity.name)
         .sort(() => Math.random() - 0.5),
-      correctOption: correctEntity.name,
+      correctAnswer: correctEntity.name,
       question: `Who is the ${category} born on ${birthDate.toLocaleDateString()} in the image?`,
       question_en: `Who is the ${category} born on ${birthDate.toLocaleDateString()} in the image?`,
       question_es: `¿Quién es el ${

@@ -27,7 +27,7 @@ it("Should return a question on the fly", async () => {
   expect(response.body).toHaveProperty("image");
   expect(response.body).toHaveProperty("options");
   expect(response.body.options.length).toBe(4);
-  expect(response.body).toHaveProperty("correctOption");
+  expect(response.body).toHaveProperty("correctAnswer");
   expect(response.body).toHaveProperty("category");
 });
 
@@ -39,7 +39,7 @@ it("Should return a question from cache", async () => {
   expect(response.body).toHaveProperty("image");
   expect(response.body).toHaveProperty("options");
   expect(response.body.options.length).toBe(4);
-  expect(response.body).toHaveProperty("correctOption");
+  expect(response.body).toHaveProperty("correctAnswer");
   expect(response.body).toHaveProperty("category");
 });
 
@@ -53,7 +53,7 @@ it("Should return a question from a specific category", async () => {
     expect(response.body).toHaveProperty("image");
     expect(response.body).toHaveProperty("options");
     expect(response.body.options.length).toBe(4);
-    expect(response.body).toHaveProperty("correctOption");
+    expect(response.body).toHaveProperty("correctAnswer");
     expect(response.body.category).toBe(category);
   }
 });

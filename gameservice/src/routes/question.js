@@ -28,7 +28,7 @@ module.exports = (app) => {
                 return res.status(500).json({ error: 'Could not obtain question from service' });
 
             // Create data to be saved and sent
-            const { correctOption, ...questionToSend } = questionData;
+            const { correctAnswer, ...questionToSend } = questionData;
 
             // If AI mode enabled, ask the AI for its answer
             let isAIEnabled;

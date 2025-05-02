@@ -56,7 +56,7 @@ module.exports = {
             answers: {
                 opts: questionData.options,
                 selected: null,
-                correct: questionData.options.indexOf(questionData.correctOption),
+                correct: questionData.options.indexOf(questionData.correctAnswer),
             },
         });
     },
