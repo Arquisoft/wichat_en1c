@@ -171,7 +171,7 @@ describe("/game/question", () => {
     const mockQuestion = {
       question: "Where is Madrid?",
       options: ["Spain", "France", "Italy", "Belgium"],
-      correctOption: "Spain",
+      correctAnswer: "Spain",
       image: "image.png",
     };
 
@@ -193,7 +193,7 @@ describe("/game/question", () => {
     expect(cache.addQuestion).toHaveBeenCalledWith("user", {
       question: "Where is Madrid?",
       options: ["Spain", "France", "Italy", "Belgium"],
-      correctOption: "Spain",
+      correctAnswer: "Spain",
       image: "image.png",
     });
   });
@@ -231,7 +231,7 @@ describe("/game/question", () => {
     const mockQuestion = {
       question: "Where is Madrid?",
       options: ["Spain", "France", "Italy", "Belgium"],
-      correctOption: "Spain",
+      correctAnswer: "Spain",
       image: "image.png",
     };
 
@@ -251,7 +251,7 @@ describe("/game/question", () => {
     const mockQuestion = {
       question: "Where is Madrid?",
       options: ["Spain", "France", "Italy", "Belgium"],
-      correctOption: "Spain",
+      correctAnswer: "Spain",
       image: "image.png",
     };
 
@@ -273,7 +273,7 @@ describe("/game/question", () => {
     expect(cache.addQuestion).toHaveBeenCalledWith("user", {
       question: "Where is Madrid?",
       options: ["Spain", "France", "Italy", "Belgium"],
-      correctOption: "Spain",
+      correctAnswer: "Spain",
       image: "image.png",
     });
   });
