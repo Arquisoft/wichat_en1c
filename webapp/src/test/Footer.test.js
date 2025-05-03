@@ -29,6 +29,6 @@ test("renders Footer with correct information", () => {
   expect(apiLink).toBeInTheDocument();
   expect(apiLink).toHaveAttribute(
     "href",
-    "http://4.251.8.219:8000/api-doc/"
+    "http://wichaten1c.sytes.net:8000/api-doc/"
   );
 });
