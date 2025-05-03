@@ -846,6 +846,10 @@ components:
       type: object
       description: Question as sent by the Game Service.
       properties:
+        question:
+          type: string
+          description: Default question (in English).
+          example: Who is the musician shown in the picture?
         question_en:
           type: string
           description: Question in English.
@@ -867,10 +871,22 @@ components:
           example:
             - Answer 1
             - Answer 2
+        category:
+          type: string
+          description: Category of the question.
+          example: musician
+        answerAI:
+          type: boolean
+          description: AI-generated answer.
+          example: false
     question:
       type: object
       description: Complete question with answer.
       properties:
+        question:
+          type: string
+          description: Default question (in English).
+          example: Who is the musician shown in the picture?
         question_en:
           type: string
           description: Question in English.
@@ -900,6 +916,10 @@ components:
           type: string
           description: Category of the question.
           example: musician
+        answerAI:
+          type: boolean
+          description: AI-generated answer.
+          example: false
 
   securitySchemes:
     token:

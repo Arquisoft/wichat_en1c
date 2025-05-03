@@ -60,5 +60,5 @@ endif::arc42help[]
 |===
 | Constraint    | Explanation
 | Documentation | Arc42 template is pre-selected for documentation.
-| Language      | Documentation and application will be written in english.
+| Language      | Documentation will be written in english and application will support english and spanish.
 |===
