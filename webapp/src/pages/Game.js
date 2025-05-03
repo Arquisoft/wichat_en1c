@@ -272,10 +272,10 @@ const Game = ({ AImode = false }) => {
         )
         const aiAnswer = response.data.hint
 
+        setHintsUsed(hintsUsed + 1)
         // Add to hint history
         addHintToHistory(userQuestion, aiAnswer)
 
-        setHintsUsed(hintsUsed + 1)
       } catch (error) {
         console.error("Error when trying to get hint:", error)
         const errorMessage = t("errorHint")
@@ -515,7 +515,7 @@ const Game = ({ AImode = false }) => {
           }}
         >
           {hintHistory.map((hint, index) => (
-            <Box key={index} sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
+            <Box key={`${hint}-${hintsUsed}`} sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
               {/* User question */}
               <Box sx={{ alignSelf: "flex-start", maxWidth: "80%" }}>
                 <Paper

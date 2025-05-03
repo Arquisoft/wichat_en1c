@@ -12,7 +12,6 @@ RUN npm install --ignore-scripts --omit=dev
 
 # Copy the app source code to the working directory
 COPY ./llm-service.js ./ 
-# TODO: Maybe move the src files to a src folder
 
 # Expose the port the app runs on
 EXPOSE 8005

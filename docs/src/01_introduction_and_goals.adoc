@@ -149,7 +149,7 @@ endif::arc42help[]
 | Development Company | ChattySw | They expect the project to be well-structured, maintainable, and extensible, ensuring it meets the client’s needs.
 | Previous Developer | HappySw | They expect their previous work to be properly used, ensuring compatibility and that they receive their credits when their work is used.
 | Client - RTVE | RTVE Representatives - rtve.dircom@rtve.es | They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.
-| Client - Professors (Evaluator) | Pablo González González - gonzalezgpablo@uniovi.es, Jose Emilio Labra Gayo - labra@uniovi.es, Irene Cid Rico - cidirene@uniovi.es | They expect a well-structured architectural document, clear software design decisions, and a properly implemented system.
+| Client - Professors (Evaluator) | Pablo González González - gonzalezgpablo@uniovi.es, Jose Emilio Labra Gayo - labra@uniovi.es, Irene Cid Rico - cidirene@uniovi.es, Diego Martín Fernández - martinfdiego@uniovi.es | They expect a well-structured architectural document, clear software design decisions, and a properly implemented system.
 | Users | End Users | They hope for a fun and competitive experience, with the ability to view statistics and receive personalized interactions.
 | Wikidata (Wikimedia Foundation) | Wikidata Community | They hope for correct and responsible usage of their data, including proper attribution and compliance with API policies.
 | LLM Provider | Gemini/Empathy.ai | They expect proper API usage, adherence to ethical AI practices, and avoidance of misuse that could generate misleading or inappropriate hints.
