@@ -145,7 +145,7 @@ endif::arc42help[]
 [options="header",cols="1,2,2"]
 |===
 |Role/Name|Contact|Expectations
-| Development Team | Héctor Triguero del Río - UO288992@uniovi.es, Fernando Cachon Alonso - UO295255@uniovi.es, Daniel Fernández Cabrero - UO288499@uniovi.es, Umut Dolangac - UO311846@uniovi.es, Diego Martínez Chamorro - UO294054@uniovi.es | They aim to develop a clear, scalable, and well-documented system while gaining hands-on experience in software development.
+| Development Team | Héctor Triguero del Río - UO288992@uniovi.es, Daniel Fernández Cabrero - UO288499@uniovi.es, Umut Dolangac - UO311846@uniovi.es, Diego Martínez Chamorro - UO294054@uniovi.es | They aim to develop a clear, scalable, and well-documented system while gaining hands-on experience in software development.
 | Development Company | ChattySw | They expect the project to be well-structured, maintainable, and extensible, ensuring it meets the client’s needs.
 | Previous Developer | HappySw | They expect their previous work to be properly used, ensuring compatibility and that they receive their credits when their work is used.
 | Client - RTVE | RTVE Representatives - rtve.dircom@rtve.es | They hope to receive an engaging quiz application that aligns with their vision and improves their digital presence.

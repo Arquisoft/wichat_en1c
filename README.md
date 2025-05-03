@@ -34,7 +34,6 @@ _Each logo has a link to its ADR._
 ## Team members
 
 - **Héctor Triguero del Río**. UO288992@uniovi.es
-- **Fernando Cachon Alonso**. UO295255@uniovi.es
 - **Daniel Fernández Cabrero**. UO288499@uniovi.es
 - **Umut Dolangac**. UO311846@uniovi.es
 - **Diego Martínez Chamorro**. UO294054@uniovi.es
@@ -86,6 +85,8 @@ The architecture is classified as **non-pure** because the microservices are int
    ```
 
 ## Deployment
+
+**The project is live at [`http://wichaten1c.sytes.net/`](http://wichaten1c.sytes.net/) !**
 
 For the deployment, we have several options. The first and more flexible is to deploy to a virtual machine using SSH. This will work with any cloud service (or with our own server). Other options include using the container services that all the cloud services provide. This means, deploying our Docker containers directly. Here I am going to use the first approach. I am going to create a virtual machine in a cloud service and after installing docker and docker-compose, deploy our containers there using GitHub Actions and SSH.
 
