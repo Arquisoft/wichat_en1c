@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     // Change background video depending on the current route
-    if (location.pathname === "/game") {
+    if (location.pathname.includes("/game")) {
       setVideoSrc("/questionBackground30fps.mp4"); // Change background for "game"
     } else {
       setVideoSrc("/homeBackground30fps.mp4"); // Default background

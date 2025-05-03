@@ -32,7 +32,7 @@ The system must maintain a high level of operational stability and accuracy. Thi
 
 - *Question Generation Accuracy:* The rate of incorrectly generated distractors in quiz questions sourced from Wikidata should be less than 5%.
 
-- *AI Hint Accuracy:* The AI-powered hint system should provide accurate and relevant hints, with the occurrence of hallucinations or misleading information being less than 2% of hint requests.
+- *AI Hint Accuracy:* The AI-powered hint system should provide accurate and relevant hints, with the occurrence of hallucinations or misleading information being less than 5% of hint requests.
 
 - *Core Functionality Error Rate:* The system's handling of user registrations, logins, game data storage, and gameplay should have an error rate of less than 1%.
 
@@ -41,7 +41,7 @@ The system must provide a responsive and efficient user experience, even under m
 
 - *Concurrent User Capacity:* The system should be able to handle up to 20 concurrent users while maintaining an average response time for critical user interactions (loading questions, submitting answers, requesting hints) below 1 second.
 
-- *AI Hint Generation Latency:* The time taken to generate an AI hint should not introduce a performance bottleneck, adding no more than 0.7 seconds to the overall response time for a hint request.
+- *AI Hint Generation Latency:* The time taken to generate an AI hint should not introduce a performance bottleneck, adding no more than 1 second to the overall response time for a hint request.
 
 .Security
 The confidentiality and integrity of user data and system access must be ensured. Measurable aspects include:
@@ -57,7 +57,7 @@ The system should be intuitive and easy to use for all users, including those ne
 
 - *User Interface Clarity:* User feedback should indicate that at least 90% of users find the game interactions to be "easy to understand."
 
-- *Learning Curve:* The average time required for a new user to become proficient with the core functionalities of the system should be less than 39 minutes, as measured by their ability to complete defined tasks during an onboarding process.
+- *Learning Curve:* The average time required for a new user to become proficient with the core functionalities of the system should be less than 1 hour, as measured by their ability to complete defined tasks during an onboarding process.
 
 .Maintainability
 The system's architecture should facilitate future modifications, extensions, and bug fixes with minimal effort and risk. This can be assessed by:
@@ -151,8 +151,8 @@ endif::arc42help[]
 | Usage Scenario                                                                                                | System Reaction
 | [[login]] **User Login:** A user opens the web application, enters valid credentials (username and password), and clicks the "Login" button. | The system authenticates the user within 0.5 seconds and redirects them to the home interface. If the credentials are invalid, an error message is displayed to the user within 0.3 seconds.
 | [[start-game]] **Start Game:** A logged-in user clicks the "Play" button.                                               | The system retrieves the first question (including image and answer options) within 1 second and displays it to the user.
-| [[answer]] **Answer Question:** The user selects an answer option and clicks the "Submit Answer" button.                     | The system evaluates the answer within 0.3 seconds, provides immediate feedback (correct/incorrect), updates the user's score, and presents the next question within 1.5 seconds.
-| [[hint]] **Request Hint:** The user writes a qeustion and clicks the "Hint" button for a question.                                       | The system sends a request to the LLM Service and displays a relevant hint to the user within 1 second.
+| [[answer]] **Answer Question:** The user selects an answer option and clicks it.                     | The system evaluates the answer within 0.3 seconds, provides immediate feedback (correct/incorrect), updates the user's score, and presents the next question within 2 seconds.
+| [[hint]] **Request Hint:** The user writes a question and clicks the "Hint" button for a question.                                       | The system sends a request to the LLM Service and displays a relevant hint to the user within 1 second.
 | [[stats]] **View Statistics:** A logged-in user navigates to the "Statistics" section.                                    | The system retrieves and displays the user's game statistics (games played, correct answers, etc.) within 1 second.
 |===
 

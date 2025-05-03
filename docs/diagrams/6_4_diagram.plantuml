@@ -1,0 +1,29 @@
+@startuml
+box "Frontend" #D4F1F4
+actor User
+participant WebApp
+end box
+box "Backend" #CCE2F9
+participant Gateway
+participant StatsService
+end box
+database Database
+
+User -> WebApp: Request own statistics
+activate WebApp
+WebApp -> Gateway: Request user statistics 
+activate Gateway
+Gateway -> StatsService
+activate StatsService
+StatsService -> Database: Request user played games
+activate Database
+Database --> StatsService: User games
+deactivate Database
+StatsService --> Gateway: Computed statistics
+deactivate StatsService
+Gateway --> WebApp
+deactivate Gateway
+WebApp --> User: Display the statistics
+deactivate WebApp
+
+@enduml

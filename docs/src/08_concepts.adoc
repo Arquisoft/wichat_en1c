@@ -90,3 +90,7 @@ of the system. Every call or dependency between components or important parts is
 of errors and not propagate them thorughout the application, sending proper messages and codes to the different
 components to ensure the availability of the system and its proper working without failing. This enhances, in case
 an error occurs, the user experience so the user is informed if some process can not be carried out.
+
+=== Observability ===
+
+The system is designed to be observable, allowing gateway request monitoring from Grafana + Prometheus, as well as a more rudimentary monitoring of the different components through the use of a common and consistent logging system. This system allows logging errors, warnings and requests among others. It also enables faster debugging. Lastly the system is configured to censor sensitive information in the logs, such as authentication tokens and referrers.

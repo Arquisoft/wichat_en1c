@@ -42,9 +42,12 @@ endif::arc42help[]
 - **Microsoft Azure:** We chose this platform since it provides the needed infrastructure and the team members have experience with it.
 - **Express.js:** We have chosen this web application framework for Node.js due to its high flexibility, its easy use and learning and its powerful middleware.
 
+There are more technology decisions that are not listed here, but they are not as relevant as the ones listed above. The complete list can be found in the <<Architecture Decisions>> section of the documentation.
+
 === Top-level decomposition decisions
-- **Microservices pattern:** The Microservices architectural pattern is used, so the application is divided into different components with a responsibility each one. This makes the different components independent and low coupled, allowing mantainability.
-Also, it reduces possible conflicts between the development carried out by the team members and the code dependencies.  
+- **Non-pure microservices pattern:** This pattern is used, so the application is divided into different components with a responsibility each one. This makes the different components independent and lowly coupled, allowing mantainability.
+Also, it reduces possible conflicts between the development carried out by the team members and the code dependencies. 
+The pattern is non-pure to reduce the complexity of the application and redundancies between the microservices.
 - **Gateway pattern:** This pattern is chosen because it allows to give the application a single request interface that redirects requests by the 
 user to the appropiate application component. It is the appropiate pattern to complement the Microservices pattern due to these reasons.
 

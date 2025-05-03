@@ -72,7 +72,7 @@ A central API Gateway simplifies client interactions and enhances security by pr
 
 This system is built to handle growth. Each part can be scaled up as needed. In this diagram we use containers, so if we need more of something like the Question Service, we can easily add it. With Docker-compose we can automate this.
 
-Security is important. All communication is encrypted with HTTPS, so this keeps the internal parts of the system protected. The API Gateway also adds a layer of security by managing all incoming requests.
+Security is important.The API Gateway adds a layer of security by managing and authenticating all incoming requests.
 
 If something goes wrong, the container system helps because if one part fails, it can be restarted without affecting the others.  We also have logging and monitoring to help us find and fix problems quickly.
 
@@ -82,12 +82,12 @@ Mapping of Building Blocks to Infrastructure::
 [options="header",cols="2,2"]
 |===
 | Artifact | Infrastructure
-| WebApp (React) | WebApp Container
-| Gateway API (Node.js) | Gateway Container
-| AuthService (Node.js) | AuthService Container
-| StatsService (Node.js) | StatsService Container
-| GameService (Node.js) | GameService Container
-| QuestionsService (Node.js) | QuestionsService Container
-| LLMService (Node.js) | LLMService Container
+| webapp (React) | WebApp Container
+| gatewayservice (Node.js/Express) | Gateway Container
+| authservice (Node.js/Express) | AuthService Container
+| statservice (Node.js/Express) | StatsService Container
+| gameservice (Node.js/Express) | GameService Container
+| questionservice (Node.js/Express) | QuestionsService Container
+| llmservice (Node.js/Express) | LLMService Container
 | Database (MongoDB) | Database Container
 |===

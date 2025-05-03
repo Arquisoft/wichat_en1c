@@ -17,6 +17,9 @@ ifndef::imagesdir[:imagesdir: ../images]
 ***** FR-REG-1.1.2.1.2: Lowercase letter.
 ***** FR-REG-1.1.2.1.3: Number.
 ***** FR-REG-1.1.2.1.4: Special character.
+**** FR-REG-1.1.2.2: The password must have at least 8 characters.
+*** FR-REG-1.1.3: Confirm Password (mandatory).
+**** FR-REG-1.1.3.1: The input must be the same as the one in the Password field.
 * FR-REG-2: The system shall validate input data.
 ** FR-REG-2.1: If any field is invalid, the system shall prevent registration.
 * FR-REG-3: The system shall check for duplicate accounts.
@@ -30,27 +33,22 @@ ifndef::imagesdir[:imagesdir: ../images]
 * FR-LOG-2: The system shall validate login credentials.
 * FR-LOG-3: The system must allow logged-in users to log out at any time.
 
-==== User Profile and Data Management
+==== User Data Management
 * FR-UPD-1: The system must allow users to access their historical data.
 ** FR-UPD-1.1: The system shall display the following statistics for each user:
 *** FR-UPD-1.1.1: Number of games played.
 *** FR-UPD-1.1.2: Number of questions answered correctly.
 *** FR-UPD-1.1.3: Number of questions answered incorrectly.
-*** FR-UPD-1.1.4: Total time played.
-*** FR-UPD-1.1.5: Minimum time spent per game.
-*** FR-UPD-1.1.6: Maximum time spent per game.
-*** FR-UPD-1.1.7: Average time spent per game.
-*** FR-UPD-1.1.8: Minimum time spent per question.
-*** FR-UPD-1.1.9: Maximum time spent per question.
-*** FR-UPD-1.1.10: Average time spent per question.
-*** FR-UPD-1.1.11: Total number of questions answered.
-*** FR-UPD-1.1.12: Accuracy percentage (based on correct/total questions).
-* FR-UPD-2: The system shall allow users to update their profile information:
-** FR-UPD-2.1: Username.
-*** FR-UPD-2.1.1: The system shall check if the username already exists.
-**** FR-UPD-2.1.1.1: If it already exists, the system shall prevent the change.
-** FR-UPD-2.2: Password.
-*** FR-UPD-2.2.1: Password must be validated as in FR-REG-1.1.2.1.
+*** FR-UPD-1.1.4: Number of questions unanswered.
+*** FR-UPD-1.1.5: Total time played.
+*** FR-UPD-1.1.6: Minimum time spent per game.
+*** FR-UPD-1.1.7: Maximum time spent per game.
+*** FR-UPD-1.1.8: Average time spent per game.
+*** FR-UPD-1.1.9: Minimum time spent per question.
+*** FR-UPD-1.1.10: Maximum time spent per question.
+*** FR-UPD-1.1.11: Average time spent per question.
+*** FR-UPD-1.1.12: Total number of questions answered.
+*** FR-UPD-1.1.13: Accuracy percentage (based on correct/total questions).
 
 ==== Game Session
 * FR-GAME-1: The system shall allow only authentified users to play.
@@ -65,6 +63,9 @@ ifndef::imagesdir[:imagesdir: ../images]
 *** FR-GAME-1.2.2: Time runs out.
 **** FR-GAME-1.2.2.1: When time runs out the question is considered incorrectly answered.
 ** FR-GAME-1.3: The game shall end after all the rounds are completed.
+* FR-GAME-2: The system shall allow authentified users to play against the AI.
+** FR-GAME-2.1: The configuration would be the same as the normla game.
+** FR-GAME-2.2: At the end of the game the result of the game shall be informed to the user.
 
 ==== Hint System
 * FR-HINT-1: The system shall allow users to request hints for a question.
@@ -90,7 +91,12 @@ ifndef::imagesdir[:imagesdir: ../images]
 *** FR-CGAME-1.1.2: Time per question in seconds.
 **** FR-CGAME-1.1.2.1: The minimum time will be 10 seconds.
 **** FR-CGAME-1.1.2.2: The maximum time will be 60 seconds.
-*** FR-CGAME-1.1.3: Question categories.
+*** FR-CGAME-1.1.3: Hints per question.
+**** FR-CGAME-1.1.3.1: The minimum will be 0 hints.
+**** FR-CGAME-1.1.3.2: The maximum will be 5 hints.
+*** FR-CGAME-1.1.3: There will be an option for AI game mode.
+*** FR-CGAME-1.1.4: Question categories.
+**** FR-CGAME-1.1.4.1: If no category is selected, all categories would be active.
 
 ==== Question Management
 * FR-APIQ-1: The system shall provide an API to access generated questions.

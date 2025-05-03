@@ -51,25 +51,22 @@ image::06_State_Diagram.png["State Diagram of the general game behaviour"]
 * Login, the app shows the login interface, where the user is asked for the username and password, and the possibility to create an account.
 
 When logging, the app does a login request to the authentication service through the GatewayService, which redirects the user to the identity provider, which handles the authentication by checking the registered users.
-If the login is succesfully, the app shows the different options of the game. In case the login isn’t succesfully, a warning message is shown.
+If the login is succesfully, the app shows the different options of the game. In case the login isn't succesfully, a warning message is shown.
 
 image::06_Login.png["Sequence Diagram of the login of a user"]
 
 === Game
 
-* Game transitions and process behind the user interface. Introducing the GameService, QuestionService, LLMService, WikiDataService.
+* Game transitions and process behind the user interface.
 
-When playing, the user interface interacts with the distribution facade GatewayService, in charge of hiding the back-end services and business and persistance layers.
+When playing, the user interface interacts with the distribution facade Gateway, in charge of hiding the back-end services, business and persistance layers.
 
 image::06_Game.png["Sequence Diagram of the game runtime behaviour"]
 
-=== History of a user
+=== Statistics of a user
 
-* History of a user including stats of the games played.
+* Statistics of a user.
 
-When the user enters the history view, it is displayed the games played alongside contextual information, featuring:
-- Number of games played
-- Time scores of the best games
-- Relation of correct / incorrect answers
+When the user enters the view, statistics about themselves are shown.
 
-image::06_History.png["Sequence Diagram of displaying the history of a user"]
+image::06_History.png["Sequence Diagram of displaying the statistics of a user"]
