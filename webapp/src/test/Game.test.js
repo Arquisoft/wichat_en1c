@@ -36,11 +36,9 @@ jest.setTimeout(20000);
 
 describe("Game Page Tests", () => {
   beforeEach(() => {
-    // Mockear axios para devolver los datos de la configuración del juego
+    // Mock axios
     axios.get.mockImplementation((url) => {
-      if (url.includes("/game/config")) {
-        return Promise.resolve({ data: mockSettings });
-      } else if (url.includes("/game/question")) {
+      if (url.includes("/game/question")) {
         return Promise.resolve({ data: mockQuestionData });
       }
       return Promise.reject(new Error("Unknown endpoint"));
@@ -55,6 +53,8 @@ describe("Game Page Tests", () => {
         return Promise.resolve({ data: { success: true } }); // Simulate a successful save
       } else if (url.includes("/game/hint")) {
         return Promise.resolve({ data: { hint: "Good" } }); // Simulate a hint response
+      } else if (url.includes("/game/config")) {
+        return Promise.resolve({ data: mockSettings });
       }
       return Promise.reject(new Error("Unknown endpoint"));
     });

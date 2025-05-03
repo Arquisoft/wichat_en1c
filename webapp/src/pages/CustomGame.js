@@ -47,29 +47,19 @@ const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000
 // Mock categories data with IDs to maintain consistency across languages
 const mockCategories = {
   en: [
-    { id: "history", name: "history" },
-    { id: "science", name: "science" },
-    { id: "geography", name: "geography" },
-    { id: "sports", name: "sports" },
-    { id: "entertainment", name: "entertainment" },
-    { id: "music", name: "music" },
-    { id: "technology", name: "technology" },
+    { id: "musician", name: "musician" },
+    { id: "actor", name: "actor" },
+    { id: "painter", name: "painter" },
+    { id: "writer", name: "writer" },
+    { id: "scientist", name: "scientist" }, 
   ],
   es: [
-    { id: "history", name: "historia" },
-    { id: "science", name: "ciencia" },
-    { id: "geography", name: "geografía" },
-    { id: "sports", name: "deportes" },
-    { id: "entertainment", name: "entretenimiento" },
-    { id: "music", name: "música" },
-    { id: "technology", name: "tecnología" },
+    { id: "musician", name: "músico" },
+    { id: "actor", name: "actor" },
+    { id: "painter", name: "pintor" },
+    { id: "writer", name: "escritor" },
+    { id: "scientist", name: "científico" },
   ],
-}
-
-// Helper function to translate category by ID
-const translateCategoryById = (id, language) => {
-  const category = mockCategories[language].find((cat) => cat.id === id)
-  return category ? category.name : id
 }
 
 const CustomGame = () => {
@@ -91,8 +81,13 @@ const CustomGame = () => {
   const [availableCategories, setAvailableCategories] = useState([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
 
-  // Initialize categories from mock data
+  // Initialize categories from mock data and translate error
   useEffect(() => {
+    // Error translation
+    if(error != "") {
+      setError(t("customErr"));
+    }
+
     // Get all category IDs
     const allCategoryIds = mockCategories.en.map((cat) => cat.id)
 
@@ -189,26 +184,25 @@ const CustomGame = () => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
-/*
+
     try {
       // Send custom game settings to the API
       await axios.post(`${apiEndpoint}/game/custom`, {
-        rounds: infiniteRounds ? -1 : rounds, // -1 indicates infinite rounds
-        timePerQuestion: timePerQuestion,
+        rounds: infiniteRounds ? 999 : rounds, // 999 indicates infinite rounds
+        time: timePerQuestion,
         hints: hints,
         isAIGame: isAIGame,
         categories: selectedCategoryIds.length > 0 ? selectedCategoryIds : [], // Empty array means all categories
       })
-*/
+
       // Navigate to the game page
       navigate(isAIGame ? "/game-ai" : "/game")
-    /*} catch (error) {
+    } catch (error) {
       console.error("Error starting custom game:", error)
-      setError(error.response?.data?.message || "Failed to start custom game")
+      setError(t("customErr"))
     } finally {
       setIsSubmitting(false)
     }
-      */
   }
 
   // Get selected categories in current language for display
@@ -265,7 +259,7 @@ const CustomGame = () => {
                             checked={infiniteRounds}
                             onChange={handleInfiniteRoundsChange}
                             color="primary"
-                            data-testid="infinite-rounds-switch"
+                            inputProps={{ 'data-testid': 'infinite-rounds-switch' }}
                           />
                         }
                         label={t("infiniteRounds")}

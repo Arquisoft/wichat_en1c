@@ -16,7 +16,7 @@ const llmConfigs = {
     transformRequest: (question) => ({
       contents: [{ parts: [{ text: question }] }]
     }),
-    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text
+    transformResponse: (response) => response.data.candidates[0]?.content?.parts[0]?.text,
   },
   empathy: {
     url: () => 'https://empathyai.prod.empathy.co/v1/chat/completions',
@@ -31,7 +31,7 @@ const llmConfigs = {
     headers: (apiKey) => ({
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
-    })
+    }),
   }
 };
 

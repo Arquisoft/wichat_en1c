@@ -5,6 +5,7 @@ const cache = require("../cache");
 module.exports = (app) => {
 
     const questionsServiceUrl = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:8004';
+    const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8005';
 
     // Endpoints
     app.get('/game/question', async (req, res) => {
@@ -28,8 +29,16 @@ module.exports = (app) => {
                 return res.status(500).json({ error: 'Could not obtain question from service' });
 
             // Create data to be saved and sent
-            const { correctAnswer, ...questionToSend } = questionData;
-
+            let questionToSend = {
+                question: questionData.question,
+                question_es: questionData.question_es,
+                question_en: questionData.question_en,
+                image: questionData.image,
+                options: questionData.options,
+                category: questionData.category,
+                answerAI: undefined,
+            };
+          
             // If AI mode enabled, ask the AI for its answer
             let isAIEnabled;
             try {
@@ -38,13 +47,16 @@ module.exports = (app) => {
                 return res.status(500).json({ error: error.message });
             }
 
-            let answerAI;
+            let AIanswer;
             if (isAIEnabled) {
-                const { image, ...questionForAI } = questionToSend;
-                answerAI = await askAIAnswer(questionForAI);
-                if (!answerAI)
+                const { image, answerAI, ...questionForAI } = questionToSend;
+                AIanswer = await askAIAnswer(questionForAI);
+                if (!AIanswer)
                     return res.status(500).json({ error: 'Could not obtain answer from AI' });
-                questionToSend.answerAI = answerAI;
+                if(questionData.correctAnswer === AIanswer)
+                    questionToSend.answerAI = true;
+                else
+                    questionToSend.answerAI = false;
             }
 
             // Save generated question data for user
@@ -121,7 +133,7 @@ module.exports = (app) => {
         Question: ${questionForAI.question}. 
         Options: ${questionForAI.options.join(", ")}. 
         Consider the difficulty of the question. If it seems hard for an average person, you are more likely to guess or choose an option 
-        you are not entirely sure about. Evaluate your confidence in knowing the correct aswer, you are an average person. 
+        you are not entirely sure about. Evaluate your confidence in knowing the correct answer, you are an average person. 
         If your simulated confidence is low, there's a higher chance you might be wrong. Don't try to access external information, 
         just choose one option based on your simulated understanding and level of confidence. You must answer the correct one with a 40% of 
         probability and 60% of guessing wrong.
@@ -129,7 +141,8 @@ module.exports = (app) => {
         try {
             // Ask LLM
             const serviceData = {
-                question: prompt
+                question: prompt,
+                model:"gemini"
             }
 
             const serviceResponse = await axios.post(`${llmServiceUrl}/ask`, serviceData);
@@ -138,7 +151,7 @@ module.exports = (app) => {
 
             // Return answer
             const answerAI = serviceResponse.data.answer;
-            return answerAI;
+            return answerAI.replace(/\n/g, '');
         } catch (error) {
             req.log.error(error, "AI mode question answering error");
             return null;

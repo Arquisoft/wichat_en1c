@@ -2,7 +2,8 @@
 module.exports = {
     port: process.env.PORT || 8001,
     time: 20,
-    rounds: 3,
+    rounds: 10,
     hints: 3,
-    modes: ["musician", "scientist", "actor", "painter", "writer"]
+    modes: ["musician", "scientist", "actor", "painter", "writer"],
+    isAIGame: false
 };

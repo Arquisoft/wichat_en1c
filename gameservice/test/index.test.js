@@ -23,7 +23,8 @@ describe("config.js", () => {
       time: config.time,
       rounds: config.rounds,
       hints: config.hints,
-      modes: config.modes
+      modes: config.modes,
+      isAIGame: config.isAIGame,
     });
   });
 });
@@ -118,11 +119,12 @@ describe("/game/config", () => {
   beforeEach(() => {
     cache.quitGame.mockReset();
     cache.addUser.mockReset();
+    cache.getUserConfig.mockReset();
   });
 
   test("should return 400 if username is not sent", async () => {
     const response = await request(app)
-      .get("/game/config")
+      .post("/game/config")
       .send({});
 
     expect(response.status).toBe(400);
@@ -132,21 +134,29 @@ describe("/game/config", () => {
   test("should return game config and call cache.quitGame and cache.addUser", async () => {
     cache.quitGame.mockImplementation(() => { });
     cache.addUser.mockImplementation(() => { });
+    cache.getUserConfig.mockImplementation(() => ({
+      time: undefined,
+      rounds: undefined,
+      hints: undefined,
+      modes: undefined,
+      isAIGame: undefined
+    }));
     const username = "username";
 
     const response = await request(app)
-      .get("/game/config")
-      .send({ username: username });
+      .post("/game/config")
+      .send({ username: username, isAIGame: false });
 
     expect(response.status).toBe(200);
 
     expect(cache.quitGame).toHaveBeenCalledWith(username);
+    console.error( config.time, config.rounds, config.hints, config.modes, config.isAIGame)
     expect(cache.addUser).toHaveBeenCalledWith(username, {
       time: config.time,
       rounds: config.rounds,
       hints: config.hints,
       modes: config.modes,
-      isAIGame: false
+      isAIGame: config.isAIGame,
     });
 
     expect(response.body).toEqual({
