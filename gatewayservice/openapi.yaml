@@ -719,7 +719,7 @@ components:
                   - painter
                   - writer
               example:
-                - musicians
+                - musician
             rounds:
               type: integer
               description: Number of rounds in the game.
@@ -822,7 +822,7 @@ components:
               - painter
               - writer
           example:
-            - musicians
+            - musician
         rounds:
           type: integer
           description: Number of rounds in the game.
