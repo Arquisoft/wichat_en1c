@@ -41,28 +41,6 @@ Follow these steps to execute the load tests:
 5. **View the Results**  
    After the test completes, Gatling generates an HTML report, which you can open in a browser to analyze the performance metrics.
 
-## Customizing the Tests
-
-You can modify the `simulation.scala` file to:
-
-- Adjust the number of users.
-- Change the request endpoints.
-- Add custom scenarios.
-
-Refer to the [Gatling documentation](https://gatling.io/docs/) for detailed guidance on writing and customizing simulations.
-
-## Best Practices
-
-- Start with a small number of users and gradually increase the load.
-- Monitor your application's performance metrics during the test.
-- Run tests in a controlled environment to avoid impacting production systems.
-
-## Troubleshooting
-
-- **Java Not Found**: Ensure Java is installed and added to your system's PATH.
-- **Simulation Not Found**: Verify the simulation class name and file path.
-- **Connection Issues**: Check if the application is running and accessible.
-
 ## Additional Resources
 
 - [Gatling Official Documentation](https://gatling.io/docs/)
