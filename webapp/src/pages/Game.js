@@ -41,6 +41,8 @@ const Game = ({ AImode = false }) => {
   }) // Default, will be fetched
   const [questionData, setQuestionData] = useState({
     question: "",
+    question_es: "",
+    question_en: "",
     image: "",
     options: ["", "", "", ""],
   }) // Store question data
@@ -55,7 +57,6 @@ const Game = ({ AImode = false }) => {
     setIncorrectAnswers,
     setAIcorrect,
     hintHistory,
-    AIcorrect,
     addHintToHistory,
     resetGameStats,
     setHintHistory,
@@ -64,9 +65,24 @@ const Game = ({ AImode = false }) => {
   const correctAudio = new Audio("/correct.mp3")
   const wrongAudio = new Audio("/wrong.mp3")
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const theme = useTheme()
+
+  const [question, setQuestion] = useState("")
+
+  const translateQuestion = () => {
+    const lang = i18n.resolvedLanguage;
+    const translationKey = `question_${lang}`;
+
+    // Check if the translation key exists in the questionData
+    if (questionData[translationKey]) {
+      setQuestion(formatQuestionWithDate(questionData[translationKey]));
+    } else {
+      // Fallback to the default question if the translation key doesn't exist
+      setQuestion(formatQuestionWithDate(questionData.question));
+    }
+  };
 
   // Fetch game configuration on component mount
   useEffect(() => {
@@ -97,6 +113,7 @@ const Game = ({ AImode = false }) => {
       try {
         const response = await axios.get(`${apiEndpoint}/game/question`)
         setQuestionData(response.data)
+        translateQuestion();
         if(response.data.answerAI)
           setAIcorrect((prev) => prev + 1)
       } catch (error) {
@@ -139,6 +156,10 @@ const Game = ({ AImode = false }) => {
       if (timer) clearInterval(timer)
     }
   }, [timeLeft, isPaused, isLoading])
+
+  useEffect(() => {
+    translateQuestion()
+  }, [questionData, i18n.resolvedLanguage])
 
   // Format date inside the question string (e.g., converts "1979-01-01T00:00:00Z" to "January 1, 1979")
   const formatQuestionWithDate = (question) => {
@@ -360,7 +381,7 @@ const Game = ({ AImode = false }) => {
 
         {/* Display the question */}
         <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }} data-testid="question">
-          {formatQuestionWithDate(questionData.question)}
+          {question}
         </Typography>
 
         {/* Display the image */}

@@ -31,6 +31,8 @@ module.exports = (app) => {
             // Create data to be saved and sent
             let questionToSend = {
                 question: questionData.question,
+                question_es: questionData.question_es,
+                question_en: questionData.question_en,
                 image: questionData.image,
                 options: questionData.options,
                 category: questionData.category,
