@@ -36,8 +36,7 @@ module.exports = (app) => {
                 category: questionData.category,
                 answerAI: undefined,
             };
-
-
+          
             // If AI mode enabled, ask the AI for its answer
             let isAIEnabled;
             try {

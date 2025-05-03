@@ -13,6 +13,7 @@ let mongoose;
  *
  * @param {import("express").Application} app Express application
  * @param {string} name Application name
+ * @returns {import("pino").Logger} Logger instance
  */
 function setupLogger(app, name) {
   const pino = pinoHttp({
@@ -41,6 +42,8 @@ function setupLogger(app, name) {
 
   log = pino.logger;
   app.use(pino);
+
+  return log;
 }
 
 /**

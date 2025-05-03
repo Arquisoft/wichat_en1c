@@ -3,7 +3,7 @@ services:
     container_name: mongodb-wichat_en1c
     image: mongo
     attach: false
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     volumes:
       - mongodb_data:/data/db
     ports:
@@ -14,7 +14,7 @@ services:
   authservice:
     container_name: authservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/authservice:latest
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     build:
       context: ./
       dockerfile: authservice/Dockerfile
@@ -34,7 +34,7 @@ services:
   statservice:
     container_name: statservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/statservice:latest
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     build:
       context: ./
       dockerfile: statservice/Dockerfile
@@ -52,7 +52,7 @@ services:
   llmservice:
     container_name: llmservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/llmservice:latest
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     build:
       context: ./llmservice
     ports:
@@ -67,7 +67,7 @@ services:
   gatewayservice:
     container_name: gatewayservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/gatewayservice:latest
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     build:
       context: ./
       dockerfile: gatewayservice/Dockerfile
@@ -91,7 +91,7 @@ services:
   webapp:
     container_name: webapp-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/webapp:latest
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     build: ./webapp
     depends_on:
       - gatewayservice
@@ -104,7 +104,7 @@ services:
     build:
       context: ./
       dockerfile: gameservice/Dockerfile
-    profiles: [ "dev", "prod" ]
+    profiles: ["dev", "prod"]
     ports:
       - "8001:8001"
     networks:
@@ -123,8 +123,10 @@ services:
   questionservice:
     container_name: questionservice-wichat_en1c
     image: ghcr.io/arquisoft/wichat_en1c/questionservice:latest
-    build: ./questionservice
-    profiles: [ "dev", "prod" ]
+    build:
+      context: ./
+      dockerfile: questionservice/Dockerfile
+    profiles: ["dev", "prod"]
     ports:
       - "8004:8004"
     networks:
@@ -133,11 +135,14 @@ services:
       - llmservice
     environment:
       NODE_ENV: production
+      PORT: 8004
+      CACHE_SIZE: 10
+      REFILL_THRESHOLD: 3
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus-wichat_en1c
-    profiles: [ "dev" ]
+    profiles: ["dev"]
     networks:
       - mynetwork
     volumes:
@@ -151,7 +156,7 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana-wichat_en1c
-    profiles: [ "dev" ]
+    profiles: ["dev"]
     networks:
       - mynetwork
     volumes:
@@ -171,7 +176,6 @@ volumes:
   mongodb_data:
   prometheus_data:
   grafana_data:
-
 
 networks:
   mynetwork:

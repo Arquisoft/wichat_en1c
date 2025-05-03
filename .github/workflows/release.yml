@@ -177,7 +177,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: questionservice
+          dockerfile: questionservice/Dockerfile
 
   docker-push-statservice:
     name: Push StatService Docker Image to GitHub Packages
