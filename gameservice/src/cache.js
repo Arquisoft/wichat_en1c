@@ -102,7 +102,7 @@ module.exports = {
 
         // Remove used hints and AI option and get user game data to send
         const { usedHints, isAIGame, ...gameData } = userGame;
-        gameData.game.config.isAIGame=isAIGame;
+        gameData.game.config.isAIGame = isAIGame;
 
         // Delete data from cache
         cache.delete(username);
@@ -143,7 +143,7 @@ module.exports = {
         userGame.usedHints.push(hint);
     },
 
-    getRandomMode(username){
+    getRandomMode(username) {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
@@ -159,7 +159,7 @@ module.exports = {
         return randomMode;
     },
 
-    isAIEnabledForUser(username){
+    isAIEnabledForUser(username) {
         // Get current game for user
         const userGame = cache.get(username);
         if (!userGame)
@@ -168,7 +168,32 @@ module.exports = {
         return isAIEnabledUser;
     },
 
-    getCache(){
+    getCache() {
         return cache;
+    },
+
+    getUserConfig(username) {
+        // Get current game for user
+        const userGame = cache.get(username);
+        let config;
+        if (!userGame) {
+            config = {
+                time: undefined,
+                rounds: undefined,
+                hints: undefined,
+                modes: undefined,
+                isAIGame: undefined
+            };
+        } else {
+            config = {
+                time: userGame.game.config.time,
+                rounds: userGame.game.config.rounds,
+                hints: userGame.game.config.hints,
+                modes: userGame.game.config.modes,
+                isAIGame: userGame.isAIGame
+            };
+        }
+
+        return config;
     }
 };

@@ -22,10 +22,11 @@ import PropTypes from "prop-types"
 import { alpha } from "@mui/material/styles"
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:8000"
+const INFINITE_MODE_VALUE = 999 // Special value that indicates infinite mode
 
 // Main game component
 const Game = ({ AImode = false }) => {
-  const [timeLeft, setTimeLeft] = useState(20)
+  const [timeLeft, setTimeLeft] = useState(-1)
   const [selectedOption, setSelectedOption] = useState(null)
   const [currentRound, setCurrentRound] = useState(1)
   const [isPaused, setIsPaused] = useState(false)
@@ -35,11 +36,13 @@ const Game = ({ AImode = false }) => {
 
   const [gameSettings, setGameSettings] = useState({
     rounds: 10,
-    time: 20,
+    time: -1,
     hints: 3,
   }) // Default, will be fetched
   const [questionData, setQuestionData] = useState({
     question: "",
+    question_es: "",
+    question_en: "",
     image: "",
     options: ["", "", "", ""],
   }) // Store question data
@@ -52,6 +55,7 @@ const Game = ({ AImode = false }) => {
     setGameEnded,
     setCorrectAnswers,
     setIncorrectAnswers,
+    setAIcorrect,
     hintHistory,
     addHintToHistory,
     resetGameStats,
@@ -61,15 +65,32 @@ const Game = ({ AImode = false }) => {
   const correctAudio = new Audio("/correct.mp3")
   const wrongAudio = new Audio("/wrong.mp3")
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const theme = useTheme()
+
+  const [question, setQuestion] = useState("")
+
+  const translateQuestion = () => {
+    const lang = i18n.resolvedLanguage;
+    const translationKey = `question_${lang}`;
+
+    // Check if the translation key exists in the questionData
+    if (questionData[translationKey]) {
+      setQuestion(formatQuestionWithDate(questionData[translationKey]));
+    } else {
+      // Fallback to the default question if the translation key doesn't exist
+      setQuestion(formatQuestionWithDate(questionData.question));
+    }
+  };
 
   // Fetch game configuration on component mount
   useEffect(() => {
     const fetchGameConfig = async () => {
       try {
-        const response = await axios.get(`${apiEndpoint}/game/config`)
+        const response = await axios.post(`${apiEndpoint}/game/config`, {
+          isAIGame: AImode,
+        })
         setGameSettings(response.data)
         setTimeLeft(response.data.time) // Set initial time from config
       } catch (error) {
@@ -80,6 +101,9 @@ const Game = ({ AImode = false }) => {
 
     // Reset game statistics when starting a new game
     resetGameStats()
+
+    if(AImode)
+      setAIcorrect((prev) => prev + 1)
   }, [])
 
   // Fetch question data at the start of each round
@@ -89,6 +113,9 @@ const Game = ({ AImode = false }) => {
       try {
         const response = await axios.get(`${apiEndpoint}/game/question`)
         setQuestionData(response.data)
+        translateQuestion();
+        if(response.data.answerAI)
+          setAIcorrect((prev) => prev + 1)
       } catch (error) {
         console.error("Error fetching question:", error)
         navigate("/")
@@ -112,9 +139,15 @@ const Game = ({ AImode = false }) => {
         // Count timeout as incorrect answer
         setIncorrectAnswers((prev) => prev + 1)
         axios.post(`${apiEndpoint}/game/answer`, {
-          selectedAnswer: null,
-        }).catch(error => console.error("Error checking answer:", error)) 
-        handleRoundEnd()
+            selectedAnswer: null,
+          }).catch((error) => console.error("Error checking answer:", error))
+
+        // In infinite mode, end the game immediately on timeout
+        if (gameSettings.rounds === INFINITE_MODE_VALUE) {
+          setGameEnded(true)
+        } else {
+          handleRoundEnd()
+        }
       }
     }
 
@@ -123,6 +156,10 @@ const Game = ({ AImode = false }) => {
       if (timer) clearInterval(timer)
     }
   }, [timeLeft, isPaused, isLoading])
+
+  useEffect(() => {
+    translateQuestion()
+  }, [questionData, i18n.resolvedLanguage])
 
   // Format date inside the question string (e.g., converts "1979-01-01T00:00:00Z" to "January 1, 1979")
   const formatQuestionWithDate = (question) => {
@@ -157,6 +194,12 @@ const Game = ({ AImode = false }) => {
       } else {
         wrongAudio.play()
         setIncorrectAnswers((prev) => prev + 1)
+
+        // In infinite mode, end the game immediately on incorrect answer
+        if (gameSettings.rounds === INFINITE_MODE_VALUE) {
+          setGameEnded(true)
+          return // Skip the rest of the function
+        }
       }
 
       handleRoundEnd()
@@ -195,7 +238,8 @@ const Game = ({ AImode = false }) => {
 
   const handleRoundEnd = () => {
     setTimeout(() => {
-      if (currentRound >= gameSettings.rounds) {
+      // In infinite mode, never end the game based on round count
+      if (gameSettings.rounds !== INFINITE_MODE_VALUE && currentRound >= gameSettings.rounds) {
         setGameEnded(true)
       } else {
         setCurrentRound((prev) => prev + 1)
@@ -329,13 +373,15 @@ const Game = ({ AImode = false }) => {
           </Box>
 
           <Typography variant="h6" sx={{ marginLeft: 2 }} data-testid="round-info">
-            {t("round")}: {currentRound} / {gameSettings.rounds}
+            {gameSettings.rounds === INFINITE_MODE_VALUE
+              ? t("infinite")
+              : `${t("round")}: ${currentRound} / ${gameSettings.rounds}`}
           </Typography>
         </Box>
 
         {/* Display the question */}
         <Typography variant="h5" gutterBottom sx={{ textAlign: "center", alignSelf: "center" }} data-testid="question">
-          {formatQuestionWithDate(questionData.question)}
+          {question}
         </Typography>
 
         {/* Display the image */}

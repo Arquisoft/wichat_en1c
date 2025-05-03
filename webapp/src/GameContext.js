@@ -8,6 +8,7 @@ const GameProvider = ({ children }) => {
   const [correctAnswers, setCorrectAnswers] = useState(0)
   const [incorrectAnswers, setIncorrectAnswers] = useState(0)
   const [hintHistory, setHintHistory] = useState([])
+  const [AIcorrect, setAIcorrect] = useState(-1)
 
   // GameEnded false when the app is closed
   useEffect(() => {
@@ -26,6 +27,7 @@ const GameProvider = ({ children }) => {
     setCorrectAnswers(0)
     setIncorrectAnswers(0)
     setHintHistory([])
+    setAIcorrect(-1)
   }
 
   // Add a hint to the history
@@ -42,6 +44,8 @@ const GameProvider = ({ children }) => {
         setCorrectAnswers,
         incorrectAnswers,
         setIncorrectAnswers,
+        AIcorrect,
+        setAIcorrect,
         hintHistory,
         addHintToHistory,
         setHintHistory,

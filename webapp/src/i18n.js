@@ -97,6 +97,11 @@ const resources = {
       genericError: "Oops! Something went wrong.",
       gameResults: "Game Results",
       unanswered: "Unanswered",
+      infinite: "Infinite Mode",
+      customErr: "Failed to start custom game",
+      youWonAI: "You won against the AI! It got {{AIcorrect}} correct answers.",
+      youLostAI: "You lost against the AI. It got {{AIcorrect}} correct answers.",
+      tiedWithAI: "It's a tie with the AI! It also got {{AIcorrect}} correct answers.",
     },
   },
   es: {
@@ -189,6 +194,11 @@ const resources = {
       genericError: "¡Vaya! Algo salió mal.",
       gameResults: "Resultados del Juego",
       unanswered: "Sin contestar",
+      infinite: "Modo Infinito",
+      customErr: "Fallo al intentar iniciar juego personalizado",
+      youWonAI: "Ganaste a la IA! Ella obtuvo {{AIcorrect}} respuestas correctas.",
+      youLostAI: "Perdiste contra la IA. Ella obtuvo {{AIcorrect}} respuestas correctas.",
+      tiedWithAI: "Empataste contra la IA! Ella tambien obtuvo {{AIcorrect}} respuestas correctas.",
     },
   },
 };
