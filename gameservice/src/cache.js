@@ -36,36 +36,6 @@ module.exports = {
                 isAIGame: gameConfig.isAIGame
             });
         }
-        /* 
-        // Get current time
-        const now = new Date().toISOString();
-
-        // Delete existing user game if exists
-        if (cache.has(username)) {
-            cache.delete(username);
-        }
-
-        // Set new user game values
-        cache.set(username, {
-            username,
-            game: {
-                time: {
-                    started: now,
-                    finished: null,
-                },
-                config: {
-                    modes: gameConfig.modes,
-                    rounds: gameConfig.rounds,
-                    time: gameConfig.time,
-                    hints: gameConfig.hints
-                },
-                hints: 0,
-                questions: []
-            },
-            usedHints: [],
-            isAIGame: gameConfig.isAIGame
-        });
-        */
     },
 
     addQuestion(username, questionData) {
@@ -207,7 +177,6 @@ module.exports = {
         const userGame = cache.get(username);
         let config;
         if (!userGame) {
-            //throw new Error('Could not get config values from the user');
             config = {
                 time: undefined,
                 rounds: undefined,

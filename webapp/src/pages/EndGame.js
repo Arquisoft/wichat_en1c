@@ -5,7 +5,6 @@ import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { GameContext } from "../GameContext"
 import { CheckCircle as CorrectIcon, Cancel as IncorrectIcon } from "@mui/icons-material"
-import i18n from "../i18n"
 
 const EndGame = () => {
   const navigate = useNavigate()
@@ -20,6 +19,16 @@ const EndGame = () => {
     e.preventDefault()
     navigate("/")
   }
+
+  const getColor = (correctAnswers, AIcorrect) => {
+    if (correctAnswers > AIcorrect) {
+      return "success.main";
+    } else if (correctAnswers < AIcorrect) {
+      return "error.main";
+    } else {
+      return "text.secondary";
+    }
+  };
 
   const translateAIResults = () => {
     if (AIcorrect > -1) {
@@ -80,7 +89,7 @@ const EndGame = () => {
               {t("gameResults")}
             </Typography>
             {AIResultText && (
-              <Typography data-testid="ai-result" variant="body2" color={correctAnswers > AIcorrect ? "success.main" : correctAnswers < AIcorrect ? "error.main" : "text.secondary"} sx={{ mb: 1 }}>
+              <Typography data-testid="ai-result" variant="body2" color={getColor(correctAnswers, AIcorrect)} sx={{ mb: 1 }}>
                 {AIResultText}
               </Typography>
             )}
