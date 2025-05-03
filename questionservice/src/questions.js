@@ -37,8 +37,12 @@ async function* generateQuestions(
         .map((entity) => entity.name)
         .sort(() => Math.random() - 0.5),
       correctAnswer: correctEntity.name,
-      question: `Who is the ${category} born on ${birthDate.toLocaleDateString()} in the image?`,
-      question_en: `Who is the ${category} born on ${birthDate.toLocaleDateString()} in the image?`,
+      question: `Who is the ${category} born on ${birthDate.toLocaleDateString(
+        "es-ES"
+      )} in the image?`,
+      question_en: `Who is the ${category} born on ${birthDate.toLocaleDateString(
+        "es-ES"
+      )} in the image?`,
       question_es: `¿Quién es el ${
         config.categoriesES[category]
       } nacido el ${birthDate.toLocaleDateString()} en la imagen?`,
