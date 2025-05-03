@@ -82,12 +82,12 @@ Mapping of Building Blocks to Infrastructure::
 [options="header",cols="2,2"]
 |===
 | Artifact | Infrastructure
-| WebApp (React) | WebApp Container
-| Gateway API (Node.js) | Gateway Container
-| AuthService (Node.js) | AuthService Container
-| StatsService (Node.js) | StatsService Container
-| GameService (Node.js) | GameService Container
-| QuestionsService (Node.js) | QuestionsService Container
-| LLMService (Node.js) | LLMService Container
+| webapp (React) | WebApp Container
+| gatewayservice (Node.js/Express) | Gateway Container
+| authservice (Node.js/Express) | AuthService Container
+| statservice (Node.js/Express) | StatsService Container
+| gameservice (Node.js/Express) | GameService Container
+| questionservice (Node.js/Express) | QuestionsService Container
+| llmservice (Node.js/Express) | LLMService Container
 | Database (MongoDB) | Database Container
 |===

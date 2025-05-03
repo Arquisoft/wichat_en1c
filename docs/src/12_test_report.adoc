@@ -25,6 +25,14 @@ A total of *five sets of tests* were created to ensure *all features* of the app
 
 These tests allow verifying that the system behaves as expected when *all components interact together*.
 
+The functionalities that were tested are:
+
+- *Register*
+- *Login*
+- *Game flow*
+- *Statistics storage and display*
+- *Customization of game*
+
 === Load tests
 
 Load tests were written using the *Gatling* framework, which is a popular testing framework for load testing.
