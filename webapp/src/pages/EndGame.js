@@ -80,7 +80,7 @@ const EndGame = () => {
               {t("gameResults")}
             </Typography>
             {AIResultText && (
-              <Typography variant="body2" color={correctAnswers > AIcorrect ? "success.main" : correctAnswers < AIcorrect ? "error.main" : "text.secondary"} sx={{ mb: 1 }}>
+              <Typography data-testid="ai-result" variant="body2" color={correctAnswers > AIcorrect ? "success.main" : correctAnswers < AIcorrect ? "error.main" : "text.secondary"} sx={{ mb: 1 }}>
                 {AIResultText}
               </Typography>
             )}

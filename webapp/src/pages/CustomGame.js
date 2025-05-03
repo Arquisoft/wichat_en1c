@@ -259,7 +259,7 @@ const CustomGame = () => {
                             checked={infiniteRounds}
                             onChange={handleInfiniteRoundsChange}
                             color="primary"
-                            data-testid="infinite-rounds-switch"
+                            inputProps={{ 'data-testid': 'infinite-rounds-switch' }}
                           />
                         }
                         label={t("infiniteRounds")}

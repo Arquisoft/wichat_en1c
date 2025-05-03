@@ -57,8 +57,8 @@ jobs:
           DISABLE_ESLINT_PLUGIN: true
       - run: npm --prefix webapp run test:e2e
         env:
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY_GEMINI }}
-          LLM_API_KEY_EMPATHY: ${{ secrets.LLM_API_KEY }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_API_KEY_EMPATHY: ${{ secrets.LLM_API_KEY_EMPATHY }}
           CRYPT_SECRET: ${{ secrets.CRYPT_SECRET }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 

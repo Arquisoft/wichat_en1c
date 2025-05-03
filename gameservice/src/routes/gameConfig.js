@@ -47,7 +47,7 @@ module.exports = (app) => {
         
         userConfig.time = userConfig.time ? userConfig.time : config.time;
         userConfig.rounds = userConfig.rounds ? userConfig.rounds : config.rounds;
-        userConfig.hints = userConfig.hints ? userConfig.hints : config.hints;
+        userConfig.hints = (userConfig.hints || userConfig.hints === 0) ? userConfig.hints : config.hints;
         userConfig.modes = userConfig.modes ? userConfig.modes : config.modes;
 
         if (isAIGame != undefined && isAIGame) {
@@ -63,47 +63,5 @@ module.exports = (app) => {
             rounds: userConfig.rounds,
             hints: userConfig.hints
         });
-
-        /*
-        gameConfig = {
-            time: config.time,
-            rounds: config.rounds,
-            hints: config.hints,
-            modes: config.modes,
-            isAIGame: isAIGame
-        }
-        cache.addUser(username, gameConfig);
-        res.json({
-            time: gameConfig.time,
-            rounds: gameConfig.rounds,
-            hints: gameConfig.hints
-        });
-
-        // Possible fix implementation:
-
-        let userConfig;
-
-        try {
-            // Obtener la configuración previa del usuario
-            userConfig = cache.getUserConfig(username);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-
-        userConfig.time = userConfig.time ? userConfig.time : config.time;
-        userConfig.rounds = userConfig.rounds ? userConfig.rounds : config.rounds;
-        userConfig.hints = userConfig.hints ? userConfig.hints : config.hints;
-        userConfig.modes = userConfig.modes ? userConfig.modes : config.modes;
-
-        if (isAIGame && isAIGame !== undefined) {
-            userConfig.isAIGame = isAIGame;
-        }else{
-            userConfig.isAIGame = config.isAIGame;
-        }
-
-        cache.addUser(username, userConfig);
-
-        res.json({ userConfig});
-        */
     });
 };
